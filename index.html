@@ -602,7 +602,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             </section>
             <p class="section-label">STORAGE</p>
             <section class="list-card">
-              ${row('&#9716;', 'Saved conversations', '14 conversations · 1.2 MB', '<span class="value">14</span>' + icons.chevron)}
+              ${row('&#9716;', 'Saved conversations', '14 conversations · 1.2 MB', '<span class="value">14</span>' + icons.chevron, '5')}
               ${row('&#8595;', 'Downloaded dictionary', '124 signs · 86 MB', '<span class="value">86 MB</span>' + icons.chevron)}
             </section>
             <p class="section-label">YOUR DATA</p>
@@ -1112,22 +1112,73 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         const style = root.createElement('style');
         style.textContent = `
+          .chat-menu-toggle{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;margin-right:4px;border:0;border-radius:50%;background:transparent;color:#10212F;cursor:pointer;flex-shrink:0;transition:background .15s ease}
+          .chat-menu-toggle:hover{background:#E4EAEE}
           .chat-place{display:block;margin-top:3px;padding:0;border:0;background:transparent;color:#0B7A83;font:600 11px system-ui,sans-serif;text-align:left;cursor:pointer}
-          .chat-history-open{min-height:38px;padding:0 11px;border:1px solid #9ED7DB;border-radius:12px;background:#EAF7F8;color:#0A4B52;font:700 11px system-ui,sans-serif;cursor:pointer}
-          .chat-history-backdrop{display:none;position:fixed;inset:0;z-index:80;background:rgba(16,33,47,.42)}
-          .chat-history-backdrop.open{display:block}
-          .chat-history-panel{position:absolute;left:12px;right:12px;top:74px;bottom:12px;display:flex;flex-direction:column;padding:17px;background:#F7F9FA;border-radius:24px;box-shadow:0 18px 50px rgba(16,33,47,.28);color:#10212F;font-family:system-ui,sans-serif}
-          .chat-history-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.chat-history-head h2{margin:0;font-size:21px}.chat-history-head p{margin:3px 0 0;color:#5B6B78;font-size:11px}.chat-history-close{width:36px;height:36px;border:0;border-radius:50%;background:#E4EAEE;color:#10212F;font-size:20px;cursor:pointer}
-          .chat-history-search{display:flex;align-items:center;gap:8px;margin-top:14px;padding:0 12px;height:44px;border:1px solid #DCE3E8;border-radius:13px;background:#FFFFFF}.chat-history-search input{width:100%;border:0;outline:0;background:transparent;font:14px system-ui,sans-serif}
-          .chat-history-filters{display:flex;gap:6px;margin:10px 0;overflow-x:auto}.chat-history-filters button{min-height:34px;padding:0 11px;border:1px solid #DCE3E8;border-radius:999px;background:#FFFFFF;color:#5B6B78;font:700 11px system-ui,sans-serif;white-space:nowrap}.chat-history-filters button.active{border-color:#0B7A83;background:#DDF1F2;color:#095C63}
-          .chat-history-list{flex:1;overflow-y:auto}.chat-history-group{margin:10px 0 6px;color:#5B6B78;font-size:10px;font-weight:800;letter-spacing:.8px}.chat-history-card{display:grid;grid-template-columns:1fr 34px;gap:8px;align-items:center;margin-bottom:8px;padding:12px;border:1px solid #DCE3E8;border-radius:15px;background:#FFFFFF}.chat-history-main{border:0;background:transparent;text-align:left;color:#10212F;cursor:pointer}.chat-history-main strong,.chat-history-main small,.chat-history-main span{display:block}.chat-history-main strong{font-size:14px}.chat-history-main small{margin-top:2px;color:#0B7A83;font-size:11px}.chat-history-main span{margin-top:6px;color:#5B6B78;font-size:12px}.chat-history-delete{width:34px;height:34px;border:0;border-radius:10px;background:#FCE9E5;color:#C8381F;cursor:pointer}.chat-history-card[hidden],.chat-history-group[hidden]{display:none}
-          .chat-history-tools{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:10px}.chat-history-tools button{min-height:42px;border:1px solid #DCE3E8;border-radius:12px;background:#FFFFFF;color:#0B7A83;font:700 11px system-ui,sans-serif}.chat-history-tools button:first-child{border-color:#0B7A83;background:#0B7A83;color:#FFFFFF}.chat-history-note{margin:9px 0 0;text-align:center;color:#5B6B78;font-size:10px}
-          .chat-history-toast{min-height:18px;margin:5px 0 0;text-align:center;color:#1E7B4A;font-size:11px;font-weight:600}
-          .chat-session-nav{display:grid;grid-template-columns:38px 1fr 38px;align-items:center;gap:8px;padding:8px 9px;border:1px solid #D7E4E6;border-radius:14px;background:#FFFFFF}.chat-session-nav button{width:38px;height:36px;border:1px solid #DCE3E8;border-radius:10px;background:#F7FAFA;color:#0B7A83;font-size:20px;cursor:pointer}.chat-session-position{text-align:center}.chat-session-position strong,.chat-session-position small{display:block}.chat-session-position strong{font-size:11px}.chat-session-position small{margin-top:2px;color:#6B7D84;font-size:8px}.chat-inline-rate{align-self:flex-end;display:inline-flex;align-items:center;gap:5px;min-height:30px;margin-top:4px;padding:0 9px;border:1px solid #9ED7DB;border-radius:10px;background:#EAF7F8;color:#0A4B52;font:750 9px system-ui,sans-serif;text-decoration:none}.chat-history-card.selected{border-color:#0B7A83;background:#F0FAFA;box-shadow:inset 3px 0 0 #0B7A83}
+          .chat-history-open{min-height:36px;padding:0 12px;border:1px solid #9ED7DB;border-radius:999px;background:#EAF7F8;color:#0A4B52;font:700 11px system-ui,sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .15s ease}
+          .chat-history-open:hover{background:#DDF1F2;border-color:#0B7A83}
+          .chat-history-backdrop{display:none;position:fixed;inset:0;z-index:90;background:rgba(16,33,47,.45);backdrop-filter:blur(2px);opacity:0;transition:opacity .24s cubic-bezier(.2,0,0,1)}
+          .chat-history-backdrop.open{display:block;opacity:1}
+          .chat-history-panel{position:absolute;left:0;top:0;bottom:0;width:304px;max-width:86%;height:100%;display:flex;flex-direction:column;padding:16px 12px 14px;background:#F0F4F9;box-shadow:6px 0 28px rgba(16,33,47,.24);color:#10212F;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;transform:translateX(-100%);transition:transform .28s cubic-bezier(.2,0,0,1);border-top-right-radius:20px;border-bottom-right-radius:20px;box-sizing:border-box}
+          .chat-history-backdrop.open .chat-history-panel{transform:translateX(0)}
+          .chat-sidebar-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 4px 12px}
+          .chat-sidebar-brand{display:flex;align-items:center;gap:8px}
+          .chat-sidebar-logo{font-size:17px;color:#0B7A83}
+          .chat-sidebar-brand strong{font-size:16px;font-weight:750;letter-spacing:-.2px;color:#10212F}
+          .chat-sidebar-badge{font-size:9px;font-weight:750;padding:3px 8px;border-radius:999px;background:#E4F3E9;color:#1E7B4A;letter-spacing:.3px}
+          .chat-history-close{width:34px;height:34px;border:0;border-radius:50%;background:transparent;color:#4A5568;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;transition:background .15s ease}
+          .chat-history-close:hover{background:#E2E8F0;color:#10212F}
+          .chat-new-btn{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;padding:0 16px;border-radius:999px;background:#DDF1F2;color:#085057;font:700 13px system-ui,sans-serif;border:1px solid #BCE2E5;cursor:pointer;box-shadow:0 1px 3px rgba(11,122,131,.08);transition:all .15s ease;margin-bottom:10px}
+          .chat-new-btn:hover{background:#CEEBEF;border-color:#0B7A83}
+          .chat-new-btn svg{flex-shrink:0}
+          .chat-new-sparkle{margin-left:auto;color:#0B7A83;font-size:12px;opacity:.8}
+          .chat-history-search{display:flex;align-items:center;gap:8px;padding:0 12px;height:38px;border:1px solid #DCE3E8;border-radius:12px;background:#FFFFFF}
+          .chat-history-search input{width:100%;border:0;outline:0;background:transparent;font:13px system-ui,sans-serif;color:#10212F}
+          .chat-history-search svg{color:#5B6B78;flex-shrink:0}
+          .chat-history-filters{display:flex;gap:5px;margin:10px 0 8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+          .chat-history-filters::-webkit-scrollbar{display:none}
+          .chat-history-filters button{min-height:30px;padding:0 11px;border:1px solid #DCE3E8;border-radius:999px;background:#FFFFFF;color:#5B6B78;font:700 11px system-ui,sans-serif;white-space:nowrap;cursor:pointer;transition:all .15s ease}
+          .chat-history-filters button.active{border-color:#0B7A83;background:#0B7A83;color:#FFFFFF}
+          .chat-history-list{flex:1;overflow-y:auto;scrollbar-width:thin;padding-right:2px}
+          .chat-history-group{margin:12px 6px 5px;color:#5B6B78;font-size:10.5px;font-weight:800;letter-spacing:.8px;text-transform:uppercase}
+          .chat-history-card{display:grid;grid-template-columns:1fr 28px;gap:6px;align-items:center;margin-bottom:5px;padding:8px 10px;border-radius:12px;background:#FFFFFF;border:1px solid #E4EAEE;transition:background .15s ease,border-color .15s ease}
+          .chat-history-card:hover{background:#F8FAFD;border-color:#C8D7E3}
+          .chat-history-card.selected{border-color:#0B7A83;background:#EAF7F8;box-shadow:inset 3.5px 0 0 #0B7A83}
+          .chat-history-main{border:0;background:transparent;text-align:left;color:#10212F;cursor:pointer;display:flex;align-items:flex-start;gap:9px;min-width:0;padding:0}
+          .chat-item-icon{font-size:14px;margin-top:1px;color:#0B7A83;flex-shrink:0}
+          .chat-item-text{min-width:0;flex:1}
+          .chat-item-text strong{display:block;font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#10212F}
+          .chat-item-text small{display:block;margin-top:2px;color:#0B7A83;font-size:10.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+          .chat-item-text span{display:block;margin-top:4px;color:#5B6B78;font-size:11px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+          .chat-history-delete{width:26px;height:26px;border:0;border-radius:8px;background:transparent;color:#8C99A4;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s ease}
+          .chat-history-delete:hover{background:#FCE9E5;color:#C8381F}
+          .chat-history-card[hidden],.chat-history-group[hidden]{display:none}
+          .chat-sidebar-footer{margin-top:auto;padding-top:10px;border-top:1px solid #DCE3E8}
+          .chat-sidebar-tools{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+          .chat-tool-btn{min-height:38px;padding:0 9px;border:1px solid #DCE3E8;border-radius:10px;background:#FFFFFF;color:#10212F;font:700 11px system-ui,sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .15s ease}
+          .chat-tool-btn:hover{background:#EAF7F8;border-color:#9ED7DB;color:#0A4B52}
+          .chat-tool-icon{font-size:13px;color:#0B7A83}
+          .chat-history-toast{min-height:16px;margin:6px 0 2px;text-align:center;color:#1E7B4A;font-size:11px;font-weight:600}
+          .chat-sidebar-note{margin:4px 0 0;display:flex;align-items:center;justify-content:center;gap:5px;color:#5B6B78;font-size:10px}
+          .chat-session-nav{display:grid;grid-template-columns:38px 1fr 38px;align-items:center;gap:8px;padding:8px 9px;border:1px solid #D7E4E6;border-radius:14px;background:#FFFFFF}
+          .chat-session-nav button{width:38px;height:36px;border:1px solid #DCE3E8;border-radius:10px;background:#F7FAFA;color:#0B7A83;font-size:20px;cursor:pointer}
+          .chat-session-position{text-align:center}
+          .chat-session-position strong,.chat-session-position small{display:block}
+          .chat-session-position strong{font-size:11px}
+          .chat-session-position small{margin-top:2px;color:#6B7D84;font-size:8px}
+          .chat-inline-rate{align-self:flex-end;display:inline-flex;align-items:center;gap:5px;min-height:30px;margin-top:4px;padding:0 9px;border:1px solid #9ED7DB;border-radius:10px;background:#EAF7F8;color:#0A4B52;font:750 9px system-ui,sans-serif;text-decoration:none}
         `;
         root.head.appendChild(style);
 
-        const titleBlock = header.firstElementChild;
+        const menuToggle = root.createElement('button');
+        menuToggle.type = 'button';
+        menuToggle.className = 'chat-menu-toggle';
+        menuToggle.dataset.chatHistoryOpen = 'true';
+        menuToggle.setAttribute('aria-label', 'Open conversation history sidebar');
+        menuToggle.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>`;
+        header.insertBefore(menuToggle, header.firstElementChild);
+
+        const titleBlock = header.querySelector('div') || header.firstElementChild;
         const title = titleBlock && titleBlock.firstElementChild;
         const subtitle = titleBlock && titleBlock.children[1];
         const placeButton = root.createElement('button');
@@ -1141,8 +1192,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         historyButton.type = 'button';
         historyButton.className = 'chat-history-open';
         historyButton.dataset.chatHistoryOpen = 'true';
-        historyButton.textContent = 'History · 14';
-        historyButton.setAttribute('aria-label', 'Open saved conversation history');
+        historyButton.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><span>History · 14</span>`;
+        historyButton.setAttribute('aria-label', 'Open saved conversation history menu');
         header.insertBefore(historyButton, header.lastElementChild);
 
         const main = root.querySelector('main');
@@ -1165,27 +1216,127 @@ document.addEventListener('DOMContentLoaded', async function() {
         const backdrop = root.createElement('div');
         backdrop.className = 'chat-history-backdrop';
         backdrop.innerHTML = `
-          <section class="chat-history-panel" role="dialog" aria-modal="true" aria-label="Saved conversations">
-            <div class="chat-history-head"><div><h2>Saved conversations</h2><p>Search by place, date, or message</p></div><button type="button" class="chat-history-close" aria-label="Close history">×</button></div>
-            <label class="chat-history-search"><span aria-hidden="true">⌕</span><input type="search" placeholder="Search conversations" aria-label="Search conversations"></label>
-            <div class="chat-history-filters" role="group" aria-label="Filter conversations"><button type="button" class="active" data-chat-filter="all">All</button><button type="button" data-chat-filter="pharmacy">Pharmacy</button><button type="button" data-chat-filter="doctor">Doctor</button><button type="button" data-chat-filter="bank">Bank</button><button type="button" data-chat-filter="transport">Transport</button><button type="button" data-chat-filter="other">Other</button></div>
-            <div class="chat-history-list">
-              <div class="chat-history-group" data-history-group="today">TODAY</div>
-              <article class="chat-history-card" data-category="pharmacy" data-group="today" data-title="Pharmacy" data-place="Kasr El Ainy Street · Cairo" data-date="Today" data-search="pharmacy kasr el ainy cairo headache medicine"><button type="button" class="chat-history-main" data-chat-conversation-index="0"><strong>Pharmacy</strong><small>⌖ Kasr El Ainy Street · Cairo</small><span dir="rtl">الدوا ده بعد الأكل، مرتين في اليوم</span></button><button type="button" class="chat-history-delete" aria-label="Delete Pharmacy conversation">×</button></article>
-              <div class="chat-history-group" data-history-group="yesterday">YESTERDAY</div>
-              <article class="chat-history-card" data-category="doctor" data-group="yesterday" data-title="Doctor visit" data-place="Dokki · Giza" data-date="Yesterday" data-search="doctor clinic dokki giza appointment"><button type="button" class="chat-history-main" data-chat-conversation-index="1"><strong>Doctor visit</strong><small>⌖ Dokki · Giza</small><span dir="rtl">أنا عايز أحجز كشف</span></button><button type="button" class="chat-history-delete" aria-label="Delete Doctor visit conversation">×</button></article>
-              <div class="chat-history-group" data-history-group="earlier">EARLIER</div>
-              <article class="chat-history-card" data-category="bank" data-group="earlier" data-title="Bank" data-place="Nasr City · Cairo" data-date="14 Oct" data-search="bank nasr city cairo card"><button type="button" class="chat-history-main" data-chat-conversation-index="2"><strong>Bank</strong><small>⌖ Nasr City · Cairo</small><span dir="rtl">محتاج أفتح حساب جديد</span></button><button type="button" class="chat-history-delete" aria-label="Delete Bank conversation">×</button></article>
-              <article class="chat-history-card" data-category="transport" data-group="earlier" data-title="Minibus" data-place="Ramses Square · Cairo" data-date="12 Oct" data-search="transport minibus ramses cairo stop"><button type="button" class="chat-history-main" data-chat-conversation-index="3"><strong>Minibus</strong><small>⌖ Ramses Square · Cairo</small><span dir="rtl">لو سمحت نزلني هنا</span></button><button type="button" class="chat-history-delete" aria-label="Delete Minibus conversation">×</button></article>
+          <aside class="chat-history-panel" role="dialog" aria-modal="true" aria-label="Conversation history">
+            <div class="chat-sidebar-head">
+              <div class="chat-sidebar-brand">
+                <button type="button" class="chat-history-close" aria-label="Close menu">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                <div class="chat-sidebar-title-group">
+                  <span class="chat-sidebar-logo">✦</span>
+                  <strong>Gemini Chat</strong>
+                </div>
+              </div>
+              <span class="chat-sidebar-badge">On-device</span>
             </div>
-            <div class="chat-history-tools"><button type="button" data-chat-action="new">+ New chat</button><button type="button" data-chat-action="place">Edit context</button><button type="button" data-chat-action="signs">Reply as signs</button><button type="button" data-chat-action="export">Export</button></div>
-            <p class="chat-history-toast" role="status" aria-live="polite"></p>
-            <p class="chat-history-note">With permission, Sout uses location to suggest a visible context. Only the chosen category is sent for inference; precise location stays on this phone.</p>
-          </section>`;
+
+            <button type="button" class="chat-new-btn" data-chat-action="new">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>New chat</span>
+              <span class="chat-new-sparkle">✦</span>
+            </button>
+
+            <div class="chat-history-search">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="search" placeholder="Search chats..." aria-label="Search conversations">
+            </div>
+
+            <div class="chat-history-filters" role="group" aria-label="Filter conversations">
+              <button type="button" class="active" data-chat-filter="all">All</button>
+              <button type="button" data-chat-filter="pharmacy">Pharmacy</button>
+              <button type="button" data-chat-filter="doctor">Clinic</button>
+              <button type="button" data-chat-filter="bank">Bank</button>
+              <button type="button" data-chat-filter="transport">Transit</button>
+              <button type="button" data-chat-filter="other">Other</button>
+            </div>
+
+            <div class="chat-history-list">
+              <div class="chat-history-group" data-history-group="today">RECENT</div>
+              <article class="chat-history-card" data-category="pharmacy" data-group="today" data-title="Pharmacy" data-place="Kasr El Ainy Street · Cairo" data-date="Today" data-search="pharmacy kasr el ainy cairo headache medicine">
+                <button type="button" class="chat-history-main" data-chat-conversation-index="0">
+                  <span class="chat-item-icon">💬</span>
+                  <div class="chat-item-text">
+                    <strong>Pharmacy</strong>
+                    <small>⌖ Kasr El Ainy · Cairo</small>
+                    <span dir="rtl">الدوا ده بعد الأكل، مرتين في اليوم</span>
+                  </div>
+                </button>
+                <button type="button" class="chat-history-delete" aria-label="Delete Pharmacy conversation" title="Delete conversation">×</button>
+              </article>
+
+              <div class="chat-history-group" data-history-group="yesterday">YESTERDAY</div>
+              <article class="chat-history-card" data-category="doctor" data-group="yesterday" data-title="Doctor visit" data-place="Dokki · Giza" data-date="Yesterday" data-search="doctor clinic dokki giza appointment">
+                <button type="button" class="chat-history-main" data-chat-conversation-index="1">
+                  <span class="chat-item-icon">💬</span>
+                  <div class="chat-item-text">
+                    <strong>Doctor visit</strong>
+                    <small>⌖ Dokki · Giza</small>
+                    <span dir="rtl">أنا عايز أحجز كشف</span>
+                  </div>
+                </button>
+                <button type="button" class="chat-history-delete" aria-label="Delete Doctor visit conversation" title="Delete conversation">×</button>
+              </article>
+
+              <div class="chat-history-group" data-history-group="earlier">PREVIOUS 7 DAYS</div>
+              <article class="chat-history-card" data-category="bank" data-group="earlier" data-title="Bank" data-place="Nasr City · Cairo" data-date="14 Oct" data-search="bank nasr city cairo card">
+                <button type="button" class="chat-history-main" data-chat-conversation-index="2">
+                  <span class="chat-item-icon">💬</span>
+                  <div class="chat-item-text">
+                    <strong>Bank</strong>
+                    <small>⌖ Nasr City · Cairo</small>
+                    <span dir="rtl">محتاج أفتح حساب جديد</span>
+                  </div>
+                </button>
+                <button type="button" class="chat-history-delete" aria-label="Delete Bank conversation" title="Delete conversation">×</button>
+              </article>
+
+              <article class="chat-history-card" data-category="transport" data-group="earlier" data-title="Minibus" data-place="Ramses Square · Cairo" data-date="12 Oct" data-search="transport minibus ramses cairo stop">
+                <button type="button" class="chat-history-main" data-chat-conversation-index="3">
+                  <span class="chat-item-icon">💬</span>
+                  <div class="chat-item-text">
+                    <strong>Minibus</strong>
+                    <small>⌖ Ramses Square · Cairo</small>
+                    <span dir="rtl">لو سمحت نزلني هنا</span>
+                  </div>
+                </button>
+                <button type="button" class="chat-history-delete" aria-label="Delete Minibus conversation" title="Delete conversation">×</button>
+              </article>
+            </div>
+
+            <div class="chat-sidebar-footer">
+              <div class="chat-sidebar-tools">
+                <button type="button" data-chat-action="place" class="chat-tool-btn">
+                  <span class="chat-tool-icon">◎</span>
+                  <span>Edit context</span>
+                </button>
+                <button type="button" data-chat-action="signs" class="chat-tool-btn">
+                  <span class="chat-tool-icon">👋</span>
+                  <span>Reply signs</span>
+                </button>
+                <button type="button" data-chat-action="settings" class="chat-tool-btn">
+                  <span class="chat-tool-icon">⚙</span>
+                  <span>Settings</span>
+                </button>
+                <button type="button" data-chat-action="export" class="chat-tool-btn">
+                  <span class="chat-tool-icon">⤓</span>
+                  <span>Export</span>
+                </button>
+              </div>
+              <p class="chat-history-toast" role="status" aria-live="polite"></p>
+              <p class="chat-sidebar-note">🔒 Saved on phone only · Private local inference</p>
+            </div>
+          </aside>`;
         root.body.appendChild(backdrop);
 
-        const closeHistory = () => backdrop.classList.remove('open');
-        historyButton.addEventListener('click', () => backdrop.classList.add('open'));
+        const openHistory = () => {
+          backdrop.classList.add('open');
+        };
+        const closeHistory = () => {
+          backdrop.classList.remove('open');
+        };
+
+        menuToggle.addEventListener('click', openHistory);
+        historyButton.addEventListener('click', openHistory);
         backdrop.querySelector('.chat-history-close').addEventListener('click', closeHistory);
         backdrop.addEventListener('click', event => { if (event.target === backdrop) closeHistory(); });
 
@@ -1228,7 +1379,7 @@ document.addEventListener('DOMContentLoaded', async function() {
           activeConversationIndex = availableIndexes.includes(requestedIndex) ? requestedIndex : availableIndexes[0];
           const conversation = conversations[activeConversationIndex];
           const liveHeader = root.querySelector('header');
-          const liveTitleBlock = liveHeader && liveHeader.firstElementChild;
+          const liveTitleBlock = liveHeader && (liveHeader.querySelector('div') || liveHeader.children[1] || liveHeader.firstElementChild);
           const liveTitle = liveTitleBlock && liveTitleBlock.firstElementChild;
           const liveSubtitle = liveTitleBlock && liveTitleBlock.children[1];
           const livePlaceButton = root.querySelector('.chat-place');
@@ -1263,7 +1414,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         sessionNav.querySelector('.chat-session-next').addEventListener('click', () => moveConversation(1));
         root.defaultView.__soutMoveConversation = moveConversation;
         root.defaultView.__soutRenderConversation = renderConversation;
-        root.defaultView.__soutOpenChatHistory = () => root.querySelector('.chat-history-backdrop')?.classList.add('open');
+        root.defaultView.__soutOpenChatHistory = openHistory;
 
         cards.forEach((card, index) => {
           card.querySelector('.chat-history-main').dataset.chatConversationIndex = String(index);
@@ -1272,7 +1423,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             closeHistory();
           });
           card.querySelector('.chat-history-delete').addEventListener('click', () => {
-            const deletingCurrent = conversations[activeConversationIndex].card === card;
+            const deletingCurrent = conversations[activeConversationIndex] && conversations[activeConversationIndex].card === card;
             card.remove();
             filterHistory();
             if (deletingCurrent) moveConversation(1);
@@ -1301,12 +1452,22 @@ document.addEventListener('DOMContentLoaded', async function() {
           if (subtitle) subtitle.textContent = 'Not saved yet';
           activeContext = 'other';
           placeButton.textContent = '◎ Detecting place context…';
+          liveCards = Array.from(root.querySelectorAll('.chat-history-card'));
+          liveCards.forEach(c => c.classList.remove('selected'));
+          backdrop.querySelector('.chat-history-toast').textContent = 'New chat ready.';
           closeHistory();
         });
         backdrop.querySelector('[data-chat-action="export"]').addEventListener('click', () => {
           backdrop.querySelector('.chat-history-toast').textContent = 'Private conversation export prepared in the full app.';
         });
-        backdrop.querySelector('[data-chat-action="signs"]').addEventListener('click', () => showScreen(19));
+        backdrop.querySelector('[data-chat-action="settings"]')?.addEventListener('click', () => {
+          closeHistory();
+          showScreen(15);
+        });
+        backdrop.querySelector('[data-chat-action="signs"]').addEventListener('click', () => {
+          closeHistory();
+          showScreen(19);
+        });
       }
 
       function enhanceBundledNavigation(root) {
@@ -1918,7 +2079,14 @@ document.addEventListener('DOMContentLoaded', async function() {
         button.classList.add('selected');
       }));
       document.querySelectorAll('[data-open-screen]').forEach(button => button.addEventListener('click', () => {
-        showScreen(button.dataset.openScreen);
+        const targetScreen = button.dataset.openScreen;
+        showScreen(targetScreen);
+        if (targetScreen === '5') {
+          setTimeout(() => {
+            const frame = findScreen(5)?.querySelector('iframe');
+            frame?.contentWindow?.__soutOpenChatHistory?.();
+          }, 150);
+        }
       }));
 
       const dictionaryBoard = findScreen(17);
