@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1040" viewBox="0 0 1800 1040">
+<rect width="1800" height="1040" fill="#F6F8F9"/>
+<rect x="70" y="170" width="305" height="230" rx="18" fill="#DDF1F2" stroke="#0B7A83" stroke-width="3"/>
+<rect x="455" y="170" width="450" height="230" rx="18" fill="#EAF7F7" stroke="#0B7A83" stroke-width="3"/>
+<rect x="985" y="170" width="370" height="230" rx="18" fill="#FFFFFF" stroke="#2A4559" stroke-width="3"/>
+<rect x="1435" y="170" width="300" height="230" rx="18" fill="#FFFFFF" stroke="#2A4559" stroke-width="3"/>
+<rect x="70" y="465" width="505" height="240" rx="18" fill="#FFFFFF" stroke="#0B7A83" stroke-width="2"/>
+<rect x="635" y="465" width="545" height="240" rx="18" fill="#FFFFFF" stroke="#0B7A83" stroke-width="2"/>
+<rect x="1240" y="465" width="495" height="240" rx="18" fill="#FFF1D6" stroke="#B26A00" stroke-width="2"/>
+<rect x="70" y="760" width="805" height="195" rx="18" fill="#FFFFFF" stroke="#2A4559" stroke-width="2"/>
+<rect x="935" y="760" width="800" height="195" rx="18" fill="#FFF3F0" stroke="#C8381F" stroke-width="2"/>
+<defs><marker id="arrow-1" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10" fill="none" stroke="#0B7A83" stroke-width="2"/></marker></defs>
+<path d="M375 285 L455 285" fill="none" stroke="#0B7A83" stroke-width="3" stroke-linecap="round" marker-start="url(#arrow-1)" marker-end="url(#arrow-1)"/>
+<defs><marker id="arrow-2" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10" fill="none" stroke="#0B7A83" stroke-width="2"/></marker></defs>
+<path d="M905 285 L985 285" fill="none" stroke="#0B7A83" stroke-width="3" stroke-linecap="round" marker-start="url(#arrow-2)" marker-end="url(#arrow-2)"/>
+<defs><marker id="arrow-3" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10" fill="none" stroke="#B26A00" stroke-width="2"/></marker></defs>
+<path d="M1355 285 L1435 285" fill="none" stroke="#B26A00" stroke-width="3" stroke-linecap="round" marker-start="url(#arrow-3)"/>
+<defs><marker id="arrow-4" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10" fill="none" stroke="#0B7A83" stroke-width="2"/></marker></defs>
+<path d="M215 400 L215 465" fill="none" stroke="#0B7A83" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-4)"/>
+<defs><marker id="arrow-5" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10" fill="none" stroke="#0B7A83" stroke-width="2"/></marker></defs>
+<path d="M710 400 L710 465" fill="none" stroke="#0B7A83" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-5)"/>
+<defs><marker id="arrow-6" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10" fill="none" stroke="#B26A00" stroke-width="2"/></marker></defs>
+<path d="M1580 400 L1580 465" fill="none" stroke="#B26A00" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-6)"/>
+<text x="70" y="76" fill="#10212F" font-size="38" font-family="Comic Sans MS, Segoe UI, sans-serif" font-weight="700"><tspan x="70" dy="0">SOUT  /  Interfaces between systems</tspan></text>
+<text x="70" y="117" fill="#5B6B78" font-size="21" font-family="Comic Sans MS, Segoe UI, sans-serif" font-weight="700"><tspan x="70" dy="0">Contract map  •  documented exchanges and decisions to freeze</tspan></text>
+<text x="95" y="220" fill="#0B7A83" font-size="25" font-family="Comic Sans MS, Segoe UI, sans-serif" font-weight="700"><tspan x="95" dy="0">EMG ARMBAND</tspan></text>
+<text x="95" y="261" fill="#10212F" font-size="19" font-family="Comic Sans MS, Segoe UI, sans-serif"><tspan x="95" dy="0">8-channel EMG stream</tspan><tspan x="95" dy="23.75">Battery + contact status</tspan><tspan x="95" dy="23.75">Pair / reconnect</tspan></text>
+<text x="480" y="220" fill="#0B7A83" font-size="25" font-family="Comic Sans MS, Segoe UI, sans-serif" font-weight="700"><tspan x="480" dy="0">SOUT PHONE APP</tspan></text>
+<text x="480" y="261" fill="#10212F" font-size="19" font-family="Comic Sans MS, Segoe UI, sans-serif"><tspan x="480" dy="0">BLE + time-stamping</tspan><tspan x="480" dy="23.75">Preprocess + calibration</tspan><tspan x="480" dy="23.75">Mode selection + local fallback</tspan></text>
+<text x="1010" y="220" fill="#2A4559" font-size="25" font-family="Comic Sans MS, Segoe UI, sans-serif" font-weight="700"><tspan x="1010" dy="0">BACKEND</tspan></text>
+<text x="1010" y="261" fill="#10212F" font-size="19" font-family="Comic Sans MS, Segoe UI, sans-serif"><tspan x="1010" dy="0">HTTPS inference APIs</tspan><tspan x="1010" dy="23.75">Artifact hosting</tspan><tspan x="1010" dy="23.75">Latency / error monitoring</tspan></text>
+<text x="1460" y="220" fill="#2A4559" font-size="25" font-family="Comic Sans MS, Segoe UI, sans-serif" font-weight="700"><tspan x="1460" dy="0">AI TEAM</tspan></text>
+<text x="1460" y="261" fill="#10212F" font-size="19" font-family="Comic Sans MS, Segoe UI, sans-serif"><tspan x="1460" dy="0">Large sign model</tspan><tspan x="1460" dy="23.75">Small phone model</tspan><tspan x="1460" dy="23.75">Evaluated versions</tspan></text>
+<text x="85" y="430" fill="#0B7A83" font-size="18" font-family="Comic Sans MS, Segoe UI, sans-serif"><tspan x="85" dy="0">BLE  ·  device stream</tspan></text>
+<text x="780" y="430" fill="#0B7A83" font-size="18" font-family="Comic Sans MS, Segoe UI, sans-serif"><tspan x="780" dy="0">HTTPS  ·  inference</tspan></text>
+<text x="1400" y="430" fill="#8A5600" font-size="18" font-family="Comic Sans MS, Segoe UI, sans-serif"><tspan x="1400" dy="0">Validated artifacts</tspan></text>
+<text x="95" y="511" fill="#0B7A83" font-size="24" font-family="Comic Sans MS, Segoe UI, sans-serif" font-weight="700"><tspan x="95" dy="0">I1  /  BAND ↔ MOBILE</tspan></text>
+<text x="95" y="548" fill="#10212F" font-size="18" font-family="Comic Sans MS, Segoe UI, sans-serif"><tspan x="95" dy="0">Payload: EMG samples, timestamps,</tspan><tspan x="95" dy="22.5">battery and per-channel contact quality.</tspan><tspan x="95" dy="22.5">Phone handles pairing and reconnect.</tspan></text>
+<text x="95" y="658" fill="#8A5600" font-size="17" font-family="Comic Sans MS, Segoe UI, sans-serif"><tspan x="95" dy="0">TBD: sample rate, channel order,</tspan><tspan x="95" dy="21.25">scaling and IMU availability.</tspan></text>
+<text x="660" y="511" fill="#0B7A83" font-size="24" font-family="Comic Sans MS, Segoe UI, sans-serif" font-weight="700"><tspan x="660" dy="0">I2  /  MOBILE ↔ BACKEND</tspan></text>
+<text x="660" y="548" fill="#10212F" font-size="18" font-family="Comic Sans MS, Segoe UI, sans-serif"><tspan x="660" dy="0">Sign: processed whole sentence + calibration</tspan><tspan x="660" dy="22.5">→ Egyptian Arabic text + optional confidence.</tspan><tspan x="660" dy="22.5">Speech: audio → Arabic text + quality.</tspan></text>
+<text x="660" y="658" fill="#8A5600" font-size="17" font-family="Comic Sans MS, Segoe UI, sans-serif"><tspan x="660" dy="0">Drop/failure: show mode change;</tspan><tspan x="660" dy="21.25">fall back locally when capable.</tspan></text>
+<text x="1265" y="511" fill="#8A5600" font-size="24" font-family="Comic Sans MS, Segoe UI, sans-serif" font-weight="700"><tspan x="1265" dy="0">I3  /  MODEL DELIVERY</tspan></text>
+<text x="1265" y="548" fill="#10212F" font-size="18" font-family="Comic Sans MS, Segoe UI, sans-serif"><tspan x="1265" dy="0">AI → backend → phone:</tspan><tspan x="1265" dy="22.5">versioned small model, phrase list,</tspan><tspan x="1265" dy="22.5">checksum + minimum device capability.</tspan></text>
+<text x="1265" y="658" fill="#8A5600" font-size="17" font-family="Comic Sans MS, Segoe UI, sans-serif"><tspan x="1265" dy="0">TBD: artifact format and</tspan><tspan x="1265" dy="21.25">rollback metadata details.</tspan></text>
+<text x="95" y="808" fill="#2A4559" font-size="24" font-family="Comic Sans MS, Segoe UI, sans-serif" font-weight="700"><tspan x="95" dy="0">I4  /  PHONE ↔ OS  ·  LOCAL ONLY</tspan></text>
+<text x="95" y="849" fill="#10212F" font-size="19" font-family="Comic Sans MS, Segoe UI, sans-serif"><tspan x="95" dy="0">Microphone, local speech recognizer, Arabic TTS, SMS and GPS.</tspan><tspan x="95" dy="23.75">History, favorites, emergency and calibration check need no backend.</tspan></text>
+<text x="960" y="808" fill="#C8381F" font-size="24" font-family="Comic Sans MS, Segoe UI, sans-serif" font-weight="700"><tspan x="960" dy="0">PRIVACY + OPEN CONTRACTS</tspan></text>
+<text x="960" y="848" fill="#10212F" font-size="18" font-family="Comic Sans MS, Segoe UI, sans-serif"><tspan x="960" dy="0">Encrypt online EMG/audio; no raw retention without consent.</tspan><tspan x="960" dy="22.5">Freeze BLE schema, STT provider and phone capability threshold.</tspan><tspan x="960" dy="22.5">Login/auth service is not specified in the requirements.</tspan></text>
+</svg>

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1040" viewBox="0 0 1800 1040">
+<rect width="1800" height="1040" fill="#F6F8F9"/>
+<rect x="70" y="170" width="310" height="650" rx="18" fill="#EAF7F7" stroke="#0B7A83" stroke-width="3"/>
+<rect x="450" y="170" width="470" height="650" rx="18" fill="#FFFFFF" stroke="#0B7A83" stroke-width="3"/>
+<rect x="990" y="170" width="740" height="650" rx="18" fill="#FFFFFF" stroke="#2A4559" stroke-width="3"/>
+<rect x="95" y="250" width="260" height="235" rx="18" fill="#FFFFFF" stroke="#0B7A83" stroke-width="2"/>
+<rect x="95" y="560" width="260" height="205" rx="18" fill="#FFFFFF" stroke="#2A4559" stroke-width="2"/>
+<rect x="475" y="245" width="420" height="90" rx="18" fill="#DDF1F2" stroke="#0B7A83" stroke-width="2"/>
+<rect x="475" y="360" width="420" height="125" rx="18" fill="#FFFFFF" stroke="#0B7A83" stroke-width="2"/>
+<rect x="475" y="510" width="420" height="125" rx="18" fill="#FFFFFF" stroke="#0B7A83" stroke-width="2"/>
+<rect x="475" y="660" width="420" height="125" rx="18" fill="#FFF1D6" stroke="#B26A00" stroke-width="2"/>
+<rect x="1015" y="360" width="320" height="125" rx="18" fill="#F2F5F7" stroke="#2A4559" stroke-width="2"/>
+<rect x="1370" y="510" width="330" height="125" rx="18" fill="#F2F5F7" stroke="#2A4559" stroke-width="2"/>
+<rect x="1015" y="660" width="685" height="125" rx="18" fill="#FFF1D6" stroke="#B26A00" stroke-width="2"/>
+<rect x="70" y="865" width="1660" height="135" rx="18" fill="#F8FAFB" stroke="#CBD5DB" stroke-width="2" stroke-dasharray="9 8"/>
+<defs><marker id="arrow-1" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10" fill="none" stroke="#0B7A83" stroke-width="2"/></marker></defs>
+<path d="M380 430 L450 430" fill="none" stroke="#0B7A83" stroke-width="3" stroke-linecap="round" marker-start="url(#arrow-1)" marker-end="url(#arrow-1)"/>
+<defs><marker id="arrow-2" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10" fill="none" stroke="#0B7A83" stroke-width="2"/></marker></defs>
+<path d="M895 422 L1015 422" fill="none" stroke="#0B7A83" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-2)"/>
+<defs><marker id="arrow-3" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10" fill="none" stroke="#0B7A83" stroke-width="2"/></marker></defs>
+<path d="M895 572 L1370 572" fill="none" stroke="#0B7A83" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-3)"/>
+<defs><marker id="arrow-4" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10" fill="none" stroke="#B26A00" stroke-width="2"/></marker></defs>
+<path d="M895 722 L1015 722" fill="none" stroke="#B26A00" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-4)"/>
+<text x="70" y="76" fill="#10212F" font-size="38" font-family="Comic Sans MS, Segoe UI, sans-serif" font-weight="700"><tspan x="70" dy="0">SOUT  /  Backend API design</tspan></text>
+<text x="70" y="117" fill="#5B6B78" font-size="21" font-family="Comic Sans MS, Segoe UI, sans-serif" font-weight="700"><tspan x="70" dy="0">Logical API surface  •  exact routes and status codes not yet specified</tspan></text>
+<text x="95" y="220" fill="#0B7A83" font-size="25" font-family="Comic Sans MS, Segoe UI, sans-serif" font-weight="700"><tspan x="95" dy="0">ANDROID CLIENT</tspan></text>
+<text x="475" y="220" fill="#0B7A83" font-size="25" font-family="Comic Sans MS, Segoe UI, sans-serif" font-weight="700"><tspan x="475" dy="0">HTTPS API BOUNDARY</tspan></text>
+<text x="1015" y="220" fill="#2A4559" font-size="25" font-family="Comic Sans MS, Segoe UI, sans-serif" font-weight="700"><tspan x="1015" dy="0">BACKEND RUNTIME + ARTIFACTS</tspan></text>
+<text x="115" y="292" fill="#0B7A83" font-size="23" font-family="Comic Sans MS, Segoe UI, sans-serif" font-weight="700"><tspan x="115" dy="0">Online requests</tspan></text>
+<text x="115" y="330" fill="#10212F" font-size="18" font-family="Comic Sans MS, Segoe UI, sans-serif"><tspan x="115" dy="0">Processed EMG sentence</tspan><tspan x="115" dy="22.5">+ user calibration</tspan><tspan x="115" dy="22.5"></tspan><tspan x="115" dy="22.5">Captured reply audio</tspan><tspan x="115" dy="22.5"></tspan><tspan x="115" dy="22.5">Versioned model lookup</tspan></text>
+<text x="115" y="604" fill="#2A4559" font-size="23" font-family="Comic Sans MS, Segoe UI, sans-serif" font-weight="700"><tspan x="115" dy="0">Local-only paths</tspan></text>
+<text x="115" y="639" fill="#10212F" font-size="18" font-family="Comic Sans MS, Segoe UI, sans-serif"><tspan x="115" dy="0">Preview + Arabic TTS</tspan><tspan x="115" dy="22.5">History + favorites</tspan><tspan x="115" dy="22.5">Emergency SMS / GPS</tspan><tspan x="115" dy="22.5">Offline model inference</tspan></text>
+<text x="495" y="284" fill="#0B7A83" font-size="22" font-family="Comic Sans MS, Segoe UI, sans-serif" font-weight="700"><tspan x="495" dy="0">Entry guard + routing</tspan></text>
+<text x="495" y="314" fill="#5B6B78" font-size="16" font-family="Comic Sans MS, Segoe UI, sans-serif"><tspan x="495" dy="0">HTTPS • schema/size/version validation</tspan></text>
+<text x="495" y="399" fill="#0B7A83" font-size="22" font-family="Comic Sans MS, Segoe UI, sans-serif" font-weight="700"><tspan x="495" dy="0">Sign translation</tspan></text>
+<text x="495" y="428" fill="#10212F" font-size="17" font-family="Comic Sans MS, Segoe UI, sans-serif"><tspan x="495" dy="0">In: processed sentence + calibration</tspan><tspan x="495" dy="21.25">Out: Arabic text + optional confidence</tspan></text>
+<text x="495" y="549" fill="#0B7A83" font-size="22" font-family="Comic Sans MS, Segoe UI, sans-serif" font-weight="700"><tspan x="495" dy="0">Speech-to-text  ·  F5</tspan></text>
+<text x="495" y="578" fill="#10212F" font-size="17" font-family="Comic Sans MS, Segoe UI, sans-serif"><tspan x="495" dy="0">In: captured audio</tspan><tspan x="495" dy="21.25">Out: Arabic text + quality indication</tspan></text>
+<text x="495" y="699" fill="#8A5600" font-size="22" font-family="Comic Sans MS, Segoe UI, sans-serif" font-weight="700"><tspan x="495" dy="0">Model artifact delivery</tspan></text>
+<text x="495" y="728" fill="#10212F" font-size="17" font-family="Comic Sans MS, Segoe UI, sans-serif"><tspan x="495" dy="0">Versioned download + phrase list</tspan><tspan x="495" dy="21.25">checksum / min capability / rollback</tspan></text>
+<text x="1035" y="399" fill="#2A4559" font-size="22" font-family="Comic Sans MS, Segoe UI, sans-serif" font-weight="700"><tspan x="1035" dy="0">Sign inference service</tspan></text>
+<text x="1035" y="432" fill="#5B6B78" font-size="17" font-family="Comic Sans MS, Segoe UI, sans-serif"><tspan x="1035" dy="0">Large server model</tspan><tspan x="1035" dy="21.25">whole-sentence inference</tspan></text>
+<text x="1390" y="549" fill="#2A4559" font-size="22" font-family="Comic Sans MS, Segoe UI, sans-serif" font-weight="700"><tspan x="1390" dy="0">Arabic STT service</tspan></text>
+<text x="1390" y="582" fill="#5B6B78" font-size="17" font-family="Comic Sans MS, Segoe UI, sans-serif"><tspan x="1390" dy="0">Hosted/proxied choice TBD</tspan><tspan x="1390" dy="21.25">model selected after testing</tspan></text>
+<text x="1035" y="699" fill="#8A5600" font-size="22" font-family="Comic Sans MS, Segoe UI, sans-serif" font-weight="700"><tspan x="1035" dy="0">Versioned artifact store</tspan></text>
+<text x="1035" y="731" fill="#5B6B78" font-size="17" font-family="Comic Sans MS, Segoe UI, sans-serif"><tspan x="1035" dy="0">AI publishes validated model versions;</tspan><tspan x="1035" dy="21.25">phone downloads and checks compatibility.</tspan></text>
+<text x="95" y="906" fill="#10212F" font-size="23" font-family="Comic Sans MS, Segoe UI, sans-serif" font-weight="700"><tspan x="95" dy="0">CROSS-CUTTING CONTRACT</tspan></text>
+<text x="95" y="941" fill="#5B6B78" font-size="18" font-family="Comic Sans MS, Segoe UI, sans-serif"><tspan x="95" dy="0">Return explicit failures so the phone can switch modes; log latency, errors and model version—not conversation content.</tspan><tspan x="95" dy="22.5">No server API for local history, favorites or emergency. Auth, feedback upload, exact paths/status codes and consent storage are TBD.</tspan></text>
+</svg>
