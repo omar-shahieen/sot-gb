@@ -1123,6 +1123,7 @@ document.addEventListener('DOMContentLoaded', async function() {
           .chat-history-list{flex:1;overflow-y:auto}.chat-history-group{margin:10px 0 6px;color:#5B6B78;font-size:10px;font-weight:800;letter-spacing:.8px}.chat-history-card{display:grid;grid-template-columns:1fr 34px;gap:8px;align-items:center;margin-bottom:8px;padding:12px;border:1px solid #DCE3E8;border-radius:15px;background:#FFFFFF}.chat-history-main{border:0;background:transparent;text-align:left;color:#10212F;cursor:pointer}.chat-history-main strong,.chat-history-main small,.chat-history-main span{display:block}.chat-history-main strong{font-size:14px}.chat-history-main small{margin-top:2px;color:#0B7A83;font-size:11px}.chat-history-main span{margin-top:6px;color:#5B6B78;font-size:12px}.chat-history-delete{width:34px;height:34px;border:0;border-radius:10px;background:#FCE9E5;color:#C8381F;cursor:pointer}.chat-history-card[hidden],.chat-history-group[hidden]{display:none}
           .chat-history-tools{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:10px}.chat-history-tools button{min-height:42px;border:1px solid #DCE3E8;border-radius:12px;background:#FFFFFF;color:#0B7A83;font:700 11px system-ui,sans-serif}.chat-history-tools button:first-child{border-color:#0B7A83;background:#0B7A83;color:#FFFFFF}.chat-history-note{margin:9px 0 0;text-align:center;color:#5B6B78;font-size:10px}
           .chat-history-toast{min-height:18px;margin:5px 0 0;text-align:center;color:#1E7B4A;font-size:11px;font-weight:600}
+          .chat-session-nav{display:grid;grid-template-columns:38px 1fr 38px;align-items:center;gap:8px;padding:8px 9px;border:1px solid #D7E4E6;border-radius:14px;background:#FFFFFF}.chat-session-nav button{width:38px;height:36px;border:1px solid #DCE3E8;border-radius:10px;background:#F7FAFA;color:#0B7A83;font-size:20px;cursor:pointer}.chat-session-position{text-align:center}.chat-session-position strong,.chat-session-position small{display:block}.chat-session-position strong{font-size:11px}.chat-session-position small{margin-top:2px;color:#6B7D84;font-size:8px}.chat-inline-rate{align-self:flex-end;display:inline-flex;align-items:center;gap:5px;min-height:30px;margin-top:4px;padding:0 9px;border:1px solid #9ED7DB;border-radius:10px;background:#EAF7F8;color:#0A4B52;font:750 9px system-ui,sans-serif;text-decoration:none}.chat-history-card.selected{border-color:#0B7A83;background:#F0FAFA;box-shadow:inset 3px 0 0 #0B7A83}
         `;
         root.head.appendChild(style);
 
@@ -1139,9 +1140,27 @@ document.addEventListener('DOMContentLoaded', async function() {
         const historyButton = root.createElement('button');
         historyButton.type = 'button';
         historyButton.className = 'chat-history-open';
+        historyButton.dataset.chatHistoryOpen = 'true';
         historyButton.textContent = 'History · 14';
         historyButton.setAttribute('aria-label', 'Open saved conversation history');
         header.insertBefore(historyButton, header.lastElementChild);
+
+        const main = root.querySelector('main');
+        const sessionNav = root.createElement('section');
+        sessionNav.className = 'chat-session-nav';
+        sessionNav.setAttribute('aria-label', 'Navigate saved conversations');
+        sessionNav.innerHTML = `<button type="button" class="chat-session-prev" data-chat-nav="prev" aria-label="Previous conversation">&#8249;</button><div class="chat-session-position"><strong>Pharmacy</strong><small>1 of 4 saved chats</small></div><button type="button" class="chat-session-next" data-chat-nav="next" aria-label="Next conversation">&#8250;</button>`;
+        if (main) main.insertBefore(sessionNav, main.firstChild);
+
+        const outgoingMessages = main ? Array.from(main.children).filter(item => item.style.alignSelf === 'flex-end') : [];
+        const latestOutgoing = outgoingMessages[outgoingMessages.length - 1];
+        if (latestOutgoing) {
+          const inlineRate = root.createElement('a');
+          inlineRate.href = 'Feedback.dc.html';
+          inlineRate.className = 'chat-inline-rate';
+          inlineRate.textContent = '☆ Rate this translation';
+          latestOutgoing.appendChild(inlineRate);
+        }
 
         const backdrop = root.createElement('div');
         backdrop.className = 'chat-history-backdrop';
@@ -1152,12 +1171,12 @@ document.addEventListener('DOMContentLoaded', async function() {
             <div class="chat-history-filters" role="group" aria-label="Filter conversations"><button type="button" class="active" data-chat-filter="all">All</button><button type="button" data-chat-filter="pharmacy">Pharmacy</button><button type="button" data-chat-filter="doctor">Doctor</button><button type="button" data-chat-filter="bank">Bank</button><button type="button" data-chat-filter="transport">Transport</button><button type="button" data-chat-filter="other">Other</button></div>
             <div class="chat-history-list">
               <div class="chat-history-group" data-history-group="today">TODAY</div>
-              <article class="chat-history-card" data-category="pharmacy" data-group="today" data-title="Pharmacy" data-place="Kasr El Ainy Street · Cairo" data-date="Today" data-search="pharmacy kasr el ainy cairo headache medicine"><button type="button" class="chat-history-main"><strong>Pharmacy</strong><small>⌖ Kasr El Ainy Street · Cairo</small><span dir="rtl">الدوا ده بعد الأكل، مرتين في اليوم</span></button><button type="button" class="chat-history-delete" aria-label="Delete Pharmacy conversation">×</button></article>
+              <article class="chat-history-card" data-category="pharmacy" data-group="today" data-title="Pharmacy" data-place="Kasr El Ainy Street · Cairo" data-date="Today" data-search="pharmacy kasr el ainy cairo headache medicine"><button type="button" class="chat-history-main" data-chat-conversation-index="0"><strong>Pharmacy</strong><small>⌖ Kasr El Ainy Street · Cairo</small><span dir="rtl">الدوا ده بعد الأكل، مرتين في اليوم</span></button><button type="button" class="chat-history-delete" aria-label="Delete Pharmacy conversation">×</button></article>
               <div class="chat-history-group" data-history-group="yesterday">YESTERDAY</div>
-              <article class="chat-history-card" data-category="doctor" data-group="yesterday" data-title="Doctor visit" data-place="Dokki · Giza" data-date="Yesterday" data-search="doctor clinic dokki giza appointment"><button type="button" class="chat-history-main"><strong>Doctor visit</strong><small>⌖ Dokki · Giza</small><span dir="rtl">أنا عايز أحجز كشف</span></button><button type="button" class="chat-history-delete" aria-label="Delete Doctor visit conversation">×</button></article>
+              <article class="chat-history-card" data-category="doctor" data-group="yesterday" data-title="Doctor visit" data-place="Dokki · Giza" data-date="Yesterday" data-search="doctor clinic dokki giza appointment"><button type="button" class="chat-history-main" data-chat-conversation-index="1"><strong>Doctor visit</strong><small>⌖ Dokki · Giza</small><span dir="rtl">أنا عايز أحجز كشف</span></button><button type="button" class="chat-history-delete" aria-label="Delete Doctor visit conversation">×</button></article>
               <div class="chat-history-group" data-history-group="earlier">EARLIER</div>
-              <article class="chat-history-card" data-category="bank" data-group="earlier" data-title="Bank" data-place="Nasr City · Cairo" data-date="14 Oct" data-search="bank nasr city cairo card"><button type="button" class="chat-history-main"><strong>Bank</strong><small>⌖ Nasr City · Cairo</small><span dir="rtl">محتاج أفتح حساب جديد</span></button><button type="button" class="chat-history-delete" aria-label="Delete Bank conversation">×</button></article>
-              <article class="chat-history-card" data-category="transport" data-group="earlier" data-title="Minibus" data-place="Ramses Square · Cairo" data-date="12 Oct" data-search="transport minibus ramses cairo stop"><button type="button" class="chat-history-main"><strong>Minibus</strong><small>⌖ Ramses Square · Cairo</small><span dir="rtl">لو سمحت نزلني هنا</span></button><button type="button" class="chat-history-delete" aria-label="Delete Minibus conversation">×</button></article>
+              <article class="chat-history-card" data-category="bank" data-group="earlier" data-title="Bank" data-place="Nasr City · Cairo" data-date="14 Oct" data-search="bank nasr city cairo card"><button type="button" class="chat-history-main" data-chat-conversation-index="2"><strong>Bank</strong><small>⌖ Nasr City · Cairo</small><span dir="rtl">محتاج أفتح حساب جديد</span></button><button type="button" class="chat-history-delete" aria-label="Delete Bank conversation">×</button></article>
+              <article class="chat-history-card" data-category="transport" data-group="earlier" data-title="Minibus" data-place="Ramses Square · Cairo" data-date="12 Oct" data-search="transport minibus ramses cairo stop"><button type="button" class="chat-history-main" data-chat-conversation-index="3"><strong>Minibus</strong><small>⌖ Ramses Square · Cairo</small><span dir="rtl">لو سمحت نزلني هنا</span></button><button type="button" class="chat-history-delete" aria-label="Delete Minibus conversation">×</button></article>
             </div>
             <div class="chat-history-tools"><button type="button" data-chat-action="new">+ New chat</button><button type="button" data-chat-action="place">Edit context</button><button type="button" data-chat-action="signs">Reply as signs</button><button type="button" data-chat-action="export">Export</button></div>
             <p class="chat-history-toast" role="status" aria-live="polite"></p>
@@ -1192,20 +1211,75 @@ document.addEventListener('DOMContentLoaded', async function() {
         }));
         const contextNames = { pharmacy: 'Pharmacy', doctor: 'Clinic', bank: 'Bank', transport: 'Transport', other: 'Other' };
         let activeContext = 'pharmacy';
-        cards.forEach(card => {
+        const messageRows = main ? Array.from(main.children).filter(item => item.querySelector && item.querySelector('[lang="ar"], [dir="rtl"]')) : [];
+        const conversations = [
+          { title: 'Pharmacy', category: 'pharmacy', date: 'Today', place: 'Kasr El Ainy Street · Cairo', messages: [['ممكن دوا للصداع؟','You signed · spoken 12:38'],['الوجع بقاله قد إيه؟','Heard · 12:39'],['عندي صداع من يومين','You signed · spoken 12:40'],['الدوا ده بعد الأكل، مرتين في اليوم','Heard · 12:41']] },
+          { title: 'Doctor visit', category: 'doctor', date: 'Yesterday', place: 'Dokki · Giza', messages: [['أنا عايز أحجز كشف','You signed · spoken 10:14'],['الكشف بكرة الساعة عشرة','Heard · 10:15'],['تمام، شكراً','You signed · spoken 10:15'],['من فضلك هات البطاقة','Heard · 10:16']] },
+          { title: 'Bank', category: 'bank', date: '14 Oct', place: 'Nasr City · Cairo', messages: [['محتاج أفتح حساب جديد','You signed · spoken 14:02'],['معاك بطاقة الرقم القومي؟','Heard · 14:03'],['أيوه، معايا','You signed · spoken 14:03'],['اتفضل املى الاستمارة دي','Heard · 14:04']] },
+          { title: 'Minibus', category: 'transport', date: '12 Oct', place: 'Ramses Square · Cairo', messages: [['لو سمحت نزلني هنا','You signed · spoken 18:20'],['حاضر، المحطة الجاية','Heard · 18:20'],['شكراً','You signed · spoken 18:21'],['العفو','Heard · 18:21']] }
+        ];
+        let activeConversationIndex = 0;
+
+        const renderConversation = index => {
+          const liveCards = Array.from(root.querySelectorAll('.chat-history-card'));
+          const availableIndexes = liveCards.map(card => Number(card.querySelector('[data-chat-conversation-index]')?.dataset.chatConversationIndex)).filter(item => Number.isInteger(item) && conversations[item]);
+          if (!availableIndexes.length) return;
+          const requestedIndex = Number(index);
+          activeConversationIndex = availableIndexes.includes(requestedIndex) ? requestedIndex : availableIndexes[0];
+          const conversation = conversations[activeConversationIndex];
+          const liveHeader = root.querySelector('header');
+          const liveTitleBlock = liveHeader && liveHeader.firstElementChild;
+          const liveTitle = liveTitleBlock && liveTitleBlock.firstElementChild;
+          const liveSubtitle = liveTitleBlock && liveTitleBlock.children[1];
+          const livePlaceButton = root.querySelector('.chat-place');
+          const liveMessageRows = Array.from(root.querySelectorAll('main > *')).filter(item => item.querySelector && item.querySelector('[lang="ar"], [dir="rtl"]'));
+          const liveSessionNav = root.querySelector('.chat-session-nav');
+          if (liveTitle) liveTitle.textContent = conversation.title;
+          if (liveSubtitle) liveSubtitle.textContent = `${conversation.date} · saved on this phone only`;
+          activeContext = conversation.category;
+          if (livePlaceButton) livePlaceButton.textContent = `◎ ${contextNames[activeContext]} context · ${conversation.place}`;
+          liveMessageRows.forEach((row, messageIndex) => {
+            const arabic = row.querySelector('[lang="ar"], [dir="rtl"]');
+            const meta = Array.from(row.children).find(child => child.tagName === 'SPAN');
+            const message = conversation.messages[messageIndex];
+            if (arabic && message) arabic.textContent = message[0];
+            if (meta && message) meta.textContent = message[1];
+          });
+          liveCards.forEach(card => card.classList.toggle('selected', Number(card.querySelector('[data-chat-conversation-index]')?.dataset.chatConversationIndex) === activeConversationIndex));
+          const availableIndex = availableIndexes.indexOf(activeConversationIndex);
+          if (liveSessionNav) {
+            liveSessionNav.querySelector('.chat-session-position strong').textContent = conversation.title;
+            liveSessionNav.querySelector('.chat-session-position small').textContent = `${availableIndex + 1} of ${availableIndexes.length} saved chats`;
+          }
+        };
+
+        const moveConversation = direction => {
+          const availableIndexes = Array.from(root.querySelectorAll('[data-chat-conversation-index]')).map(item => Number(item.dataset.chatConversationIndex)).filter((item, position, all) => Number.isInteger(item) && conversations[item] && all.indexOf(item) === position);
+          if (!availableIndexes.length) return;
+          const currentAvailableIndex = Math.max(0, availableIndexes.indexOf(activeConversationIndex));
+          renderConversation(availableIndexes[(currentAvailableIndex + direction + availableIndexes.length) % availableIndexes.length]);
+        };
+        sessionNav.querySelector('.chat-session-prev').addEventListener('click', () => moveConversation(-1));
+        sessionNav.querySelector('.chat-session-next').addEventListener('click', () => moveConversation(1));
+        root.defaultView.__soutMoveConversation = moveConversation;
+        root.defaultView.__soutRenderConversation = renderConversation;
+        root.defaultView.__soutOpenChatHistory = () => root.querySelector('.chat-history-backdrop')?.classList.add('open');
+
+        cards.forEach((card, index) => {
+          card.querySelector('.chat-history-main').dataset.chatConversationIndex = String(index);
           card.querySelector('.chat-history-main').addEventListener('click', () => {
-            if (title) title.textContent = card.dataset.title;
-            if (subtitle) subtitle.textContent = `${card.dataset.date} · saved on this phone only`;
-            activeContext = card.dataset.category;
-            placeButton.textContent = `◎ ${contextNames[activeContext]} context · ${card.dataset.place}`;
+            renderConversation(index);
             closeHistory();
           });
           card.querySelector('.chat-history-delete').addEventListener('click', () => {
+            const deletingCurrent = conversations[activeConversationIndex].card === card;
             card.remove();
             filterHistory();
+            if (deletingCurrent) moveConversation(1);
             backdrop.querySelector('.chat-history-toast').textContent = 'Conversation removed from this prototype.';
           });
         });
+        renderConversation(0);
         const editPlace = () => {
           const selected = root.defaultView.prompt('Context category: pharmacy, doctor, bank, transport, other, or off', activeContext);
           if (!selected) return;
@@ -1331,10 +1405,11 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (!root || root.body.dataset.signingState !== 'capture') return;
         root.body.dataset.stopSource = source;
         const processingCopy = root.querySelector('.unified-processing p');
+        const activeContext = root.querySelector('.unified-context-value')?.textContent.trim() || 'No context';
         if (processingCopy) {
           processingCopy.textContent = source === 'band'
-            ? 'Stop gesture received from the armband. Sout is combining the complete movement sequence with your Pharmacy context.'
-            : 'Phone stop received. Sout is combining the complete movement sequence with your Pharmacy context.';
+            ? `Stop gesture received from the armband. Sout is combining the complete movement sequence with ${activeContext === 'No context' ? 'no place context' : `your ${activeContext} context`}.`
+            : `Phone stop received. Sout is combining the complete movement sequence with ${activeContext === 'No context' ? 'no place context' : `your ${activeContext} context`}.`;
         }
         setUnifiedSigningState(root, 'processing');
         root.defaultView.setTimeout(() => {
@@ -1450,7 +1525,7 @@ document.addEventListener('DOMContentLoaded', async function() {
           .unified-title{text-align:center}.unified-title strong,.unified-title small{display:block}.unified-title strong{font-size:16px}.unified-title small{margin-top:2px;color:#58707A;font-size:10px;font-weight:750;letter-spacing:.08em;text-transform:uppercase}
           .unified-mode{display:flex;align-items:center;gap:6px;padding:8px 10px;border:1px solid #B8DECF;border-radius:999px;background:#F5FFFA;color:#176441;font-size:10px;font-weight:800}.unified-mode i{width:7px;height:7px;border-radius:50%;background:#20A765;box-shadow:0 0 0 4px rgba(32,167,101,.12)}
           .unified-content{flex:1;padding:8px 18px 24px}
-          .unified-context{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;border:1px solid #D7E4E6;border-radius:15px;background:rgba(255,255,255,.82);color:#49616B;font-size:11px}.unified-context strong{color:#0B7A83;font-size:12px}.unified-context span{display:flex;align-items:center;gap:7px}
+          .unified-context{width:100%;display:flex;align-items:center;justify-content:space-between;padding:11px 13px;border:1px solid #D7E4E6;border-radius:15px;background:rgba(255,255,255,.82);color:#49616B;font-size:11px;cursor:pointer}.unified-context strong{display:flex;align-items:center;gap:5px;color:#0B7A83;font-size:12px}.unified-context>span{display:flex;align-items:center;gap:7px}.unified-context em{padding:4px 7px;border-radius:999px;background:#E4F3E9;color:#1E7B4A;font-size:8px;font-style:normal;font-weight:800}
           .unified-mode-selector{margin-top:10px;padding:10px;border:1px solid #D7E4E6;border-radius:16px;background:#FFFFFF}.unified-mode-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.unified-mode-heading strong{font-size:11px}.unified-mode-heading small{color:#6B7D84;font-size:8px}.unified-mode-options{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.unified-mode-options button{min-height:42px;padding:5px;border:1px solid #D9E4E6;border-radius:12px;background:#F8FAFA;color:#5B7078;font-size:9px;font-weight:800;cursor:pointer}.unified-mode-options button span,.unified-mode-options button small{display:block}.unified-mode-options button span{font-size:11px}.unified-mode-options button small{margin-top:2px;font-size:7px;font-weight:600}.unified-mode-options button.selected{border-color:#0B7A83;background:#EAF7F8;color:#075E66;box-shadow:inset 0 0 0 1px #0B7A83}
           .unified-band-control{width:100%;display:flex;align-items:center;gap:11px;margin-top:10px;padding:11px 12px;border:1px solid #A8D8DC;border-radius:16px;background:#F0FBFB;color:#173C45;text-align:left;cursor:pointer}.unified-band-icon{position:relative;flex:none;width:38px;height:38px;display:grid;place-items:center;border-radius:13px;background:#0B7A83;color:#FFFFFF;font-size:18px}.unified-band-icon:after{content:"";position:absolute;inset:-4px;border:1px solid rgba(11,122,131,.3);border-radius:16px;animation:unified-band-ring 1.8s ease-out infinite}.unified-band-copy{min-width:0;flex:1}.unified-band-copy strong,.unified-band-copy small{display:block}.unified-band-copy strong{font-size:12px}.unified-band-copy small{margin-top:2px;color:#607B83;font-size:9px}.unified-band-control>em{font-style:normal;color:#0B7A83;font-size:10px;font-weight:800}
           .unified-stage{position:relative;margin-top:13px;padding:18px;border-radius:26px;background:#102F3B;color:#FFFFFF;box-shadow:0 18px 35px rgba(16,47,59,.17);overflow:hidden}.unified-stage:before{content:"";position:absolute;width:220px;height:220px;right:-90px;top:-100px;border-radius:50%;background:radial-gradient(circle,rgba(77,213,205,.23),transparent 68%)}
@@ -1484,7 +1559,7 @@ document.addEventListener('DOMContentLoaded', async function() {
               <span class="unified-mode"><i></i> Online</span>
             </header>
             <main class="unified-content">
-              <div class="unified-context"><span>&#9673; Context</span><strong>Pharmacy &#8250;</strong></div>
+              <button type="button" class="unified-context" data-sign-action="context"><span>&#9673; Context <em class="unified-context-source">Smart detected</em></span><strong><b class="unified-context-value">Pharmacy</b> &#8250;</strong></button>
               <section class="unified-mode-selector" aria-label="Speech confirmation mode"><div class="unified-mode-heading"><strong>After translation</strong><small>Change at any time</small></div><div class="unified-mode-options" role="group"><button type="button" class="selected" data-sign-mode="manual" aria-pressed="true"><span>Preview</span><small>Tap Speak now</small></button><button type="button" data-sign-mode="auto" aria-pressed="false"><span>Wait 3s</span><small>Preview, then speak</small></button><button type="button" data-sign-mode="instant" aria-pressed="false"><span>Instant</span><small>Speak immediately</small></button></div></section>
               <button type="button" class="unified-band-control" data-sign-action="band-gesture"><span class="unified-band-icon">&#8981;</span><span class="unified-band-copy"><strong>Armband gesture control</strong><small class="unified-band-state">Ready · make the gesture to stop</small></span><em>Simulate gesture</em></button>
               <section data-signing-panel="capture">
@@ -1502,7 +1577,7 @@ document.addEventListener('DOMContentLoaded', async function() {
               </section>
               <section data-signing-panel="confirm" hidden>
                 <div class="unified-result-head"><span class="unified-result-check">&#10003;</span><span><strong>Translation ready</strong><small>Review it before anything is spoken</small></span></div>
-                <article class="unified-result-card"><div class="unified-result-meta"><span>EGYPTIAN ARABIC</span><span class="unified-confidence">91% confidence</span></div><p lang="ar" dir="rtl">محتاج دواء للصداع لو سمحت</p><div class="unified-result-details"><span>Online model</span><span>&#8226;</span><b>Pharmacy context</b><span>&#8226;</span><span class="unified-stop-source">Stopped by band gesture</span></div></article>
+                <article class="unified-result-card"><div class="unified-result-meta"><span>EGYPTIAN ARABIC</span><span class="unified-confidence">91% confidence</span></div><p lang="ar" dir="rtl">محتاج دواء للصداع لو سمحت</p><div class="unified-result-details"><span>Online model</span><span>&#8226;</span><b class="unified-result-context">Pharmacy context</b><span>&#8226;</span><span class="unified-stop-source">Stopped by band gesture</span></div></article>
                 <div class="unified-confirm-note"><b>!</b><span>Check the sentence carefully. Choose <strong>Speak now</strong> only when it matches what you meant.</span></div>
                 <div class="unified-actions"><button type="button" class="unified-secondary" data-sign-action="again">Sign again</button><button type="button" class="unified-primary" data-sign-action="speak">&#9654; Speak now</button></div>
                 <button type="button" class="unified-edit" data-sign-action="edit">Edit translation</button>
@@ -1595,7 +1670,7 @@ document.addEventListener('DOMContentLoaded', async function() {
           2: { back: 1, 'continue to movements': 13, 'check again': 2 },
           3: { cancel: 1 },
           4: { speak: 5, 'sign again': 3 },
-          5: { sign: 3 },
+          5: { sign: 3, 'rate this translation': 21 },
           7: { cancel: 1, 'send now': 1 },
           8: { 'start signing': 3, phrases: 6, history: 5, emergency: 7, dictionary: 17 }
         };
@@ -1605,6 +1680,28 @@ document.addEventListener('DOMContentLoaded', async function() {
           return key ? routes[key] : null;
         };
         root.defaultView.addEventListener('click', event => {
+          const chatNavigation = event.target.closest && event.target.closest('[data-chat-nav]');
+          if (screenNumber === 5 && chatNavigation) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            root.defaultView.__soutMoveConversation?.(chatNavigation.dataset.chatNav === 'next' ? 1 : -1);
+            return;
+          }
+          const historyOpen = event.target.closest && event.target.closest('[data-chat-history-open]');
+          if (screenNumber === 5 && historyOpen) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            root.defaultView.__soutOpenChatHistory?.();
+            return;
+          }
+          const conversationChoice = event.target.closest && event.target.closest('[data-chat-conversation-index]');
+          if (screenNumber === 5 && conversationChoice) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            root.defaultView.__soutRenderConversation?.(Number(conversationChoice.dataset.chatConversationIndex));
+            root.querySelector('.chat-history-backdrop')?.classList.remove('open');
+            return;
+          }
           const signingMode = event.target.closest && event.target.closest('[data-sign-mode]');
           if (screenNumber === 3 && signingMode) {
             event.preventDefault();
@@ -1618,6 +1715,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             event.stopImmediatePropagation();
             const action = signingAction.dataset.signAction;
             if (action === 'cancel') showScreen(1);
+            if (action === 'context') {
+              findScreen(30).dataset.returnScreen = '3';
+              showScreen(30);
+            }
             if (action === 'band-gesture') triggerBandGesture();
             if (action === 'finish') beginUnifiedSigningProcessing(root, 'phone');
             if (action === 'again') setUnifiedSigningState(root, 'capture');
@@ -1653,6 +1754,7 @@ document.addEventListener('DOMContentLoaded', async function() {
           if (modeControl) {
             event.preventDefault();
             event.stopImmediatePropagation();
+            findScreen(30).dataset.returnScreen = '1';
             showScreen(30);
             return;
           }
@@ -1731,7 +1833,6 @@ document.addEventListener('DOMContentLoaded', async function() {
           if (!hasRenderedContent) return false;
           enhanceUnifiedSigning(frameDocument, Number(board.dataset.screenNumber));
           hideEnglishGlosses(frameDocument);
-          addModelFeedbackPrompt(frameDocument, Number(board.dataset.screenNumber));
           enhanceConversationPage(frameDocument, Number(board.dataset.screenNumber));
           enhanceBundledNavigation(frameDocument);
           enhanceTranslateHome(frameDocument, Number(board.dataset.screenNumber));
@@ -1970,26 +2071,67 @@ document.addEventListener('DOMContentLoaded', async function() {
       const contextToggle = contextBoard.querySelector('.context-toggle');
       const contextPlaceInput = contextBoard.querySelector('.context-place-input');
       const contextStatus = contextBoard.querySelector('.context-status');
+      const detectedContextValue = contextBoard.querySelector('.detected-context-value');
+      const detectedContextDetail = contextBoard.querySelector('.detected-context-detail');
+      const detectContextButton = contextBoard.querySelector('.detect-context');
       let selectedContext = 'Pharmacy';
-      contextBoard.querySelectorAll('[data-context]').forEach(button => button.addEventListener('click', () => {
-        selectedContext = button.dataset.context;
-        contextBoard.querySelectorAll('[data-context]').forEach(option => option.classList.toggle('selected', option === button));
-        const disabled = selectedContext === 'No context';
+      let contextSource = 'detected';
+
+      function selectContext(category, source) {
+        selectedContext = category;
+        contextSource = category === 'No context' ? 'off' : source;
+        contextBoard.querySelectorAll('[data-context]').forEach(option => option.classList.toggle('selected', option.dataset.context === category));
+        const disabled = category === 'No context';
         contextToggle.classList.toggle('on', !disabled);
         contextToggle.setAttribute('aria-checked', String(!disabled));
         contextPlaceInput.disabled = disabled;
-        contextStatus.textContent = disabled ? 'Translation will continue without location context.' : `${selectedContext} context selected.`;
+        if (disabled) {
+          detectedContextValue.textContent = 'Location context disabled';
+          detectedContextDetail.textContent = 'Translation will use the EMG signal without place context';
+          contextStatus.textContent = 'Translation will continue without location context.';
+          return;
+        }
+        if (source === 'detected') {
+          detectedContextValue.textContent = `${category} detected nearby`;
+          detectedContextDetail.textContent = '92% match · based on location signals on this phone';
+          contextStatus.textContent = `${category} detected automatically. You can correct it manually.`;
+        } else {
+          detectedContextValue.textContent = `${category} selected manually`;
+          detectedContextDetail.textContent = 'Manual choice overrides smart detection';
+          contextStatus.textContent = `${category} context selected manually.`;
+        }
+      }
+
+      contextBoard.querySelectorAll('[data-context]').forEach(button => button.addEventListener('click', () => {
+        selectContext(button.dataset.context, 'manual');
       }));
+      detectContextButton.addEventListener('click', () => {
+        detectContextButton.disabled = true;
+        detectContextButton.textContent = 'Detecting...';
+        detectedContextValue.textContent = 'Checking nearby place signals';
+        detectedContextDetail.textContent = 'Precise coordinates remain on this phone';
+        contextStatus.textContent = 'Detecting a coarse context on this phone...';
+        window.setTimeout(() => {
+          contextPlaceInput.value = 'Kasr El Ainy Street';
+          selectContext('Pharmacy', 'detected');
+          detectContextButton.disabled = false;
+          detectContextButton.textContent = 'Detect again';
+        }, 800);
+      });
       contextToggle.addEventListener('click', () => {
         const enabled = contextToggle.classList.contains('on');
         contextPlaceInput.disabled = !enabled;
+        if (!enabled) contextSource = 'off';
+        if (enabled && contextSource === 'off') contextSource = 'detected';
+        if (enabled && selectedContext === 'No context') selectContext('Other', 'detected');
         contextStatus.textContent = enabled ? `${selectedContext} context enabled.` : 'Location context is off. Translation still works.';
       });
       contextBoard.querySelector('.save-context').addEventListener('click', () => {
         const enabled = contextToggle.classList.contains('on') && selectedContext !== 'No context';
         const savedContext = enabled ? selectedContext : 'No context';
+        const savedSource = enabled ? contextSource : 'off';
         try {
-          localStorage.setItem('soutTranslationContextV1', JSON.stringify({ enabled, category: savedContext, label: enabled ? contextPlaceInput.value.trim() : '', preciseLocationIncluded: false }));
+          localStorage.setItem('soutTranslationContextV1', JSON.stringify({ enabled, category: savedContext, source: savedSource, label: enabled ? contextPlaceInput.value.trim() : '', preciseLocationIncluded: false }));
         } catch (error) {
           // The current prototype session still reflects the selection when storage is unavailable.
         }
@@ -1998,8 +2140,16 @@ document.addEventListener('DOMContentLoaded', async function() {
         const homeModeControl = homeDocument && homeDocument.querySelector('[data-translate-mode-control]');
         const homeModeLabel = homeModeControl && homeModeControl.querySelector('span:last-child');
         if (homeModeLabel) homeModeLabel.textContent = `Online · ${savedContext}`;
-        showScreen(1);
-        announcePrototype(enabled ? `${savedContext} context saved.` : 'Translation context turned off.');
+        const signingDocument = findScreen(3).querySelector('iframe')?.contentDocument;
+        const signingContext = signingDocument?.querySelector('.unified-context-value');
+        const signingSource = signingDocument?.querySelector('.unified-context-source');
+        const resultContext = signingDocument?.querySelector('.unified-result-context');
+        if (signingContext) signingContext.textContent = savedContext;
+        if (signingSource) signingSource.textContent = savedSource === 'detected' ? 'Smart detected' : savedSource === 'manual' ? 'Edited manually' : 'Disabled';
+        if (resultContext) resultContext.textContent = savedContext === 'No context' ? 'No place context' : `${savedContext} context`;
+        const returnScreen = Number(contextBoard.dataset.returnScreen || 1);
+        showScreen(returnScreen);
+        announcePrototype(enabled ? `${savedContext} context saved (${savedSource}).` : 'Translation context turned off.');
       });
 
       const translationEditor = findScreen(32);
