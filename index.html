@@ -1025,7 +1025,7 @@
             <section class="state-metrics"><div><small>Signal quality</small><strong class="metric-warning">Low</strong></div><div><small>Stable channels</small><strong>5 of 8</strong></div><div><small>Band position</small><strong>May have moved</strong></div><div><small>Translation</small><strong>Paused</strong></div></section>
             <section class="recovery-card"><strong>Why this warning appears</strong><ul><li>The band moved on your arm</li><li>Several channels lost skin contact</li><li>A different person is wearing the band</li></ul></section>
             <button type="button" class="primary-button" data-open-screen="12">Start calibration</button>
-            <button type="button" class="secondary-button" data-open-screen="27">Check band status</button>
+            <button type="button" class="secondary-button" data-open-screen="2">Check 8 channels (Screen 2)</button>
             <button type="button" class="link-button" data-open-screen="6">Use favorite phrases instead</button>
           </main>`
         },
@@ -1051,7 +1051,7 @@
             <section class="metric-list"><div><span><strong>Latest confidence</strong><small>Online translation</small></span><b>86%</b></div><div><span><strong>User-confirmed accuracy</strong><small>This demo session, 18 of 20 results</small></span><b>90%</b></div><div><span><strong>Online model evaluation</strong><small>Requires a validated Egyptian Sign Language test set</small></span><b class="pending">Pending</b></div><div><span><strong>Offline model evaluation</strong><small>Limited supported phrases only</small></span><b class="pending">Pending</b></div></section>
             <div class="warning-note"><span>i</span><p>The percentages above are prototype sample values, not clinical or production accuracy claims. Confidence describes one prediction; accuracy must be measured across a validated dataset.</p></div>
             <p class="section-label">TEST PROTOTYPE STATES</p>
-            <div class="state-actions"><button type="button" data-open-screen="25">Band disconnected</button><button type="button" data-open-screen="26">Calibration needed</button></div>
+            <div class="state-actions"><button type="button" data-open-screen="25">Band disconnected</button><button type="button" data-open-screen="26">Calibration needed</button><button type="button" data-open-screen="2">Check channels (Screen 2)</button></div>
           </main>`
         },
         {
@@ -1161,15 +1161,25 @@
           n: 23, title: 'Sign in or sign up', label: 'Start 2 · Sign in or sign up',
           body: `
           <header class="start-header"><button type="button" class="start-back" data-open-screen="22" aria-label="Back to welcome">${icons.back}</button><span class="start-brand-small">صوت <b>SOUT</b></span></header>
-          <main class="login-content"><span class="start-kicker auth-kicker">WELCOME BACK</span><h1 class="auth-title">Sign in to Sout</h1><p class="auth-intro">Your conversations and settings stay in your control.</p>
-            <div class="auth-tabs" role="tablist" aria-label="Account action"><button type="button" class="auth-tab selected" role="tab" aria-selected="true" data-auth-mode="signin">Sign in</button><button type="button" class="auth-tab" role="tab" aria-selected="false" data-auth-mode="signup">Sign up</button></div>
-            <div class="login-fields"><label for="sout-login-email">Email address</label><input id="sout-login-email" type="email" autocomplete="username" placeholder="you@example.com" required><label for="sout-login-password">Password</label><input id="sout-login-password" type="password" autocomplete="current-password" placeholder="Enter your password" required><button type="button" class="forgot-password">Forgot password?</button></div>
-            <button type="button" class="primary-button login-submit">Sign in</button>
+          <main class="login-content"><span class="start-kicker auth-kicker">CREATE YOUR ACCOUNT</span><h1 class="auth-title">Sign up for Sout</h1><p class="auth-intro">Create an account to keep your settings and continue setup.</p>
+            <div class="auth-tabs" role="tablist" aria-label="Account action"><button type="button" class="auth-tab" role="tab" aria-selected="false" data-auth-mode="signin">Sign in</button><button type="button" class="auth-tab selected" role="tab" aria-selected="true" data-auth-mode="signup">Sign up</button></div>
+            <div class="login-fields">
+              <label for="sout-signup-name" class="signup-only-field">Full name</label>
+              <input id="sout-signup-name" class="signup-only-field" type="text" autocomplete="name" placeholder="Enter your full name" required>
+              <label for="sout-signup-phone" class="signup-only-field">Phone number</label>
+              <input id="sout-signup-phone" class="signup-only-field" type="tel" autocomplete="tel" placeholder="+20 10 1234 5678" required>
+              <label for="sout-login-email">Email address</label>
+              <input id="sout-login-email" type="email" autocomplete="email" placeholder="you@example.com" required>
+              <label for="sout-login-password">Password</label>
+              <input id="sout-login-password" type="password" autocomplete="new-password" placeholder="Create a password (min. 8 characters)" required>
+              <button type="button" class="forgot-password" hidden>Forgot password?</button>
+            </div>
+            <button type="button" class="primary-button login-submit">Create account</button>
             <div class="auth-divider"><span>or</span></div>
-            <button type="button" class="google-auth"><span aria-hidden="true">G</span><b>Continue with Google</b></button>
+            <button type="button" class="google-auth"><span aria-hidden="true">G</span><b>Sign up with Google</b></button>
             <p class="login-demo-note">Prototype preview only · no account, password, or Google data is sent or saved.</p><p class="login-status" role="status" aria-live="polite"></p>
           </main>
-          <div class="login-footer"><span class="auth-footer-copy">New to Sout? Choose Sign up above.</span></div>`
+          <div class="login-footer"><span class="auth-footer-copy">Already have an account? <button type="button" class="auth-switch-link" data-switch-mode="signin">Sign in</button></span></div>`
         },
         {
           n: 24, title: 'First-time setup', label: 'Start 3 · First-time setup',
@@ -1248,7 +1258,7 @@
         .feedback-details[hidden],.download-feedback[hidden]{display:none}.feedback-privacy{display:flex;align-items:flex-start;gap:10px;background:#DDF1F2;border-radius:16px;padding:12px 14px;margin-top:17px;color:#0A4B52}.feedback-privacy>span{flex:none;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:#0B7A83;color:#FFFFFF;font-size:12px;font-weight:700}.feedback-privacy p{font-size:13px;line-height:1.45;margin:0}.feedback-consent{display:flex;align-items:flex-start;gap:10px;margin:12px 0;padding:13px;border:1.5px solid #DCE3E8;border-radius:15px;background:#FFFFFF;cursor:pointer}.feedback-consent input{width:20px;height:20px;margin:1px 0 0;accent-color:#0B7A83;flex:none}.feedback-consent strong,.feedback-consent small{display:block}.feedback-consent strong{font-size:13px;line-height:1.35}.feedback-consent small{margin-top:3px;color:#5B6B78;font-size:11px;line-height:1.4}.feedback-status{font-size:13px;line-height:1.4;color:#1E7B4A;margin:10px 0 0}.feedback-status:empty{display:none}.save-feedback:disabled{background:#A8BEC1;cursor:not-allowed}
         .start-phone{background:#F2F5F7}.start-phone button{cursor:pointer}.start-brand{display:flex;align-items:baseline;gap:7px;padding:39px 24px 0;color:#0B7A83;font-weight:800;letter-spacing:2px;font-size:15px}.start-brand-ar{font-size:31px;letter-spacing:0;line-height:1}.start-kicker{display:block;color:#0B7A83;font-size:11px;font-weight:800;letter-spacing:1.4px}.welcome-art{height:298px;position:relative;display:grid;place-items:center;overflow:hidden}.welcome-orbit{position:absolute;width:255px;height:255px;border-radius:50%;background:#DDF1F2;top:20px}.welcome-art .signer-avatar{position:relative;width:255px;height:255px;z-index:1;margin-top:25px}.welcome-sound{position:absolute;z-index:2;right:36px;top:113px;height:35px;border-right:3px solid #0B7A83;border-radius:50%;opacity:.8}.sound-one{width:16px}.sound-two{width:30px;right:25px;opacity:.55}.sound-three{width:44px;right:14px;opacity:.3}.welcome-copy{padding:0 25px}.welcome-copy h1,.login-content h1,.setup-content h1{color:#10212F;font-size:31px;line-height:1.15;margin:10px 0 11px;font-weight:700}.welcome-copy p,.login-content>p,.setup-content>p{color:#5B6B78;font-size:15px;line-height:1.5;margin:0}.welcome-benefits{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:22px 25px 0}.welcome-benefits>div{background:#FFFFFF;border:1px solid #DCE3E8;border-radius:16px;padding:12px}.welcome-benefits span{display:block;color:#0B7A83;font-size:22px;line-height:1}.welcome-benefits strong,.welcome-benefits small{display:block}.welcome-benefits strong{font-size:13px;margin-top:5px}.welcome-benefits small{font-size:11px;color:#5B6B78;margin-top:2px}.start-actions{position:absolute;bottom:29px;left:25px;right:25px;text-align:center}.start-actions .primary-button{margin:0}.start-text-button{min-height:44px;border:0;background:transparent;color:#0B7A83;font-size:15px;font-weight:700}.start-header{height:88px;padding:31px 22px 9px;display:flex;align-items:center;justify-content:space-between}.start-back{display:grid;place-items:center;width:42px;height:42px;border:0;background:#FFFFFF;color:#0B7A83;border-radius:50%}.start-brand-small{font-size:22px;color:#0B7A83;font-weight:700}.start-brand-small b{font-size:11px;letter-spacing:1.5px}.login-content{padding:38px 25px 0}.login-symbol{width:78px;height:78px;border-radius:24px;background:#DDF1F2;color:#0B7A83;display:grid;place-items:center;margin-bottom:28px}.login-symbol span{font-size:45px;font-weight:700}.login-fields{margin-top:35px}.login-fields label{display:block;color:#10212F;font-size:14px;font-weight:700;margin:16px 0 8px}.login-fields input{display:block;width:100%;height:56px;padding:0 15px;border:1.5px solid #DCE3E8;border-radius:15px;background:#FFFFFF;color:#10212F;font:16px 'IBM Plex Sans Arabic',system-ui,sans-serif}.login-fields input:focus{outline:2px solid #0B7A83;outline-offset:2px}.login-content .primary-button{margin-top:27px}.login-demo-note{font-size:12px!important;line-height:1.45!important;text-align:center;margin-top:12px!important}.login-footer{position:absolute;bottom:27px;left:20px;right:20px;text-align:center}.setup-content{height:756px;overflow-y:auto;scrollbar-width:none;padding:19px 25px 25px}.setup-content::-webkit-scrollbar{display:none}.setup-content h1{margin-top:8px}.setup-progress{display:flex;gap:6px;margin:22px 0}.setup-progress i{height:5px;flex:1;border-radius:5px;background:#DCE3E8}.setup-progress i:first-child{background:#0B7A83}.setup-card{display:flex;gap:13px;background:#FFFFFF;border:1px solid #DCE3E8;border-radius:18px;padding:15px;margin-bottom:10px}.setup-number{flex:none;width:31px;height:31px;border-radius:50%;background:#DDF1F2;color:#0B7A83;display:grid;place-items:center;font-weight:800;font-size:14px}.setup-card>div{min-width:0}.setup-card h2{font-size:16px;line-height:1.25;margin:2px 0 5px}.setup-card p{font-size:12px;line-height:1.45;color:#5B6B78;margin:0}.setup-card button{border:0;background:transparent;padding:9px 0 0;color:#0B7A83;font-size:13px;font-weight:700}.setup-card button span{margin-left:4px}.setup-badge{display:inline-block;margin-top:10px;padding:6px 9px;border-radius:8px;background:#FFF1D6;color:#6B4700;font-size:11px;font-weight:700}.setup-links{display:flex;gap:17px}.setup-home-button{margin-top:7px}.setup-footnote{font-size:11px!important;line-height:1.4!important;text-align:center;margin-top:9px!important}
         .start-actions p,.login-footer span{display:block;color:#5B6B78;font-size:13px;margin:12px 0 0}.login-status{font-size:13px!important;line-height:1.4!important;color:#C8381F!important;text-align:center;margin-top:10px!important}.login-status.success{color:#1E7B4A!important}.login-status:empty{display:none}
-        .login-content{height:704px;overflow-y:auto;scrollbar-width:none;padding-top:18px}.login-content::-webkit-scrollbar{display:none}.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:22px;padding:4px;border-radius:14px;background:#E4EAEE}.auth-tab{min-height:42px;border:0;border-radius:11px;background:transparent;color:#5B6B78;font-size:14px;font-weight:700}.auth-tab.selected{background:#FFFFFF;color:#0B7A83;box-shadow:0 1px 3px rgba(16,33,47,.12)}.login-fields{margin-top:14px}.login-fields label{margin-top:12px}.forgot-password{display:block;margin:8px 0 0 auto;border:0;background:transparent;color:#0B7A83;font-size:13px;font-weight:700;padding:4px 0}.forgot-password[hidden]{display:none}.login-content .login-submit{margin-top:15px}.auth-divider{display:flex;align-items:center;gap:10px;margin:13px 0;color:#7A8994;font-size:12px}.auth-divider:before,.auth-divider:after{content:"";height:1px;flex:1;background:#DCE3E8}.google-auth{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:52px;border:1.5px solid #DCE3E8;border-radius:15px;background:#FFFFFF;color:#10212F;font-size:14px}.google-auth span{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;color:#4285F4;font-size:17px;font-weight:800}.google-auth b{font-weight:700}.login-demo-note{margin-top:9px!important}.login-footer{bottom:16px}
+        .login-content{height:704px;overflow-y:auto;scrollbar-width:none;padding-top:18px}.login-content::-webkit-scrollbar{display:none}.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:22px;padding:4px;border-radius:14px;background:#E4EAEE}.auth-tab{min-height:42px;border:0;border-radius:11px;background:transparent;color:#5B6B78;font-size:14px;font-weight:700}.auth-tab.selected{background:#FFFFFF;color:#0B7A83;box-shadow:0 1px 3px rgba(16,33,47,.12)}.login-fields{margin-top:14px}.login-fields label{margin-top:10px;margin-bottom:6px}.login-fields input{height:50px;padding:0 14px;font-size:15px}.signup-only-field[hidden]{display:none!important}.auth-switch-link{border:0;background:transparent;color:#0B7A83;font-weight:700;cursor:pointer;padding:0 3px;text-decoration:underline;font:inherit}.forgot-password{display:block;margin:8px 0 0 auto;border:0;background:transparent;color:#0B7A83;font-size:13px;font-weight:700;padding:4px 0}.forgot-password[hidden]{display:none}.login-content .login-submit{margin-top:15px}.auth-divider{display:flex;align-items:center;gap:10px;margin:13px 0;color:#7A8994;font-size:12px}.auth-divider:before,.auth-divider:after{content:"";height:1px;flex:1;background:#DCE3E8}.google-auth{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:52px;border:1.5px solid #DCE3E8;border-radius:15px;background:#FFFFFF;color:#10212F;font-size:14px}.google-auth span{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;color:#4285F4;font-size:17px;font-weight:800}.google-auth b{font-weight:700}.login-demo-note{margin-top:9px!important}.login-footer{bottom:16px}
         .active-model-card{padding:16px;border:1px solid #9ED7DB;border-radius:18px;background:linear-gradient(145deg,#FFFFFF,#EAF7F8)}.active-model-card>span{display:inline-flex;align-items:center;gap:6px;padding:5px 8px;border-radius:999px;background:#E4F3E9;color:#1E7B4A;font-size:9px;font-weight:800}.active-model-card>span i{width:7px;height:7px;border-radius:50%;background:#1E7B4A}.active-model-card strong,.active-model-card small{display:block}.active-model-card strong{margin-top:10px;font-size:16px}.active-model-card small{margin-top:3px;color:#5B6B78;font-size:11px}.context-permission{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px;border:1px solid #DCE3E8;border-radius:15px;background:#FFFFFF}.context-permission strong,.context-permission small{display:block}.context-permission strong{font-size:12px}.context-permission small{margin-top:3px;color:#5B6B78;font-size:9px}.context-categories{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.context-categories button{min-height:38px;padding:0 13px;border:1px solid #DCE3E8;border-radius:999px;background:#FFFFFF;color:#5B6B78;font-size:10px;font-weight:750}.context-categories button.selected{border-color:#0B7A83;background:#DDF1F2;color:#0A4B52}.context-label{display:block;margin:14px 0 7px;font-size:11px;font-weight:800}.context-place-input{display:block;width:100%;height:46px;padding:0 12px;border:1.5px solid #DCE3E8;border-radius:13px;background:#FFFFFF;color:#10212F;font-size:12px}.context-place-input:focus{outline:2px solid #0B7A83;outline-offset:2px}.context-screen .privacy-banner{margin-top:11px}.context-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.context-actions button{min-height:68px;padding:11px;border:1px solid #DCE3E8;border-radius:14px;background:#FFFFFF;color:#10212F;text-align:left}.context-actions strong,.context-actions small{display:block}.context-actions strong{font-size:11px}.context-actions small{margin-top:4px;color:#5B6B78;font-size:9px}.context-status{min-height:16px;margin:8px 0 0;text-align:center;color:#1E7B4A;font-size:10px;font-weight:700}.error-alternatives{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}.error-alternatives button{min-height:43px;border:1px solid #DCE3E8;border-radius:12px;background:#FFFFFF;color:#0B7A83;font-size:10px;font-weight:750}.edit-safety{display:flex;gap:10px;padding:14px;border-radius:16px;background:#FFF1D6;color:#6B4700}.edit-safety>span{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;background:#D78B00;color:#FFFFFF;font-weight:800}.edit-safety strong,.edit-safety small{display:block}.edit-safety strong{font-size:12px}.edit-safety small{margin-top:3px;font-size:10px;line-height:1.4}.translation-edit-label{display:block;margin:17px 0 8px;font-size:11px;font-weight:800}.translation-edit-input{display:block;width:100%;height:130px;resize:none;padding:15px;border:2px solid #0B7A83;border-radius:18px;background:#FFFFFF;color:#10212F;font:750 26px/1.55 'IBM Plex Sans Arabic',system-ui,sans-serif}.translation-edit-input:focus{outline:3px solid #C7E6E8;outline-offset:2px}.translation-edit-meta{display:flex;justify-content:space-between;margin-top:6px;color:#5B6B78;font-size:10px}.edit-context-summary{margin-top:16px;padding:14px;border:1px solid #DCE3E8;border-radius:15px;background:#FFFFFF}.edit-context-summary small,.edit-context-summary strong,.edit-context-summary span{display:block}.edit-context-summary small{color:#5B6B78;font-size:9px;font-weight:800}.edit-context-summary strong{margin-top:6px;font-size:14px}.edit-context-summary span{margin-top:3px;color:#5B6B78;font-size:10px}.translation-edit-status{min-height:18px;margin:9px 0 0;text-align:center;color:#C8381F;font-size:10px;font-weight:700}
         .phrase-detail-card{padding:18px;border:1px solid #9ED7DB;border-radius:22px;background:linear-gradient(145deg,#FFFFFF,#EAF7F8)}.phrase-detail-category{display:inline-block;padding:5px 9px;border-radius:999px;background:#DDF1F2;color:#0A4B52;font-size:10px;font-weight:800}.phrase-detail-text{min-height:92px;margin:17px 0;display:flex;align-items:center;justify-content:center;text-align:center;color:#10212F;font-size:29px;line-height:1.55;font-weight:750}.phrase-availability{display:flex;align-items:center;gap:9px;padding-top:12px;border-top:1px solid #C7E6E8;color:#145B38}.phrase-availability>span{width:25px;height:25px;border-radius:50%;display:grid;place-items:center;background:#1E7B4A;color:#FFFFFF;font-size:11px;font-weight:800}.phrase-availability strong,.phrase-availability small{display:block}.phrase-availability strong{font-size:11px}.phrase-availability small{margin-top:2px;color:#5B6B78;font-size:9px}.phrase-usage{display:grid;grid-template-columns:repeat(3,1fr);margin-top:11px;border:1px solid #DCE3E8;border-radius:15px;background:#FFFFFF;overflow:hidden}.phrase-usage>div{padding:11px 8px;text-align:center;border-right:1px solid #DCE3E8}.phrase-usage>div:last-child{border-right:0}.phrase-usage small,.phrase-usage strong{display:block}.phrase-usage small{color:#5B6B78;font-size:9px}.phrase-usage strong{margin-top:4px;font-size:11px}.phrase-edit-panel{margin-top:10px;padding:13px;border:1px solid #DCE3E8;border-radius:15px;background:#FFFFFF}.phrase-edit-panel[hidden]{display:none}.phrase-edit-panel label{display:block;margin-bottom:7px;font-size:11px;font-weight:800}.phrase-edit-panel textarea{display:block;width:100%;height:86px;resize:none;padding:11px;border:1.5px solid #DCE3E8;border-radius:12px;color:#10212F;font:700 20px/1.5 'IBM Plex Sans Arabic',system-ui,sans-serif}.phrase-edit-panel textarea:focus{outline:2px solid #0B7A83;outline-offset:2px}.phrase-edit-panel>div{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px}.phrase-edit-panel button{min-height:39px;border:1px solid #DCE3E8;border-radius:10px;background:#FFFFFF;color:#0B7A83;font-size:10px;font-weight:800}.phrase-edit-panel .save-phrase-edit{border-color:#0B7A83;background:#0B7A83;color:#FFFFFF}.phrase-edit-status{min-height:16px;margin:5px 0 0;color:#C8381F;font-size:10px}.delete-phrase{display:block;width:100%;min-height:42px;margin-top:10px;border:0;background:transparent;color:#C8381F;font-size:11px;font-weight:800}
         .phrase-form-intro{display:flex;align-items:center;gap:12px;padding:15px;border-radius:17px;background:#DDF1F2;color:#0A4B52}.phrase-form-intro>span{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:#0B7A83;color:#FFFFFF;font-size:25px}.phrase-form-intro strong,.phrase-form-intro small{display:block}.phrase-form-intro strong{font-size:14px}.phrase-form-intro small{margin-top:3px;font-size:11px}.phrase-field{display:block;margin-top:17px}.phrase-field>span,.phrase-label{display:block;margin-bottom:8px;color:#10212F;font-size:11px;font-weight:800;letter-spacing:.5px}.phrase-field textarea{display:block;width:100%;height:112px;resize:none;padding:14px;border:1.5px solid #DCE3E8;border-radius:16px;background:#FFFFFF;color:#10212F;font:700 23px/1.5 'IBM Plex Sans Arabic',system-ui,sans-serif}.phrase-field textarea:focus{outline:2px solid #0B7A83;outline-offset:2px}.phrase-field>small{display:block;margin-top:5px;text-align:right;color:#5B6B78;font-size:10px}.phrase-label{margin-top:17px}.phrase-categories{display:flex;gap:7px;overflow-x:auto}.phrase-categories button{min-height:39px;padding:0 13px;border:1px solid #DCE3E8;border-radius:999px;background:#FFFFFF;color:#5B6B78;font-size:11px;font-weight:700;white-space:nowrap}.phrase-categories button.selected{border-color:#0B7A83;background:#DDF1F2;color:#0A4B52}.phrase-option{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:13px;padding:13px;border:1px solid #DCE3E8;border-radius:15px;background:#FFFFFF}.phrase-option strong,.phrase-option small{display:block}.phrase-option strong{font-size:12px}.phrase-option small{margin-top:3px;color:#5B6B78;font-size:9px}.phrase-preview{min-height:36px;padding:0 11px;border:1px solid #9ED7DB;border-radius:10px;background:#EAF7F8;color:#0B7A83;font-size:10px;font-weight:800}.phrase-preview:disabled,.save-phrase:disabled{opacity:.48;cursor:not-allowed}.phrase-form-status{min-height:18px;margin:10px 0 0;text-align:center;color:#C8381F;font-size:11px;font-weight:600}
@@ -1261,7 +1271,268 @@
         body.prototype-mode .board iframe,body.prototype-mode .board>.sout-phone{box-shadow:0 24px 70px rgba(16,33,47,.22),0 0 0 1px rgba(16,33,47,.08)}
         .prototype-toolbar{position:fixed;z-index:100;top:18px;right:18px;width:220px;padding:13px;border:1px solid rgba(16,33,47,.12);border-radius:18px;background:rgba(255,255,255,.94);box-shadow:0 12px 35px rgba(16,33,47,.14);backdrop-filter:blur(16px);font:13px/1.35 system-ui,sans-serif;color:#10212F}
         .prototype-toolbar strong,.prototype-toolbar small{display:block}.prototype-toolbar small{margin-top:3px;color:#5B6B78}.prototype-toolbar-actions{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:10px}.prototype-toolbar button{min-height:36px;border:1px solid #DCE3E8;border-radius:10px;background:#FFFFFF;color:#0B7A83;font-weight:700;cursor:pointer}.prototype-toolbar button:hover{background:#DDF1F2}.prototype-toolbar button:focus-visible{outline:2px solid #0B7A83;outline-offset:2px}.prototype-toolbar .prototype-exit{color:#5B6B78}
-        body.gallery-mode .board{display:block}.gallery-mode .prototype-toolbar .prototype-exit{color:#0B7A83}.gallery-mode .prototype-toolbar .prototype-restart{color:#5B6B78}
+        
+        /* Gallery / Full Mode Responsive Grid View */
+        body.gallery-mode {
+          display: grid !important;
+          grid-template-columns: repeat(auto-fill, minmax(390px, 390px)) !important;
+          justify-content: center !important;
+          align-items: start !important;
+          gap: 44px 32px !important;
+          padding: 36px 36px 140px 36px !important;
+          min-height: 100vh !important;
+          background-color: #EEF2F5 !important;
+          background-image: radial-gradient(rgba(16, 33, 47, 0.12) 1.2px, transparent 1.2px) !important;
+          background-size: 24px 24px !important;
+          box-sizing: border-box !important;
+          overflow-x: auto !important;
+          flex-direction: unset !important;
+        }
+
+        body.prototype-mode .gallery-hero-banner {
+          display: none !important;
+        }
+
+        body.gallery-mode .gallery-hero-banner {
+          grid-column: 1 / -1 !important;
+          width: 100% !important;
+          max-width: 1720px !important;
+          margin: 0 auto 12px auto !important;
+          display: flex !important;
+          flex-wrap: wrap !important;
+          align-items: center !important;
+          justify-content: space-between !important;
+          gap: 20px !important;
+          padding: 24px 28px !important;
+          background: #FFFFFF !important;
+          border: 1px solid #DCE3E8 !important;
+          border-radius: 24px !important;
+          box-shadow: 0 10px 30px rgba(16, 33, 47, 0.06) !important;
+          font-family: 'IBM Plex Sans Arabic', system-ui, -apple-system, sans-serif !important;
+          box-sizing: border-box !important;
+        }
+
+        .gallery-hero-tag {
+          display: inline-block;
+          padding: 4px 10px;
+          background: #DDF1F2;
+          color: #0B7A83;
+          font-size: 11px;
+          font-weight: 800;
+          letter-spacing: 0.8px;
+          border-radius: 999px;
+          margin-bottom: 6px;
+        }
+
+        .gallery-hero-title {
+          margin: 0 0 6px 0;
+          font-size: 26px;
+          font-weight: 750;
+          color: #10212F;
+          letter-spacing: -0.4px;
+        }
+
+        .gallery-hero-desc {
+          margin: 0;
+          font-size: 14px;
+          line-height: 1.45;
+          color: #5B6B78;
+        }
+
+        .gallery-hero-actions {
+          display: flex;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 14px;
+        }
+
+        .gallery-zoom-group {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          background: #F2F5F7;
+          padding: 4px 6px;
+          border-radius: 14px;
+          border: 1px solid #DCE3E8;
+        }
+
+        .gallery-zoom-label {
+          font-size: 12px;
+          font-weight: 600;
+          color: #5B6B78;
+          padding: 0 6px;
+        }
+
+        .gallery-zoom-btn {
+          border: 0;
+          background: transparent;
+          color: #5B6B78;
+          font-size: 12px;
+          font-weight: 700;
+          padding: 6px 12px;
+          border-radius: 10px;
+          cursor: pointer;
+          transition: all 0.15s ease;
+        }
+
+        .gallery-zoom-btn:hover {
+          background: rgba(11, 122, 131, 0.08);
+          color: #0B7A83;
+        }
+
+        .gallery-zoom-btn.active {
+          background: #FFFFFF;
+          color: #0B7A83;
+          box-shadow: 0 2px 6px rgba(16, 33, 47, 0.08);
+        }
+
+        .gallery-resume-btn {
+          min-height: 40px;
+          padding: 0 18px;
+          border: 0;
+          border-radius: 12px;
+          background: #0B7A83;
+          color: #FFFFFF;
+          font-size: 13.5px;
+          font-weight: 700;
+          cursor: pointer;
+          box-shadow: 0 4px 14px rgba(11, 122, 131, 0.25);
+          transition: background 0.15s ease, transform 0.15s ease;
+        }
+
+        .gallery-resume-btn:hover {
+          background: #095C63;
+          transform: translateY(-1px);
+        }
+
+        body.gallery-mode .board {
+          display: flex !important;
+          flex-direction: column !important;
+          align-items: center !important;
+          width: 390px !important;
+          max-width: 390px !important;
+          position: relative !important;
+          margin: 0 auto !important;
+          cursor: pointer !important;
+          transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease !important;
+        }
+
+        body.gallery-mode .board:hover {
+          transform: translateY(-8px) scale(1.015) !important;
+        }
+
+        body.gallery-mode .board > h2 {
+          display: flex !important;
+          align-items: center !important;
+          justify-content: space-between !important;
+          width: 100% !important;
+          margin: 0 0 12px 0 !important;
+          padding: 10px 16px !important;
+          background: #FFFFFF !important;
+          border: 1px solid #DCE3E8 !important;
+          border-radius: 14px !important;
+          box-shadow: 0 3px 10px rgba(16, 33, 47, 0.06) !important;
+          font-family: 'IBM Plex Sans Arabic', system-ui, -apple-system, sans-serif !important;
+          font-size: 13.5px !important;
+          font-weight: 700 !important;
+          color: #10212F !important;
+          letter-spacing: -0.2px !important;
+          box-sizing: border-box !important;
+          transition: border-color 0.18s ease, color 0.18s ease !important;
+        }
+
+        body.gallery-mode .board > h2::after {
+          content: 'Open screen ↗';
+          font-size: 11px;
+          font-weight: 600;
+          color: #0B7A83;
+          background: #DDF1F2;
+          padding: 3px 9px;
+          border-radius: 999px;
+          transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        body.gallery-mode .board:hover > h2 {
+          border-color: #0B7A83 !important;
+          color: #0B7A83 !important;
+        }
+
+        body.gallery-mode .board:hover > h2::after {
+          background: #0B7A83;
+          color: #FFFFFF;
+        }
+
+        body.gallery-mode .board iframe,
+        body.gallery-mode .board > .sout-phone {
+          width: 390px !important;
+          max-width: 390px !important;
+          height: 844px !important;
+          border-radius: 32px !important;
+          overflow: hidden !important;
+          border: 1.5px solid rgba(16, 33, 47, 0.12) !important;
+          box-shadow: 0 16px 40px rgba(16, 33, 47, 0.12), 0 2px 6px rgba(16, 33, 47, 0.04) !important;
+          background: #F7F9FA !important;
+          box-sizing: border-box !important;
+          transition: box-shadow 0.22s ease, border-color 0.22s ease !important;
+        }
+
+        body.gallery-mode .board:hover iframe,
+        body.gallery-mode .board:hover > .sout-phone {
+          border-color: #0B7A83 !important;
+          box-shadow: 0 26px 65px rgba(11, 122, 131, 0.24), 0 4px 14px rgba(16, 33, 47, 0.08) !important;
+        }
+
+        /* Click overlay to easily click any screen to enter prototype mode */
+        body.gallery-mode .board::after {
+          content: '';
+          position: absolute;
+          top: 44px;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          z-index: 25;
+          cursor: pointer;
+          border-radius: 32px;
+          background: transparent;
+          transition: background 0.2s ease;
+        }
+        body.gallery-mode .board:hover::after {
+          background: rgba(11, 122, 131, 0.02);
+        }
+
+        /* Zoom scaling for bird's-eye panoramic view */
+        body.gallery-mode.zoom-compact {
+          zoom: 0.65;
+        }
+        body.gallery-mode.zoom-mini {
+          zoom: 0.45;
+        }
+
+        .gallery-mode .prototype-toolbar .prototype-exit{color:#0B7A83}
+        .gallery-mode .prototype-toolbar .prototype-restart{color:#5B6B78}
+
+        @media (max-width: 860px) {
+          body.gallery-mode .gallery-hero-banner {
+            flex-direction: column;
+            align-items: flex-start;
+          }
+        }
+
+        @media (max-width: 440px) {
+          body.gallery-mode {
+            display: flex !important;
+            flex-direction: column !important;
+            padding: 16px 12px 100px 12px !important;
+            gap: 24px !important;
+          }
+          body.gallery-mode .board,
+          body.gallery-mode .board iframe,
+          body.gallery-mode .board > .sout-phone {
+            width: 100% !important;
+            max-width: 100% !important;
+          }
+        }
+
         .prototype-toast{position:fixed;z-index:110;left:50%;bottom:22px;max-width:min(360px,calc(100vw - 30px));transform:translate(-50%,20px);padding:11px 15px;border-radius:999px;background:#10212F;color:#FFFFFF;font:600 13px/1.35 system-ui,sans-serif;box-shadow:0 10px 28px rgba(16,33,47,.25);opacity:0;pointer-events:none;transition:.2s ease}.prototype-toast.show{opacity:1;transform:translate(-50%,0)}
         @keyframes prototype-screen-in{from{opacity:.45;transform:translateX(12px)}to{opacity:1;transform:none}}
         @media(max-width:920px){.prototype-toolbar{top:auto;right:12px;bottom:12px;width:auto;max-width:calc(100vw - 24px);padding:8px 9px;border-radius:14px}.prototype-toolbar-copy{display:none}.prototype-toolbar-actions{display:flex;flex-wrap:wrap;justify-content:center;margin:0}.prototype-toolbar button{min-height:34px;padding:0 12px}.prototype-toast{bottom:102px}}
@@ -1429,12 +1700,57 @@
         const toolbar = document.createElement('aside');
         toolbar.className = 'prototype-toolbar';
         toolbar.setAttribute('aria-label', 'Prototype controls');
-        toolbar.innerHTML = `<div class="prototype-toolbar-copy"><strong>Interactive app flow</strong><small class="prototype-screen-label">Welcome</small></div><div class="prototype-toolbar-actions"><button type="button" class="prototype-prev">Previous</button><button type="button" class="prototype-next">Next</button><button type="button" class="prototype-band">Band gesture</button><button type="button" class="prototype-restart">Restart</button><button type="button" class="prototype-notifications">&#128276; Alerts</button><button type="button" class="prototype-status">Status</button><button type="button" class="prototype-offline">Offline</button><button type="button" class="prototype-exit">View all</button></div>`;
+        toolbar.innerHTML = `<div class="prototype-toolbar-copy"><strong>Interactive app flow</strong><small class="prototype-screen-label">Welcome</small></div><div class="prototype-toolbar-actions"><button type="button" class="prototype-prev">Previous</button><button type="button" class="prototype-next">Next</button><button type="button" class="prototype-restart">Restart</button><button type="button" class="prototype-offline">Offline</button><button type="button" class="prototype-exit">Grid view</button></div>`;
         const toast = document.createElement('div');
         toast.className = 'prototype-toast';
         toast.setAttribute('role', 'status');
         toast.setAttribute('aria-live', 'polite');
         host.append(toolbar, toast);
+
+        const galleryHero = document.createElement('div');
+        galleryHero.className = 'gallery-hero-banner';
+        galleryHero.innerHTML = `
+          <div class="gallery-hero-content">
+            <div class="gallery-hero-tag">SOUT (صوت) · FULL APP ARCHITECTURE</div>
+            <h1 class="gallery-hero-title">All App Screens Overview</h1>
+            <p class="gallery-hero-desc">32 Complete Mobile Screens in Full Architecture Grid · Multi-Modal Sensor Fusion (8 sEMG + 6-Axis IMU) · Click any screen below to open and interact</p>
+          </div>
+          <div class="gallery-hero-actions">
+            <div class="gallery-zoom-group">
+              <span class="gallery-zoom-label">Grid Scale:</span>
+              <button type="button" class="gallery-zoom-btn active" data-zoom="1">100%</button>
+              <button type="button" class="gallery-zoom-btn" data-zoom="0.65">65% (Fit More)</button>
+              <button type="button" class="gallery-zoom-btn" data-zoom="0.45">45% (Bird's Eye)</button>
+            </div>
+            <button type="button" class="gallery-resume-btn">▶ Resume Interactive App</button>
+          </div>
+        `;
+        host.insertBefore(galleryHero, host.firstChild);
+
+        galleryHero.querySelectorAll('.gallery-zoom-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            galleryHero.querySelectorAll('.gallery-zoom-btn').forEach(b => b.classList.toggle('active', b === btn));
+            const zoomVal = btn.dataset.zoom;
+            host.classList.remove('zoom-compact', 'zoom-mini');
+            if (zoomVal === '0.65') host.classList.add('zoom-compact');
+            if (zoomVal === '0.45') host.classList.add('zoom-mini');
+            announcePrototype('Grid scale set to ' + Math.round(Number(zoomVal) * 100) + '%.', 'info');
+          });
+        });
+        galleryHero.querySelector('.gallery-resume-btn').addEventListener('click', () => {
+          showScreen(activeScreenNumber || 1, { replace: true });
+        });
+
+        document.querySelectorAll('.board').forEach(board => {
+          board.addEventListener('click', () => {
+            if (!host.classList.contains('gallery-mode')) return;
+            const num = Number(board.dataset.screenNumber);
+            if (num) {
+              showScreen(num);
+              announcePrototype('Opened Screen ' + num + ' in interactive view.');
+            }
+          });
+        });
 
         // --- Sout Unified Prototype State & Storage ---
         const defaultSoutState = {
@@ -2054,7 +2370,7 @@
           }
           const label = target.querySelector('h2');
           toolbar.querySelector('.prototype-screen-label').textContent = label ? label.textContent.replace(/^\d+\s*/, '') : 'Sout';
-          toolbar.querySelector('.prototype-exit').textContent = 'View all';
+          toolbar.querySelector('.prototype-exit').textContent = 'Grid view';
           window.scrollTo({ top: 0, behavior: options.instant ? 'auto' : 'smooth' });
         }
 
@@ -2067,7 +2383,7 @@
           host.classList.remove('prototype-mode');
           host.classList.add('gallery-mode');
           document.querySelectorAll('.board').forEach(board => board.classList.remove('is-active'));
-          toolbar.querySelector('.prototype-screen-label').textContent = 'All screens';
+          toolbar.querySelector('.prototype-screen-label').textContent = 'All screens (32)';
           toolbar.querySelector('.prototype-exit').textContent = 'Resume app';
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -2087,13 +2403,10 @@
         }
         toolbar.querySelector('.prototype-prev').addEventListener('click', () => movePrototypeScreen(-1));
         toolbar.querySelector('.prototype-next').addEventListener('click', () => movePrototypeScreen(1));
-        toolbar.querySelector('.prototype-band').addEventListener('click', triggerBandGesture);
         toolbar.querySelector('.prototype-offline').addEventListener('click', () => {
           showScreen(8);
           announcePrototype('Offline mode simulated: local features remain available.');
         });
-        toolbar.querySelector('.prototype-notifications')?.addEventListener('click', () => showScreen(20));
-        toolbar.querySelector('.prototype-status').addEventListener('click', () => showScreen(27));
         toolbar.querySelector('.prototype-exit').addEventListener('click', () => {
           if (host.classList.contains('prototype-mode')) showAllScreens();
           else showScreen(activeScreenNumber || 22, { replace: true });
@@ -3386,7 +3699,7 @@
           const navigationRoutes = { translate: screenNumber === 8 ? 8 : 1, chat: 5, phrases: 6, emergency: 7 };
           const screenRoutes = {
             1: { 'start signing': 3, 'see all': 6, 'open conversation': 5 },
-            2: { back: 1, 'continue to movements': 13, 'check again': 2 },
+            2: { back: 12, 'continue to movements': 13, 'check again': 2 },
             3: { cancel: 1 },
             4: { speak: 5, 'sign again': 3 },
             5: { sign: 3, 'rate this translation': 21 },
@@ -3531,7 +3844,34 @@
               return;
             }
             if (screenNumber === 2 && label.startsWith('check again')) {
-              announcePrototype('All eight armband channels were checked again.');
+              const ch6Row = root.querySelectorAll('div[style*="min-height: 34px"], div[style*="min-height:34px"]')[5];
+              if (ch6Row) {
+                const bar = ch6Row.querySelector('span[style*="background: rgb(178, 106, 0)"], span[style*="background: #B26A00"]');
+                if (bar) {
+                  bar.style.width = '88%';
+                  bar.style.background = '#1E7B4A';
+                }
+                const statusSpan = ch6Row.lastElementChild;
+                if (statusSpan) {
+                  statusSpan.textContent = 'Good';
+                  statusSpan.style.color = '#1E7B4A';
+                }
+              }
+              const headerBadge = root.querySelector('span[style*="color: rgb(122, 74, 0)"], span[style*="color: #7A4A00"]');
+              if (headerBadge) {
+                headerBadge.textContent = '8 of 8 good';
+                headerBadge.style.background = '#DDF4E7';
+                headerBadge.style.color = '#18784A';
+              }
+              const warnBox = root.querySelector('div[style*="background: rgb(255, 241, 214)"], div[style*="background: #FFF1D6"]');
+              if (warnBox) {
+                warnBox.style.background = '#DDF4E7';
+                warnBox.innerHTML = `
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18784A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-top:2px"><path d="M20 6L9 17l-5-5"></path></svg>
+                  <p style="margin:0;font-size:15px;line-height:1.45;color:#0F5132">All 8 sEMG channels & 6-axis IMU are reading strong contact. Ready to calibrate movements.</p>
+                `;
+              }
+              announcePrototype('All eight armband channels checked: 8 of 8 good signal.', 'success');
               return;
             }
             if (screenNumber === 1 && !target) {
@@ -3645,8 +3985,8 @@
         routeButton(9, 'Calibration', 12);
         routeButton(9, 'Emergency setup', 16);
         routeButton(9, 'History & privacy', 15);
-        routeButton(11, 'Check all 8 channels', 12);
-        routeButton(12, 'The band is in place', 13);
+        routeButton(11, 'Check all 8', 2);
+        routeButton(12, 'The band is in place', 2);
         routeButton(13, 'Start movement', 14);
         routeButton(14, 'Start translating', 1);
         routeButton(14, 'Calibrate again', 12);
@@ -4129,6 +4469,8 @@
         });
 
         const loginBoard = document.querySelector('[data-screen-number="23"]');
+        const loginName = loginBoard.querySelector('#sout-signup-name');
+        const loginPhone = loginBoard.querySelector('#sout-signup-phone');
         const loginEmail = loginBoard.querySelector('#sout-login-email');
         const loginPassword = loginBoard.querySelector('#sout-login-password');
         const loginStatus = loginBoard.querySelector('.login-status');
@@ -4139,20 +4481,22 @@
         const forgotPassword = loginBoard.querySelector('.forgot-password');
         const googleAuth = loginBoard.querySelector('.google-auth');
         const authFooter = loginBoard.querySelector('.auth-footer-copy');
-        let authMode = 'signin';
+        let authMode = 'signup';
 
         function openSetup() {
           loginStatus.textContent = '';
           loginStatus.classList.remove('success');
+          if (loginName) loginName.value = '';
+          if (loginPhone) loginPhone.value = '';
           loginEmail.value = '';
           loginPassword.value = '';
           showScreen(24);
         }
 
-        loginBoard.querySelectorAll('.auth-tab').forEach(tab => tab.addEventListener('click', () => {
-          authMode = tab.dataset.authMode;
+        function setAuthMode(mode) {
+          authMode = mode;
           loginBoard.querySelectorAll('.auth-tab').forEach(item => {
-            const selected = item === tab;
+            const selected = item.dataset.authMode === mode;
             item.classList.toggle('selected', selected);
             item.setAttribute('aria-selected', String(selected));
           });
@@ -4162,23 +4506,62 @@
           authIntro.textContent = signingUp ? 'Create an account to keep your settings and continue setup.' : 'Your conversations and settings stay in your control.';
           authSubmit.textContent = signingUp ? 'Create account' : 'Sign in';
           googleAuth.querySelector('b').textContent = signingUp ? 'Sign up with Google' : 'Continue with Google';
-          authFooter.textContent = signingUp ? 'Already have an account? Choose Sign in above.' : 'New to Sout? Choose Sign up above.';
+          authFooter.innerHTML = signingUp
+            ? 'Already have an account? <button type="button" class="auth-switch-link" data-switch-mode="signin">Sign in</button>'
+            : 'New to Sout? <button type="button" class="auth-switch-link" data-switch-mode="signup">Sign up</button>';
           forgotPassword.hidden = signingUp;
           loginPassword.autocomplete = signingUp ? 'new-password' : 'current-password';
+          loginPassword.placeholder = signingUp ? 'Create a password (min. 8 characters)' : 'Enter your password';
+          loginBoard.querySelectorAll('.signup-only-field').forEach(field => {
+            field.hidden = !signingUp;
+          });
           loginStatus.textContent = '';
           loginStatus.classList.remove('success');
+        }
+
+        loginBoard.querySelectorAll('.auth-tab').forEach(tab => tab.addEventListener('click', () => {
+          setAuthMode(tab.dataset.authMode);
         }));
 
-        loginBoard.querySelector('.login-submit').addEventListener('click', () => {
-          if (!loginEmail.value.trim() || !loginEmail.checkValidity() || !loginPassword.value) {
-            loginStatus.textContent = 'Enter a valid email address and password to preview the next screen.';
-            loginStatus.classList.remove('success');
-            return;
+        loginBoard.addEventListener('click', (e) => {
+          const switchBtn = e.target.closest('.auth-switch-link');
+          if (switchBtn && switchBtn.dataset.switchMode) {
+            setAuthMode(switchBtn.dataset.switchMode);
           }
-          if (authMode === 'signup' && loginPassword.value.length < 8) {
-            loginStatus.textContent = 'Use at least 8 characters for a new password.';
-            loginStatus.classList.remove('success');
-            return;
+        });
+
+        loginBoard.querySelector('.login-submit').addEventListener('click', () => {
+          if (authMode === 'signup') {
+            if (!loginName || !loginName.value.trim()) {
+              loginStatus.textContent = 'Please enter your full name.';
+              loginStatus.classList.remove('success');
+              if (loginName) loginName.focus();
+              return;
+            }
+            if (!loginPhone || !loginPhone.value.trim() || loginPhone.value.trim().length < 8) {
+              loginStatus.textContent = 'Please enter a valid phone number (e.g. +20 10 1234 5678).';
+              loginStatus.classList.remove('success');
+              if (loginPhone) loginPhone.focus();
+              return;
+            }
+            if (!loginEmail.value.trim() || !loginEmail.checkValidity()) {
+              loginStatus.textContent = 'Please enter a valid email address.';
+              loginStatus.classList.remove('success');
+              loginEmail.focus();
+              return;
+            }
+            if (loginPassword.value.length < 8) {
+              loginStatus.textContent = 'Use at least 8 characters for your password.';
+              loginStatus.classList.remove('success');
+              loginPassword.focus();
+              return;
+            }
+          } else {
+            if (!loginEmail.value.trim() || !loginEmail.checkValidity() || !loginPassword.value) {
+              loginStatus.textContent = 'Enter a valid email address and password to sign in.';
+              loginStatus.classList.remove('success');
+              return;
+            }
           }
           openSetup();
         });
