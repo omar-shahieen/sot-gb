@@ -45,19 +45,41 @@ In the Hybrid approach there are two models behind this one feature. Online, a l
 - Show which mode is active (online or offline) at all times.
 - With permission, include a visible and editable coarse place category in online and offline inference; allow translation without location context.
 
-### F2. Sensor connection and wake gesture
+### F2. Sensor connection, controls and wake gesture
 
-**What it is.** The app pairs with the armband over Bluetooth, receives the EMG stream, and time-stamps it. A wake gesture starts or stops translation without touching the phone. The deck's example is raising the wrist and moving the hand up and down three times. A status panel shows connection, battery and electrode contact quality, and the app reconnects automatically if Bluetooth drops.
+**What it is.** The app pairs with the armband over Bluetooth, receives the EMG stream, and time-stamps it. A status panel shows connection, battery and electrode contact quality, and the app reconnects automatically if Bluetooth drops.
 
-Translation only runs between a start and a stop. This saves battery and data, and it prevents ordinary hand movement from being translated by accident. An on-screen start/stop button is always available as a fallback, because a wake gesture that depends on a motion sensor may not be possible if the armband has none.
+Translation operates via a synchronized dual-control scheme accessible through both on-screen buttons and armband muscle/motion gestures:
+- **Stop:** Pauses or stops translation stream. Controlled by an on-screen "Stop" button or an armband **fist clench gesture**.
+- **Resume:** Resumes translation after a pause. Controlled by an on-screen "Resume" button or an armband **double-tap gesture**.
+- **Give Gesture (Sign):** Explicitly triggers a signing motion burst with real-time 8-channel EMG capture and gloss detection into Arabic text. Controlled by an on-screen "Give Gesture" button or a physical **sign motion gesture**.
 
-**Scenario.** Karim is at a bank counter with his phone propped on the desk. He makes the wake gesture, signs his request, and makes the gesture again to stop. When his band loses connection for a moment, the app shows a short “reconnecting” message and resumes without him opening any settings.
+Translation only runs between a start and a stop. This saves battery and data, and it prevents ordinary hand movement from being translated by accident. Both phone UI controls and armband gesture shortcuts are kept synchronized in real time.
+
+**Scenario.** Karim is at a bank counter with his phone propped on the desk. He uses the double-tap resume gesture on his armband to activate translation, performs a sign motion, and clenches his fist to stop. The on-screen controls reflect the changes instantly, allowing him to interact without touching the phone.
 
 **Key requirements**
 
 - Pair, stream, and auto-reconnect over Bluetooth.
-- Start and stop translation by gesture and by on-screen button.
-- Show battery level and per-channel contact quality.
+- Provide a 3-button control cluster (Stop, Resume, Give Gesture) on phone screens.
+- Support dual-control via armband gestures (fist clench for stop, double-tap for resume, sign motion for give gesture) and on-screen buttons.
+- Show battery level and per-channel contact quality in real time.
+
+### F2b. Temporary Gesture Mode (Ephemeral Session)
+
+**What it is.** A privacy-preserving ephemeral translation mode designed for private or sensitive conversations (e.g., medical diagnoses, legal consultations, financial transactions). When Temporary Gesture Mode is activated, the app enters an isolated session state marked by a distinct visual badge (`⚡ Temporary Gesture Mode`).
+
+During temporary mode, all translated sentences, glosses, and partner replies are processed in volatile device memory only. No records are written to the local SQLite/IndexedDB conversation history, and no data is synced to cloud storage. Ending temporary mode prompts the user with a confirmation dialog before purging the temporary memory buffer.
+
+**Scenario.** Mona visits a specialist for a confidential health concern. She activates Temporary Gesture Mode. A pulsing amber badge confirms the session is ephemeral. After completing her consultation, she taps "End Session," confirms the modal prompt, and the app safely discards all dialogue without leaving any traces in her conversation history.
+
+**Key requirements**
+
+- One-tap activation of Temporary Gesture Mode from gesture controls and chat screens.
+- Clear visual status indication (`⚡ Temporary Gesture Mode` banner/badge) during active ephemeral sessions.
+- Strict isolation: zero persistence to local storage and zero cloud synchronization during temporary mode.
+- Safe termination: confirmation dialog before ending the session and purging memory buffers.
+
 
 ### F3. Preview and confirm
 
@@ -105,20 +127,31 @@ Online, a server speech-to-text model gives the best accuracy on Egyptian Arabic
 - Vibrate when a reply arrives.
 - Warn when audio quality is too low to trust.
 
-### F6. Conversation history and favorite phrases
+### F6. Conversation history, storage preferences, and chat interaction
 
-**What it is.** Every translated sentence and every reply is saved on the phone in a chat-style history, grouped by date and searchable. The user can delete a conversation or everything. The history can be locked with a PIN or fingerprint, or turned off, because it can hold health and money details.
+**What it is.** Every translated sentence and hearing partner reply can be viewed in a responsive, chat-style conversation interface grouped by date and searchable. The user has granular control over what gets saved and how long it remains:
+- **History recording toggle:** Allows users to pause or resume recording conversation history at any time.
+- **Storage content preferences:** Users choose between storing "Translated text only" (recommended privacy default) or "Full conversation dialogue" (both Deaf user translations and hearing partner replies).
+- **Strict sensor privacy guarantee:** Raw video, camera feeds, and raw high-frequency sEMG/IMU sensor signals are never stored locally or remotely; only decoded text and glosses are retained.
+- **Deleted message tombstones:** In accordance with modern messaging privacy patterns, when a message or translation is deleted, it is replaced with a tombstone indicator (`⊘ This message was deleted / تم حذف هذه الرسالة`) with timestamp and dashed border styling, with an option for permanent purge.
+- **Selective sharing & link revocation:** Users can generate read-only shareable links for individual conversation threads, view active links, and revoke all links instantly with one tap.
+- **Transcript export:** Conversations can be exported individually or in bulk as formatted plain text (`.txt`) transcripts or styled print-ready documents (`.pdf`).
+- **Interactive chat interface:** Provides an active messaging screen with a quick text input bar, preset quick chips, simulated speech partner responses in Egyptian Arabic, and an armband `⚡ Sign` quick shortcut.
 
-Favorite phrases are sentences the user says often, such as “Please write it down, I am Deaf” or “I want to book an appointment”. They are grouped (doctor, bank, transport, work) and spoken with one tap, with no signing and no server. A favorite can also be linked to a gesture later. Favorites and history work fully offline, so they act as a safety net when translation is unavailable.
+Favorite phrases are sentences the user says often, such as “Please write it down, I am Deaf” or “I want to book an appointment”. They are grouped (doctor, bank, transport, work) and spoken with one tap, with no signing and no server. Favorites and history work fully offline, acting as a safety net when translation is unavailable.
 
-**Scenario.** Karim rides a minibus and needs to ask the driver to stop. He taps “Please stop here” in his Transport favorites and the phone says it at once. That evening he opens the history from his doctor visit to check the medicine name and dose the doctor mentioned.
+**Scenario.** Karim opens his conversation history after a clinic visit. He reviews the advice given by his doctor, exports a `.pdf` transcript for his records, and deletes an accidental translation, which now displays as deleted. Later, he generates a secure share link for his family and revokes it once they have read the summary.
 
 **Key requirements**
 
-- Store history locally, with search, delete and optional lock.
-- Let users create, group and speak favorite phrases with one tap.
-- Allow editing or deleting a wrong translation in the history.
-- Allow an optional place label and coarse context category on each conversation so history can be searched by place without uploading precise location.
+- Store history locally with real-time search, date grouping, and optional PIN/biometric lock.
+- Toggle conversation history on/off, and select storage preferences (Translated text only vs. Full conversation).
+- Absolute guarantee: never retain raw sensor or camera data.
+- Display deleted messages as deleted with tombstone indicators and permanent purge option.
+- Provide single and bulk transcript export to `.txt` and printable `.pdf`.
+- Provide selective link sharing with one-tap revocation.
+- Let users create, group, and speak favorite phrases with one tap.
+- Allow an optional place label and coarse context category on each conversation.
 
 ### F7. Emergency gesture
 
@@ -147,6 +180,25 @@ On first launch the app tests the phone (memory, speed on a sample input) and ch
 - Detect connectivity and device capability and pick the right mode automatically.
 - Show the current mode and its limits clearly.
 - Keep F6, F7 and F4 (channel check) fully working with no connection.
+
+### F8b. Notifications, reminders, and system alerts
+
+**What it is.** A centralized notification and alert center (Screen 20) that delivers important reminders, warnings, and system notices without cluttering the main translation screens. Notifications are categorized into:
+- **Reminders:** Prompts for critical actions, such as reviewing cloud synchronization settings, backing up favorite phrases, or re-verifying conversation history preferences.
+- **Warnings:** Hardware and security alerts, including poor electrode contact quality, low armband battery, Bluetooth disconnection, and offline capability downgrades.
+- **System Updates:** Notifications regarding downloaded offline vocabulary updates, model improvements, or app feature additions.
+
+Users can filter notifications by category tab (`All`, `Reminders`, `Warnings`, `Updates`), view unread notification counters, dismiss individual notifications, or mark all as read. Each notification card includes direct action links (e.g., `Review Sync Settings →` linking to Privacy Settings, `Check Calibration →` linking to Calibration). Confirmation modals protect users before any destructive actions (clearing history, deleting accounts, revoking shares).
+
+**Scenario.** Karim connects his armband and receives a warning notification indicating low battery (15%) and electrode channel 4 misalignment. Tapping the notification takes him directly to the Sensor Calibration screen. Later, after updating his privacy settings, a reminder alerts him to review his cloud sync preferences.
+
+**Key requirements**
+
+- Dedicated Notification Center screen with category filters and unread badges.
+- Dismissal of individual notifications and "Mark all as read" capability.
+- Deep-link action buttons within notification cards pointing to relevant settings or calibration tools.
+- Non-intrusive global access points: header bell icon (`🔔`), bottom navigation bar (`🔔 Alerts`), and settings page shortcut.
+- Reusable confirmation modal dialogs for all destructive user actions.
 
 ## 5. Future features (F9–F10)
 
@@ -182,18 +234,20 @@ Video clips for a limited vocabulary are realistic for the first version. A full
 
 ## 6. Work division: Mobile, AI, Backend
 
-Mobile owns everything the user touches and everything that must work offline. AI owns the two translation models and their accuracy. Backend runs the large models and serves files to the app. F6 and F7 need no AI or Backend work.
+Mobile owns everything the user touches and everything that must work offline. AI owns the translation and control models and their accuracy. Backend runs the large models, authentication, and secure sharing endpoints.
 
 | Feature | Mobile | AI | Backend |
 | --- | --- | --- | --- |
 | F1 Sign-to-speech translation | Receive the sensor stream, preprocess the signal, send it to the API, run the small on-device model, text-to-speech, online/offline switching | Train the large model; compress it into the small model; export both; measure accuracy for each | Inference API: receive signal, run the large model, return Arabic text; HTTPS; latency logging |
-| F2 Sensor connection and wake gesture | Bluetooth pairing, streaming, time-stamps, auto-reconnect, status screen, start/stop gesture and button | Wake-gesture detection if it uses EMG; test for false triggers | None |
+| F2 Sensor connection and gesture controls | Bluetooth pairing, streaming, time-stamps, auto-reconnect, status screen, 3-button control cluster (Stop, Resume, Give Gesture), synchronized armband gesture state | Control gesture detection (fist clench for stop, double-tap for resume, sign motion); test for false triggers | None |
+| F2b Temporary Gesture Mode | Ephemeral session state, in-memory volatile buffer, exclusion from local DB and cloud sync, confirmation modal | None | Strict zero-retention on ephemeral session requests |
 | F3 Preview and confirm | Preview screen, confirm and cancel gestures and buttons, the three modes, settings | Optional confidence score for each sentence | Return the confidence score with the response, if provided |
 | F4 Calibration | Placement guide, channel check, per-user normalization, quality result | Choose the normalization method; compare accuracy before and after on new users | Optional: store per-user settings with consent; run fine-tuning later |
 | F5 Speech-to-text | Microphone capture, large-text display, vibration, local recognizer fallback | Pick and test Egyptian Arabic speech-to-text models, online and offline | Speech-to-text endpoint (hosted model or proxy to a service) |
-| F6 History and favorites | Local database, history and favorites screens, lock, one-tap speech | None | None |
+| F6 History, storage and chat | Local database (SQLite/IndexedDB), storage preference filters (text-only vs. full dialogue), tombstone rendering (`⊘ This message was deleted`), single/bulk TXT & PDF export engines, interactive chat UI with partner simulation, PIN/biometric lock | None | Selective sharing API (tokenized read-only links, instant revocation endpoint), optional encrypted backup |
 | F7 Emergency gesture | Gesture and button trigger, countdown, speech, full-screen message, SMS, GPS | Choose a distinctive gesture; measure the false-trigger rate | None |
 | F8 Offline mode | Detect connection and device capability, load the small model, switch modes, show the mode banner | Deliver the small model and its supported phrase list; set the quality threshold for “device is capable” | Host versioned model files for download and update |
+| F8b Notifications and alerts | Dedicated Screen 20, unread badge counters, category filtering, deep-link navigation triggers, persistent alert manager, modal dialog system | None | Push notification service for server alerts and model updates (optional) |
 | F9 Dictionary and learning | Dictionary screens, video download and playback, practice mode | Score a learner’s sign for practice mode | Host videos; content API |
 | F10 Text-to-sign reply | Play clips or avatar, speed and repeat controls | Convert Arabic text to sign order (rules or model) | Conversion service; host clips |
 
@@ -201,14 +255,18 @@ Mobile owns everything the user touches and everything that must work offline. A
 
 **Mobile**
 
-- Android app, Bluetooth link to the armband, and all screens.
-- Signal preprocessing, the on-device model runtime, local database, text-to-speech, SMS and GPS.
+- Android app, Bluetooth link to the armband, and all UI screens.
+- Signal preprocessing, on-device model runtime, local database (with storage mode filters and tombstone deletion logic), text-to-speech, SMS and GPS.
+- Ephemeral memory management for Temporary Gesture Mode.
+- Formatted transcript export generators (plain text `.txt` and printable `.pdf`).
+- Notification center, category filtering, deep-link shortcuts, and confirmation modal framework.
 - Connectivity and device checks that choose the mode.
 
 **AI**
 
 - Data collection plan: many signers, several sessions, repeated armband placement.
 - Large model for the server and a compressed small model for the phone, evaluated separately.
+- Gesture control models for armband inputs (fist clench, double tap, sign motion) and false-trigger suppression.
 - Evaluation on new users, reported as word error rate and as the share of fully correct sentences.
 - Speech-to-text model selection (F5) and text-to-sign conversion (F10, later).
 
@@ -216,7 +274,10 @@ Mobile owns everything the user touches and everything that must work offline. A
 
 - One inference service for translation, with speech-to-text added when F5 is built.
 - Model hosting and versioned downloads for the app.
-- Encrypted transport, no storage of raw signals without the user’s consent, and basic monitoring of delay and errors.
+- Production security: TLS 1.3 / HTTPS for in-transit encryption, AES-256 for at-rest storage, and OAuth2/JWT token authorization.
+- Tokenized selective conversation sharing service with instant revocation capabilities.
+- Strict sensor privacy enforcement: zero persistent storage of raw high-frequency signals or camera feeds without explicit, segregated opt-in consent.
+- Basic monitoring of delay and errors.
 
 ### Integration points between teams
 
@@ -224,6 +285,7 @@ Mobile owns everything the user touches and everything that must work offline. A
 - **Preprocessing:** the same logic must run on the phone and on the server, or the two models will see different inputs.
 - **API contract:** request carries the signal, the user’s calibration values and an optional coarse place category; response carries the Arabic text and, if available, a confidence score. Precise coordinates are not part of the translation API.
 - **Model files:** AI delivers a versioned on-device model; Backend hosts it; Mobile downloads and checks the version.
+- **Sharing & Sync API:** Mobile requests temporary, cryptographically signed read-only links for specific conversation threads; Backend routes public view requests and handles revocation requests.
 
 ## 7. Non-functional requirements, roadmap, risks and open questions
 
@@ -232,8 +294,11 @@ The biggest unknowns are accuracy on new users and the delay of the online path,
 ### Non-functional requirements
 
 - **Latency:** time from the end of a sentence to speech is measured on the real path (sensor, phone, network, server, speech). The target is set after the first measurement.
-- **Privacy:** signals and speech sent to the server are encrypted in transit and not stored without the user’s consent. History and precise location stay on the phone and can be locked or turned off. Location context is opt-in; only the visible coarse category is sent for inference.
-- **Accessibility:** large text, high contrast and vibration feedback in every screen.
+- **Privacy & Sensor Non-Retention:** Raw camera frames, video feeds, and high-frequency sEMG/IMU raw signals are strictly processed in transient memory and are never stored locally or transmitted for persistent storage. Location context is opt-in and coarse only. Ephemeral Temporary Gesture Mode guarantees zero persistence.
+- **Security Architecture & Encryption:** All network communications with inference and synchronization backends enforce TLS 1.3 / HTTPS. Any persisted data (local SQLite/IndexedDB or server backups) is encrypted at rest using AES-256. Cloud access is guarded by OAuth2 and JWT bearer tokens with scoped permissions.
+- **Consent & AI Model Improvement:** Opting into AI model improvement data collection is an independent, granular, revocable consent setting completely decoupled from conversation history storage and user account identity.
+- **Right to Erasure (Account & Data Deletion):** Users can permanently delete their account and purge all associated conversation data, preferences, and calibration profiles at any time, preceded by an export-first safeguard prompt.
+- **Accessibility:** large text, high contrast, responsive chat styling, and vibration feedback in every screen.
 - **Reliability:** Bluetooth auto-reconnect, clear messages when the connection drops, and a safe fallback to offline mode.
 - **Battery:** translation runs only between a start and a stop.
 - **Device support:** the minimum supported phone is decided from tests on a low-end device.

@@ -575,17 +575,40 @@
             <section class="device-card">
               <div class="band-visual"><span></span><i></i><i></i><i></i></div>
               <div class="online-pill"><i></i> Connected</div>
-              <h2>Sout Band</h2><p>Bluetooth · connected now</p>
-              <div class="device-stats"><div><b>82%</b><small>Battery</small></div><div><b>8 / 8</b><small>Channels</small></div><div><b>Good</b><small>Signal</small></div></div>
+              <h2>Sout Armband</h2><p>Bluetooth LE · sEMG + 6-Axis IMU active</p>
+              <div class="device-stats">
+                <div><b>82%</b><small>Battery</small></div>
+                <div><b>8 / 8</b><small>sEMG Chs</small></div>
+                <div><b>6-DoF</b><small>IMU Sensor</small></div>
+                <div><b>94%</b><small>Signal</small></div>
+              </div>
+            </section>
+            <p class="section-label">INFERENCE SENSORS</p>
+            <section class="list-card">
+              <div class="menu-row" style="cursor:default">
+                <span class="row-icon">⚡</span>
+                <span class="row-copy"><strong>8-Channel Surface EMG Array</strong><small>Captures fine finger configurations and forearm muscle tension</small></span>
+                <span style="font-size:11px;font-weight:750;color:#18784A">1000 Hz</span>
+              </div>
+              <div class="menu-row" style="cursor:default">
+                <span class="row-icon">🧭</span>
+                <span class="row-copy"><strong>6-Axis IMU (Accelerometer + Gyroscope)</strong><small>Captures 3D spatial orientation, arm trajectories and movement speed</small></span>
+                <span style="font-size:11px;font-weight:750;color:#18784A">100 Hz</span>
+              </div>
+              <div class="menu-row" style="cursor:default">
+                <span class="row-icon">🔗</span>
+                <span class="row-copy"><strong>Multi-Modal Sensor Fusion</strong><small>Fuses muscle contractures with kinematics for accurate sign differentiation</small></span>
+                <span style="font-size:11px;font-weight:750;color:#0B7A83">Active</span>
+              </div>
             </section>
             <p class="section-label">CONNECTION</p>
             <section class="list-card settings-card">
               ${toggle('Auto-reconnect', 'Reconnect if Bluetooth drops', true)}
               ${toggle('Battery alerts', 'Notify me at 20% and 10%', true)}
             </section>
-            <button class="primary-button">Check all 8 channels</button>
+            <button class="primary-button">Check all 8 sEMG channels & IMU</button>
             <button class="secondary-button">Pair a different armband</button>
-            <p class="privacy-note">The armband sends EMG signal only. Sout does not store raw signals without your consent.</p>
+            <p class="privacy-note">The armband streams sEMG muscle signals and IMU kinematic data for real-time sign inference only. Raw high-frequency sensor signals are processed in volatile memory and never stored without your explicit consent.</p>
           </main>`
         },
         {
@@ -603,6 +626,7 @@
               <div>${icons.check}<span><strong>Clean, dry skin</strong><small>Remove sleeves from under the band</small></span></div>
               <div>${icons.check}<span><strong>Firm, not painful</strong><small>All 8 sensors should touch your skin</small></span></div>
               <div>${icons.check}<span><strong>Same position each time</strong><small>A small move can change the signal</small></span></div>
+              <div>${icons.check}<span><strong>Arm level & orientation</strong><small>IMU gyro sets the resting 3D spatial reference</small></span></div>
             </section>
             <div class="offline-note"><span>&#8681;</span><div><strong>Works offline</strong><small>Calibration happens entirely on your phone.</small></div></div>
             <button class="primary-button">The band is in place</button>
@@ -633,7 +657,11 @@
           <main class="screen-body result-screen">
             <div class="result-ring"><span>&#10003;</span></div>
             <h2>Good signal</h2><p class="result-lead">Sout has adapted to how you are wearing the armband today.</p>
-            <section class="quality-card"><div class="quality-head"><strong>Signal quality</strong><b>GOOD</b></div><div class="quality-bars">${Array.from({ length: 8 }, (_, i) => `<i style="height:${24 + (i % 4) * 6}px"></i>`).join('')}</div><div class="channel-labels"><span>CH 1</span><span>CH 8</span></div></section>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:15px;background:#EAF7F8;border:1px solid #9ED7DB;margin-bottom:12px;">
+              <div><strong style="display:block;font-size:13px;color:#0A4B52">6-Axis IMU Motion Sensors</strong><small style="display:block;color:#3C6E76;margin-top:2px;">Accelerometer & Gyroscope 3D kinematics synchronized</small></div>
+              <span style="font-size:11px;font-weight:800;color:#18784A;background:#DDF4E7;padding:4px 9px;border-radius:999px;">CALIBRATED</span>
+            </div>
+            <section class="quality-card"><div class="quality-head"><strong>sEMG Channel Quality</strong><b>8 / 8 GOOD</b></div><div class="quality-bars">${Array.from({ length: 8 }, (_, i) => `<i style="height:${24 + (i % 4) * 6}px"></i>`).join('')}</div><div class="channel-labels"><span>CH 1</span><span>CH 8</span></div></section>
             <section class="summary-grid"><div><small>Channels ready</small><strong>8 of 8</strong></div><div><small>Normalization</small><strong>Saved</strong></div><div><small>Completed</small><strong>2m 34s</strong></div><div><small>Valid for</small><strong>This placement</strong></div></section>
             <div class="info-note"><span>i</span><p>Calibrate again whenever you remove, move, or share the armband.</p></div>
             <button class="primary-button">Start translating</button>
@@ -641,27 +669,182 @@
           </main>`
         },
         {
-          n: 15, title: 'History & privacy', active: 'history',
+          n: 15, title: 'Settings & Privacy', active: 'history',
           body: `
-          ${top('History & privacy', 'ON THIS PHONE')}
-          <main class="screen-body compact">
-            <section class="privacy-banner"><span>&#9638;</span><div><strong>Your conversations stay local</strong><small>Nothing is uploaded unless needed for an online translation.</small></div></section>
-            <p class="section-label">HISTORY</p>
-            <section class="list-card settings-card">
-              ${toggle('Save conversation history', 'Keep signed and heard messages', true)}
-              ${toggle('Lock with fingerprint', 'Ask before opening history', true)}
-            </section>
-            <p class="section-label">STORAGE</p>
+          ${top('Settings & Privacy', 'ON THIS PHONE')}
+          <main class="screen-body compact scrollable" id="settings-screen-15-main">
+            <!-- 1. NOTIFICATIONS & REMINDERS -->
+            <p class="section-label first">NOTIFICATIONS & REMINDERS</p>
             <section class="list-card">
-              ${row('&#9716;', 'Saved conversations', '14 conversations · 1.2 MB', '<span class="value">14</span>' + icons.chevron, '5')}
+              <button class="menu-row" id="btn-open-notifications-screen" data-open-screen="20">
+                <span class="row-icon">&#128276;</span>
+                <span class="row-copy">
+                  <strong>Notifications & Reminders Center</strong>
+                  <small>View all alerts, privacy notices, and preferences</small>
+                </span>
+                <span class="value" id="s15-notif-count-val">2</span>${icons.chevron}
+              </button>
+            </section>
+            <div id="settings-reminders-card" class="settings-reminders-box">
+              <div class="reminders-header">
+                <strong><span class="rem-bell">&#128276;</span> Active Reminders</strong>
+                <span class="rem-count-badge" id="reminders-count-badge">2</span>
+              </div>
+              <div id="settings-reminders-list" class="reminders-list"></div>
+            </div>
+            <section class="list-card settings-card">
+              <div class="setting-row">
+                <div>
+                  <strong>Show in-app reminders</strong>
+                  <small>Display notices when privacy, sync, or history settings require review</small>
+                </div>
+                <button class="toggle on" id="setting-toggle-reminders" role="switch" aria-checked="true"><i></i></button>
+              </div>
+            </section>
+
+            <!-- 2. CONVERSATION HISTORY -->
+            <p class="section-label">CONVERSATION HISTORY</p>
+            <section class="list-card settings-card">
+              <div class="setting-row">
+                <div>
+                  <strong>Save conversation history</strong>
+                  <small id="save-history-desc">Currently enabled: new conversations are saved locally</small>
+                </div>
+                <button class="toggle on" id="setting-toggle-save-history" role="switch" aria-checked="true"><i></i></button>
+              </div>
+              ${toggle('Lock with fingerprint', 'Require biometric confirmation to open history', true)}
+            </section>
+
+            <span class="sub-label">STORAGE CONTENT PREFERENCE</span>
+            <section class="choice-card" id="storage-content-choices" data-choice-group>
+              <button class="choice selected" data-storage-mode="text-only">
+                <span class="radio"></span>
+                <span>
+                  <strong>Translated text only</strong>
+                  <small>Saves only your signed sentences translated into Egyptian Arabic text. Partner replies are not retained.</small>
+                </span>
+                <b>Recommended</b>
+              </button>
+              <button class="choice" data-storage-mode="full-dialogue">
+                <span class="radio"></span>
+                <span>
+                  <strong>Full conversation dialogue</strong>
+                  <small>Saves both your translated sign sentences and transcribed heard replies from conversation partners.</small>
+                </span>
+              </button>
+            </section>
+
+            <div class="privacy-callout">
+              <span class="callout-icon">&#128274;</span>
+              <p><strong>Strict Sensor Privacy:</strong> Raw video recordings, camera frames, and raw sEMG/IMU muscle sensor signals are never saved as part of conversation history.</p>
+            </div>
+
+            <!-- 3. STORAGE & SYNCHRONIZATION -->
+            <p class="section-label">STORAGE & SYNCHRONIZATION</p>
+            <section class="list-card settings-card">
+              <div class="setting-row">
+                <div>
+                  <strong>Cloud synchronization</strong>
+                  <small id="cloud-sync-desc">Sync saved conversations across your devices (Prototype simulation)</small>
+                </div>
+                <button class="toggle" id="setting-toggle-cloud-sync" role="switch" aria-checked="false"><i></i></button>
+              </div>
+            </section>
+            <div id="cloud-sync-status-box" class="sync-status-box local">
+              <span class="sync-icon">&#128241;</span>
+              <div>
+                <strong id="sync-status-title">Local storage only</strong>
+                <small id="sync-status-subtitle">Conversations remain solely on this phone. No records are uploaded.</small>
+              </div>
+            </div>
+
+            <p class="section-label">STORAGE BREAKDOWN</p>
+            <section class="list-card">
+              <button class="menu-row" id="btn-view-saved-chats" data-open-screen="5">
+                <span class="row-icon">&#9716;</span>
+                <span class="row-copy">
+                  <strong>Saved conversations</strong>
+                  <small id="settings-storage-calc">4 conversations · 18.4 KB</small>
+                </span>
+                <span class="value" id="settings-storage-val">4</span>${icons.chevron}
+              </button>
               ${row('&#8595;', 'Downloaded dictionary', '124 signs · 86 MB', '<span class="value">86 MB</span>' + icons.chevron)}
             </section>
-            <p class="section-label">YOUR DATA</p>
-            <section class="list-card action-list">
-              <button class="menu-row"><span class="row-icon">&#8679;</span><span class="row-copy"><strong>Export my data</strong><small>Create a private copy</small></span>${icons.chevron}</button>
-              <button class="menu-row danger"><span class="row-icon">&#9003;</span><span class="row-copy"><strong>Delete all history</strong><small>This cannot be undone</small></span>${icons.chevron}</button>
+
+            <!-- 4. PRIVACY & SHARING -->
+            <p class="section-label">PRIVACY & SHARING</p>
+            <section class="privacy-banner">
+              <span>&#128737;</span>
+              <div>
+                <strong>Information Storage Transparency</strong>
+                <small>Only translated Egyptian Arabic text and coarse place categories are stored when history is enabled. No video, raw sensors, or precise GPS coordinates are ever retained.</small>
+              </div>
             </section>
-            <p class="privacy-note">Raw EMG signals are not saved. You can turn history off at any time.</p>
+
+            <div class="sharing-card">
+              <div class="sharing-card-header">
+                <strong>Selective Conversation Sharing</strong>
+                <small>Explicitly choose which saved conversations are accessible via private links:</small>
+              </div>
+              <div id="settings-sharing-list" class="sharing-list"></div>
+              <button type="button" class="revoke-all-btn" id="btn-revoke-all-shared">&#128683; Revoke access to all shared conversations</button>
+            </div>
+
+            <div class="security-card">
+              <div class="security-card-header">
+                <span class="sec-badge">&#128272; Security Architecture</span>
+              </div>
+              <p>The intended production backend utilizes TLS 1.3/HTTPS encryption in transit, AES-256 encryption at rest, and server-side OAuth2/JWT authorization to protect conversation data.<br><br>
+              <em>Prototype Notice:</em> This prototype runs client-side in your browser. Real cloud encryption, user authentication, and backend sync require production server deployment.</p>
+            </div>
+
+            <!-- 5. AI IMPROVEMENT CONSENT -->
+            <p class="section-label">AI MODEL IMPROVEMENT</p>
+            <section class="list-card settings-card">
+              <div class="setting-row">
+                <div>
+                  <strong>Consent to improve AI models</strong>
+                  <small id="ai-consent-desc">Allow anonymized translation text to help train Egyptian Sign Language models</small>
+                </div>
+                <button class="toggle" id="setting-toggle-ai-consent" role="switch" aria-checked="false"><i></i></button>
+              </div>
+            </section>
+            <p class="privacy-note">Strictly optional and opt-in. This setting is separate from conversation history and is never enabled automatically.</p>
+
+            <!-- 6. ACCOUNT & DATA MANAGEMENT -->
+            <p class="section-label">ACCOUNT & DATA MANAGEMENT</p>
+            <section class="list-card action-list">
+              <button class="menu-row" id="btn-settings-export-txt">
+                <span class="row-icon">&#8679;</span>
+                <span class="row-copy">
+                  <strong>Export all conversations (TXT)</strong>
+                  <small>Download plain text transcript record</small>
+                </span>${icons.chevron}
+              </button>
+              <button class="menu-row" id="btn-settings-export-pdf">
+                <span class="row-icon">&#128442;</span>
+                <span class="row-copy">
+                  <strong>Export all conversations (PDF)</strong>
+                  <small>Generate formatted printable record</small>
+                </span>${icons.chevron}
+              </button>
+              <button class="menu-row danger" id="btn-settings-delete-all-history">
+                <span class="row-icon">&#9003;</span>
+                <span class="row-copy">
+                  <strong>Delete all conversation history</strong>
+                  <small>Permanently purge all saved conversations</small>
+                </span>${icons.chevron}
+              </button>
+              <button class="menu-row danger" id="btn-settings-delete-account">
+                <span class="row-icon">&#9888;</span>
+                <span class="row-copy">
+                  <strong>Delete account and all data</strong>
+                  <small>Remove profile, calibration and all history</small>
+                </span>${icons.chevron}
+              </button>
+            </section>
+
+            <p class="privacy-note centered">Sout adheres to privacy-by-design. You have full ownership of your conversation data.</p>
           </main>`
         },
         {
@@ -732,6 +915,60 @@
           </main>`
         },
         {
+          n: 20, title: 'Notifications & Reminders', active: 'home',
+          body: `
+          ${top('Notifications & Reminders', 'SYSTEM & PRIVACY')}
+          <main class="screen-body compact scrollable" id="screen-20-notifications-main">
+            <!-- Filter Tabs -->
+            <div class="notif-filter-tabs" role="tablist">
+              <button type="button" class="notif-tab active" data-notif-tab="all">All (<span id="notif-badge-all">4</span>)</button>
+              <button type="button" class="notif-tab" data-notif-tab="reminder">Reminders (<span id="notif-badge-rem">2</span>)</button>
+              <button type="button" class="notif-tab" data-notif-tab="warning">Warnings (<span id="notif-badge-warn">1</span>)</button>
+              <button type="button" class="notif-tab" data-notif-tab="info">Updates (<span id="notif-badge-info">1</span>)</button>
+            </div>
+
+            <div class="notif-summary-bar">
+              <span id="notif-summary-text">Active notifications and privacy reminders</span>
+              <button type="button" class="notif-clear-btn" id="btn-clear-all-notifs">Clear dismissed</button>
+            </div>
+
+            <!-- List of notification cards -->
+            <div class="notif-cards-container" id="screen-20-notif-container"></div>
+
+            <!-- System Reminder Guidance -->
+            <div class="privacy-callout">
+              <span class="callout-icon">&#128276;</span>
+              <p><strong>Proactive Privacy Reminders:</strong> Sout alerts you whenever important settings like conversation history, cloud sync, or sensor calibration require your review.</p>
+            </div>
+
+            <!-- Notification Settings -->
+            <p class="section-label">NOTIFICATION PREFERENCES</p>
+            <section class="list-card settings-card">
+              <div class="setting-row">
+                <div>
+                  <strong>Show in-app reminders</strong>
+                  <small>Display notices when privacy, sync, or history settings require review</small>
+                </div>
+                <button class="toggle on" id="toggle-screen20-reminders" role="switch" aria-checked="true"><i></i></button>
+              </div>
+              <div class="setting-row">
+                <div>
+                  <strong>Haptic alerts on translate</strong>
+                  <small>Subtle armband vibration when a translation finishes</small>
+                </div>
+                <button class="toggle on" id="toggle-screen20-haptics" role="switch" aria-checked="true"><i></i></button>
+              </div>
+              <div class="setting-row">
+                <div>
+                  <strong>Important privacy warnings</strong>
+                  <small>Immediate alerts before destructive actions or cloud sync changes</small>
+                </div>
+                <button class="toggle on" id="toggle-screen20-warnings" role="switch" aria-checked="true"><i></i></button>
+              </div>
+            </section>
+          </main>`
+        },
+        {
           n: 21, title: 'Inference feedback', active: 'history',
           body: `
           ${top('Help improve Sout', 'MODEL FEEDBACK')}
@@ -798,9 +1035,19 @@
           ${top('System status', 'BAND & MODEL')}
           <main class="screen-body compact status-screen">
             <section class="health-banner"><span>&#10003;</span><div><strong>Ready to translate</strong><small>Band connected and calibration valid</small></div></section>
-            <p class="section-label">BAND STATUS</p>
-            <section class="metric-grid"><div><small>Battery</small><strong>82%</strong><span>About 6 hours</span></div><div><small>Channels</small><strong>8 / 8</strong><span>All in contact</span></div><div><small>Signal quality</small><strong>92%</strong><span>Good</span></div><div><small>Packet loss</small><strong>0.4%</strong><span>Stable stream</span></div></section>
-            <p class="section-label">MODEL METRICS</p>
+            <p class="section-label">BAND & SENSOR STATUS</p>
+            <section class="metric-grid">
+              <div><small>Battery</small><strong>82%</strong><span>About 6 hours</span></div>
+              <div><small>sEMG Array</small><strong>8 / 8</strong><span>All in contact</span></div>
+              <div><small>6-Axis IMU</small><strong>100 Hz</strong><span>Accel + Gyro</span></div>
+              <div><small>Sensor Fusion</small><strong>Synced</strong><span>sEMG + Kinematics</span></div>
+              <div><small>Signal quality</small><strong>94%</strong><span>High SNR</span></div>
+              <div><small>Packet loss</small><strong>0.2%</strong><span>Stable stream</span></div>
+            </section>
+            <p class="section-label">MODEL INFERENCE METRICS</p>
+            <section class="metric-list" style="margin-bottom:10px;">
+              <div><span><strong>Sensor Fusion Architecture</strong><small>Temporal CNN (sEMG) + Kinematics BiLSTM (IMU)</small></span><b style="color:#0B7A83">sEMG + IMU</b></div>
+            </section>
             <section class="metric-list"><div><span><strong>Latest confidence</strong><small>Online translation</small></span><b>86%</b></div><div><span><strong>User-confirmed accuracy</strong><small>This demo session, 18 of 20 results</small></span><b>90%</b></div><div><span><strong>Online model evaluation</strong><small>Requires a validated Egyptian Sign Language test set</small></span><b class="pending">Pending</b></div><div><span><strong>Offline model evaluation</strong><small>Limited supported phrases only</small></span><b class="pending">Pending</b></div></section>
             <div class="warning-note"><span>i</span><p>The percentages above are prototype sample values, not clinical or production accuracy claims. Confidence describes one prediction; accuracy must be measured across a validated dataset.</p></div>
             <p class="section-label">TEST PROTOTYPE STATES</p>
@@ -1019,6 +1266,135 @@
         @keyframes prototype-screen-in{from{opacity:.45;transform:translateX(12px)}to{opacity:1;transform:none}}
         @media(max-width:920px){.prototype-toolbar{top:auto;right:12px;bottom:12px;width:auto;max-width:calc(100vw - 24px);padding:8px 9px;border-radius:14px}.prototype-toolbar-copy{display:none}.prototype-toolbar-actions{display:flex;flex-wrap:wrap;justify-content:center;margin:0}.prototype-toolbar button{min-height:34px;padding:0 12px}.prototype-toast{bottom:102px}}
         @media(max-width:430px){body.prototype-mode{padding:0;display:block;background:#FFFFFF}body.prototype-mode .board{width:100%}body.prototype-mode .board iframe,body.prototype-mode .board>.sout-phone{width:100%!important;max-width:390px;margin:0 auto;box-shadow:none}.prototype-toolbar{opacity:.92}}
+
+        /* --- Extended Settings, Notifications, Temporary Mode & Modal Dialogs --- */
+        .screen-body.scrollable{overflow-y:auto;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+        .screen-body.scrollable::-webkit-scrollbar{width:4px}
+        .screen-body.scrollable::-webkit-scrollbar-thumb{background:#CBD4D9;border-radius:4px}
+        .sub-label{display:block;margin:12px 2px 6px;color:var(--slate);font-size:9.5px;font-weight:800;letter-spacing:1px}
+        .privacy-callout{display:flex;align-items:flex-start;gap:10px;background:#EAF7F8;border:1px solid #BCE2E5;border-radius:14px;padding:12px 14px;margin:12px 0}
+        .privacy-callout .callout-icon{font-size:16px;flex-shrink:0;color:var(--teal)}
+        .privacy-callout p{margin:0;font-size:11px;line-height:1.45;color:var(--navy)}
+        .privacy-callout strong{color:var(--teal-dark)}
+        .settings-reminders-box{background:#FFF9EB;border:1px solid #F6D799;border-radius:15px;padding:12px 14px;margin-bottom:12px}
+        .reminders-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+        .reminders-header strong{font-size:12px;color:#7A4500;display:flex;align-items:center;gap:6px}
+        .rem-bell{font-size:14px}
+        .rem-count-badge{background:#B26A00;color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:999px}
+        .reminders-list{display:flex;flex-direction:column;gap:6px}
+        .reminder-item{display:flex;align-items:flex-start;gap:8px;background:#FFFFFF;border:1px solid #EEDBBE;border-radius:10px;padding:8px 10px;font-size:11px;color:#5A3600;line-height:1.35}
+        .reminder-item span{flex:1}
+        .reminder-item .rem-dismiss{border:0;background:transparent;color:#996B3D;cursor:pointer;font-size:14px;padding:0 4px;line-height:1;border-radius:4px}
+        .reminder-item .rem-dismiss:hover{background:#F6D799;color:#7A4500}
+        .sync-status-box{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;margin:10px 0 14px}
+        .sync-status-box.local{background:#F0F4F7;border:1px solid #DCE3E8;color:#243B4E}
+        .sync-status-box.synced{background:var(--green-soft);border:1px solid #BCE5CB;color:var(--green)}
+        .sync-status-box .sync-icon{font-size:18px}
+        .sync-status-box strong{display:block;font-size:12px}
+        .sync-status-box small{display:block;font-size:10px;opacity:.85}
+        .sharing-card{background:#FFFFFF;border:1px solid var(--line);border-radius:15px;padding:14px;margin-top:12px}
+        .sharing-card-header strong{display:block;font-size:13px;color:var(--navy)}
+        .sharing-card-header small{display:block;font-size:10.5px;color:var(--slate);margin-top:2px}
+        .sharing-list{margin:10px 0;display:flex;flex-direction:column;gap:6px}
+        .sharing-row{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:#F7F9FA;border:1px solid #E4EAEE;border-radius:10px}
+        .sharing-row div strong{display:block;font-size:12px}
+        .sharing-row div small{display:block;font-size:10px;color:var(--slate)}
+        .share-toggle-btn{border:1px solid var(--line);background:#fff;padding:5px 10px;border-radius:8px;font:700 10.5px system-ui,sans-serif;cursor:pointer;color:var(--slate);transition:all .15s ease}
+        .share-toggle-btn.shared{background:var(--teal-soft);border-color:var(--teal);color:var(--teal-dark)}
+        .revoke-all-btn{width:100%;min-height:36px;border:1px dashed #D28B7D;background:#FFF6F4;color:var(--red);border-radius:9px;font:700 11px system-ui,sans-serif;cursor:pointer;margin-top:4px}
+        .revoke-all-btn:hover{background:#FFE3DD}
+        .security-card{background:#F8FAFD;border:1px solid #DCE3E8;border-radius:15px;padding:13px 14px;margin-top:12px}
+        .sec-badge{font-size:12px;font-weight:750;color:#183A52}
+        .security-card p{margin:6px 0 0;font-size:10.5px;line-height:1.45;color:var(--slate)}
+        .security-card em{color:#284B63;font-style:normal;font-weight:600}
+
+        /* Modal Dialog Component */
+        .sout-modal-backdrop{position:absolute;inset:0;z-index:9999;background:rgba(16,33,47,.58);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;padding:18px;opacity:0;pointer-events:none;transition:opacity .2s ease}
+        .sout-modal-backdrop.visible{opacity:1;pointer-events:auto}
+        .sout-modal{width:100%;max-width:320px;background:#FFFFFF;border-radius:18px;padding:20px 18px 16px;box-shadow:0 12px 32px rgba(16,33,47,.32);border:1px solid var(--line);animation:soutModalPop .18s ease-out}
+        @keyframes soutModalPop{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
+        .sout-modal-title{margin:0 0 8px;font-size:17px;font-weight:750;color:var(--navy)}
+        .sout-modal-message{margin:0 0 16px;font-size:12.5px;line-height:1.45;color:var(--slate)}
+        .sout-modal-extra{width:100%;min-height:38px;margin-bottom:12px;border:1px solid var(--teal);background:#EAF7F8;color:var(--teal-dark);font:700 12px system-ui,sans-serif;border-radius:10px;cursor:pointer}
+        .sout-modal-actions{display:flex;gap:8px}
+        .sout-modal-cancel{flex:1;min-height:42px;border:1px solid var(--line);background:#FFFFFF;color:var(--navy);font:700 13px system-ui,sans-serif;border-radius:11px;cursor:pointer}
+        .sout-modal-confirm{flex:1;min-height:42px;border:0;background:var(--teal);color:#FFFFFF;font:700 13px system-ui,sans-serif;border-radius:11px;cursor:pointer}
+        .sout-modal-confirm.destructive{background:var(--red)}
+
+        /* Toast Enhancements */
+        .prototype-toast{display:flex;align-items:center;gap:10px;pointer-events:auto}
+        .prototype-toast .toast-text{flex:1}
+        .prototype-toast .toast-close{border:0;background:transparent;color:#9FB4C3;font-size:15px;cursor:pointer;padding:0 3px;line-height:1;border-radius:4px}
+        .prototype-toast .toast-close:hover{color:#FFFFFF;background:rgba(255,255,255,.15)}
+        .prototype-toast.success{background:#0E4326;box-shadow:0 10px 28px rgba(14,67,38,.35)}
+        .prototype-toast.destructive{background:#4D120B;box-shadow:0 10px 28px rgba(77,18,11,.35)}
+        .prototype-toast.warning{background:#4A2C00;box-shadow:0 10px 28px rgba(74,44,0,.35)}
+        
+        /* Screen 20 Notifications & Reminders Styles & Responsive Layout */
+        .board[data-screen-number="20"] .sout-phone{display:flex!important;flex-direction:column!important;height:844px;position:relative;overflow:hidden;background:#F7F9FA}
+        .board[data-screen-number="20"] .app-head{flex:0 0 auto!important;height:auto!important;min-height:64px!important;padding:22px 20px 8px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;border-bottom:1px solid #DCE3E8!important;background:#FFFFFF!important;z-index:2}
+        .board[data-screen-number="20"] .page-title{flex:0 0 auto!important;height:auto!important;min-height:46px!important;padding:8px 20px 8px!important;background:#FFFFFF!important;border-bottom:1px solid #EBF0F2!important;z-index:2}
+        .board[data-screen-number="20"] .page-title h1{margin:0!important;font-size:22px!important;line-height:1.25!important;font-weight:750!important;color:#10212F!important;word-break:break-word!important}
+        .board[data-screen-number="20"] .screen-body#screen-20-notifications-main{flex:1 1 0%!important;height:auto!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;padding:14px 18px 96px!important;-webkit-overflow-scrolling:touch!important;scrollbar-width:thin!important}
+        .board[data-screen-number="20"] .screen-body#screen-20-notifications-main::-webkit-scrollbar{width:5px;display:block!important}
+        .board[data-screen-number="20"] .screen-body#screen-20-notifications-main::-webkit-scrollbar-thumb{background:#CBD4D9;border-radius:4px}
+        .board[data-screen-number="20"] .bottom-nav{position:absolute!important;bottom:0!important;left:0!important;right:0!important;height:72px!important;background:#FFFFFF!important;border-top:1px solid #DCE3E8!important;box-shadow:0 -3px 12px rgba(16,33,47,.06)!important;z-index:10!important}
+
+        .notif-filter-tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:4px;margin-bottom:10px;flex-wrap:nowrap}
+        .notif-filter-tabs::-webkit-scrollbar{display:none}
+        .notif-tab{min-height:34px;padding:0 12px;border:1px solid #DCE3E8;border-radius:999px;background:#FFFFFF;color:#5B6B78;font:700 11.5px system-ui,sans-serif;white-space:nowrap;flex-shrink:0;cursor:pointer;transition:all .15s ease}
+        .notif-tab.active{border-color:#0B7A83;background:#0B7A83;color:#FFFFFF}
+        .notif-summary-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;font-size:11.5px;color:#5B6B78}
+        #notif-summary-text{flex:1;min-width:0;word-break:break-word}
+        .notif-clear-btn{border:0;background:transparent;color:#0B7A83;font:700 11px system-ui,sans-serif;cursor:pointer;padding:2px 4px;flex-shrink:0;white-space:nowrap}
+        .notif-clear-btn:hover{text-decoration:underline}
+        .notif-cards-container{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+        .notif-card{padding:12px 14px;border-radius:14px;background:#FFFFFF;border:1px solid #DCE3E8;box-shadow:0 1px 4px rgba(16,33,47,.05);display:flex;flex-direction:column;gap:6px;transition:all .15s ease;word-break:break-word;width:100%;box-sizing:border-box}
+        .notif-card.reminder{border-left:4px solid #0B7A83}
+        .notif-card.warning{border-left:4px solid #B26A00;background:#FFFDF8}
+        .notif-card.info{border-left:4px solid #1E7B4A}
+        .notif-card-header{display:flex;align-items:flex-start;gap:9px}
+        .notif-type-icon{font-size:16px;line-height:1.2;flex-shrink:0}
+        .notif-title-wrap{flex:1;min-width:0}
+        .notif-title-wrap strong{display:block;font-size:13.5px;font-weight:750;color:#10212F;line-height:1.3;word-break:break-word}
+        .notif-title-wrap small{display:block;font-size:10px;color:#718096;margin-top:1px}
+        .notif-dismiss-btn{width:24px;height:24px;border:0;border-radius:50%;background:transparent;color:#8C99A4;font-size:16px;cursor:pointer;display:grid;place-items:center;line-height:1;flex-shrink:0}
+        .notif-dismiss-btn:hover{background:#E2E8F0;color:#10212F}
+        .notif-card-msg{margin:0;font-size:12px;line-height:1.45;color:#4A5568;word-break:break-word}
+        .notif-card-actions{display:flex;justify-content:flex-end;margin-top:4px}
+        .notif-action-jump-btn{border:1px solid #0B7A83;background:#EAF7F8;color:#075E66;padding:6px 12px;border-radius:8px;font:700 11.5px system-ui,sans-serif;cursor:pointer;transition:background .15s ease}
+        .notif-action-jump-btn:hover{background:#D7F0F2}
+        .notif-empty-state{text-align:center;padding:32px 16px;background:#FFFFFF;border-radius:14px;border:1px dashed #CBD5E1;color:#64748B}
+        .notif-empty-icon{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:50%;background:#E4F3E9;color:#1E7B4A;font-size:20px;font-weight:800;margin-bottom:8px}
+
+        /* Top header bell buttons and badge */
+        .home-notif-bell, .chat-bell-btn{display:inline-flex;align-items:center;justify-content:center;gap:4px;min-height:36px;padding:0 9px;border:1px solid #DCE3E8;border-radius:999px;background:#FFFFFF;color:#5B6B78;font:700 11px system-ui,sans-serif;cursor:pointer;transition:all .15s ease}
+        .home-notif-bell:hover, .chat-bell-btn:hover{background:#F0F4F7;border-color:#BAC9D4}
+        .bell-unread-dot, .sout-notif-badge-dot{background:#C8381F;color:#FFFFFF;border-radius:999px;font-size:9px;padding:1px 5px;font-weight:800}
+
+        @media(max-width:480px){
+          body.prototype-mode{padding:0!important;display:flex!important;flex-direction:column!important;height:100vh!important;height:100dvh!important;overflow:hidden!important;background:#F7F9FA!important}
+          body.prototype-mode .board{width:100%!important;height:100%!important;display:flex!important;flex-direction:column!important;margin:0!important}
+          body.prototype-mode .board.is-active{display:flex!important;flex-direction:column!important;height:100%!important;width:100%!important}
+          body.prototype-mode .board>.sout-phone,
+          body.prototype-mode .board[data-screen-number="20"] .sout-phone{width:100%!important;max-width:100%!important;height:100%!important;max-height:100dvh!important;border-radius:0!important;box-shadow:none!important}
+          body.prototype-mode .board[data-screen-number="20"] .screen-body#screen-20-notifications-main{padding-bottom:96px!important}
+        }
+
+        /* Deleted message bubble styling */
+        .deleted-bubble{background:#F1F4F7!important;border:1.5px dashed #CBD5E1!important;border-radius:18px!important;padding:10px 14px!important;display:flex!important;align-items:center!important;gap:9px!important;color:#64748B!important}
+        .msg-purge-btn{border:0;background:transparent;color:#94A3B8;cursor:pointer;font-size:11px;padding:1px 4px;border-radius:4px}
+        .msg-purge-btn:hover{color:#C8381F;background:#FFE3DD}
+
+        /* Chat input bar styling */
+        .chat-input-bar{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#FFFFFF;border-top:1px solid #DCE3E8;margin-top:auto}
+        .chat-sign-btn{min-height:38px;padding:0 11px;border-radius:10px;background:#0B7A83;color:#FFFFFF;border:0;font:700 11.5px system-ui,sans-serif;cursor:pointer;display:flex;align-items:center;gap:5px;flex-shrink:0}
+        .chat-sign-btn:hover{background:#095C63}
+        .chat-text-input{flex:1;min-height:38px;padding:0 12px;border:1px solid #DCE3E8;border-radius:10px;background:#F7F9FA;font:13px system-ui,sans-serif;color:#10212F;outline:0}
+        .chat-text-input:focus{background:#FFFFFF;border-color:#0B7A83}
+        .chat-send-msg-btn{width:38px;height:38px;border-radius:10px;background:#DDF1F2;color:#085057;border:1px solid #BCE2E5;display:grid;place-items:center;cursor:pointer;flex-shrink:0}
+        .chat-send-msg-btn:hover{background:#CEEBEF;border-color:#0B7A83}
+        
       `;
         const font = document.createElement('link');
         font.rel = 'stylesheet';
@@ -1053,18 +1429,608 @@
         const toolbar = document.createElement('aside');
         toolbar.className = 'prototype-toolbar';
         toolbar.setAttribute('aria-label', 'Prototype controls');
-        toolbar.innerHTML = `<div class="prototype-toolbar-copy"><strong>Interactive app flow</strong><small class="prototype-screen-label">Welcome</small></div><div class="prototype-toolbar-actions"><button type="button" class="prototype-prev">Previous</button><button type="button" class="prototype-next">Next</button><button type="button" class="prototype-band">Band gesture</button><button type="button" class="prototype-restart">Restart</button><button type="button" class="prototype-status">Status</button><button type="button" class="prototype-offline">Offline</button><button type="button" class="prototype-exit">View all</button></div>`;
+        toolbar.innerHTML = `<div class="prototype-toolbar-copy"><strong>Interactive app flow</strong><small class="prototype-screen-label">Welcome</small></div><div class="prototype-toolbar-actions"><button type="button" class="prototype-prev">Previous</button><button type="button" class="prototype-next">Next</button><button type="button" class="prototype-band">Band gesture</button><button type="button" class="prototype-restart">Restart</button><button type="button" class="prototype-notifications">&#128276; Alerts</button><button type="button" class="prototype-status">Status</button><button type="button" class="prototype-offline">Offline</button><button type="button" class="prototype-exit">View all</button></div>`;
         const toast = document.createElement('div');
         toast.className = 'prototype-toast';
         toast.setAttribute('role', 'status');
         toast.setAttribute('aria-live', 'polite');
         host.append(toolbar, toast);
 
-        function announcePrototype(message) {
-          toast.textContent = message;
-          toast.classList.add('show');
+        // --- Sout Unified Prototype State & Storage ---
+        const defaultSoutState = {
+          saveHistory: true,
+          storageContent: 'text-only', // 'text-only' | 'full-dialogue'
+          cloudSync: false,
+          aiImprovementConsent: false,
+          notificationsEnabled: true,
+          lockFingerprint: true,
+          temporaryMode: false,
+          temporaryMessages: [
+            { id: 'tmp-1', role: 'user', arabic: 'مساء الخير، لو سمحت عايز أسأل سؤال خاص عن الحساب', translation: 'Good evening, I want to ask a private question about the account', meta: 'You signed · temporary session' },
+            { id: 'tmp-2', role: 'peer', arabic: 'اتفضل يا فندم، أنا سامعك وبجاوبك', translation: 'Go ahead, I am listening and will reply', meta: 'Heard · temporary session' }
+          ],
+          sharedConversationIds: ['conv-1'],
+          notifications: [
+            { id: 'notif-1', type: 'reminder', title: 'Cloud Sync Review', message: 'Cloud sync is currently in local-only mode. Saved conversations remain solely on this device unless cloud sync is enabled.', time: 'Today', actionLabel: 'Review Sync Settings', actionScreen: 15, isDismissed: false },
+            { id: 'notif-2', type: 'reminder', title: 'History Storage Mode', message: 'Conversation storage is set to "Translated text only" to protect partner privacy. Raw sEMG/IMU sensors are never saved.', time: 'Today', actionLabel: 'Review History', actionScreen: 15, isDismissed: false },
+            { id: 'notif-3', type: 'warning', title: 'Armband Calibration Notice', message: '8-channel muscle sensors streaming normally. Perform re-calibration if gesture detection accuracy drops.', time: 'Yesterday', actionLabel: 'Check Calibration', actionScreen: 12, isDismissed: false },
+            { id: 'notif-4', type: 'info', title: 'Temporary Gesture Mode Ready', message: 'You can enable Temporary Gesture Mode at any time from Chat. Temporary sessions are never saved or uploaded.', time: '3 days ago', actionLabel: 'Open Chat', actionScreen: 5, isDismissed: false }
+          ],
+          reminders: [
+            { id: 'rem-cloud-sync', text: 'Cloud synchronization is in prototype simulation mode. Review what is backed up on your device.', dismissed: false },
+            { id: 'rem-storage-pref', text: 'Conversation storage is set to "Translated text only" (Recommended). Review storage content preferences.', dismissed: false }
+          ],
+          conversations: [
+            {
+              id: 'conv-1',
+              title: 'Pharmacy',
+              category: 'pharmacy',
+              date: 'Today',
+              place: 'Kasr El Ainy Street · Cairo',
+              messages: [
+                { id: 'm1', role: 'user', arabic: 'ممكن دوا للصداع؟', translation: 'Can I have medicine for a headache?', meta: 'You signed · spoken 12:38' },
+                { id: 'm2', role: 'peer', arabic: 'الوجع بقاله قد إيه؟', translation: 'How long has the pain been there?', meta: 'Heard · 12:39' },
+                { id: 'm3', role: 'user', arabic: 'عندي صداع من يومين', translation: 'I have had a headache for two days', meta: 'You signed · spoken 12:40' },
+                { id: 'm4', role: 'peer', arabic: 'الدوا ده بعد الأكل، مرتين في اليوم', translation: 'Take this after meals, twice a day', meta: 'Heard · 12:41' }
+              ]
+            },
+            {
+              id: 'conv-2',
+              title: 'Doctor visit',
+              category: 'doctor',
+              date: 'Yesterday',
+              place: 'Dokki · Giza',
+              messages: [
+                { id: 'm5', role: 'user', arabic: 'أنا عايز أحجز كشف', translation: 'I want to book an examination', meta: 'You signed · spoken 10:14' },
+                { id: 'm6', role: 'peer', arabic: 'الكشف بكرة الساعة عشرة', translation: 'The appointment is tomorrow at ten', meta: 'Heard · 10:15' },
+                { id: 'm7', role: 'user', arabic: 'تمام، شكراً', translation: 'Great, thank you', meta: 'You signed · spoken 10:15' },
+                { id: 'm8', role: 'peer', arabic: 'من فضلك هات البطاقة', translation: 'Please provide your ID', meta: 'Heard · 10:16' }
+              ]
+            },
+            {
+              id: 'conv-3',
+              title: 'Bank',
+              category: 'bank',
+              date: '14 Oct',
+              place: 'Nasr City · Cairo',
+              messages: [
+                { id: 'm9', role: 'user', arabic: 'محتاج أفتح حساب جديد', translation: 'I need to open a new account', meta: 'You signed · spoken 14:02' },
+                { id: 'm10', role: 'peer', arabic: 'معاك بطاقة الرقم القومي؟', translation: 'Do you have your national ID?', meta: 'Heard · 14:03' },
+                { id: 'm11', role: 'user', arabic: 'أيوه، معايا', translation: 'Yes, I have it with me', meta: 'You signed · spoken 14:03' },
+                { id: 'm12', role: 'peer', arabic: 'اتفضل املى الاستمارة دي', translation: 'Please fill out this form', meta: 'Heard · 14:04' }
+              ]
+            },
+            {
+              id: 'conv-4',
+              title: 'Minibus',
+              category: 'transport',
+              date: '12 Oct',
+              place: 'Ramses Square · Cairo',
+              messages: [
+                { id: 'm13', role: 'user', arabic: 'لو سمحت نزلني هنا', translation: 'Please drop me off here', meta: 'You signed · spoken 18:20' },
+                { id: 'm14', role: 'peer', arabic: 'حاضر، المحطة الجاية', translation: 'Sure, next stop', meta: 'Heard · 18:20' },
+                { id: 'm15', role: 'user', arabic: 'شكراً', translation: 'Thank you', meta: 'You signed · spoken 18:21' },
+                { id: 'm16', role: 'peer', arabic: 'العفو', translation: 'You are welcome', meta: 'Heard · 18:21' }
+              ]
+            }
+          ]
+        };
+
+        function loadSoutState() {
+          try {
+            const raw = localStorage.getItem('soutPrototypeState_v2');
+            if (raw) {
+              const parsed = JSON.parse(raw);
+              if (parsed && Array.isArray(parsed.conversations)) {
+                if (!parsed.notifications || !parsed.notifications.length) {
+                  parsed.notifications = JSON.parse(JSON.stringify(defaultSoutState.notifications));
+                }
+                return Object.assign({}, defaultSoutState, parsed);
+              }
+            }
+          } catch (e) {}
+          return JSON.parse(JSON.stringify(defaultSoutState));
+        }
+
+        let soutState = loadSoutState();
+        window.__soutState = soutState;
+
+        function saveSoutState() {
+          try {
+            localStorage.setItem('soutPrototypeState_v2', JSON.stringify(soutState));
+          } catch (e) {}
+          window.__soutState = soutState;
+          if (typeof window.__soutSyncAll === 'function') {
+            window.__soutSyncAll();
+          }
+        }
+
+        function announcePrototype(message, type = 'info') {
+          if (!soutState.notificationsEnabled && type === 'info') return;
+          toast.innerHTML = `<span class="toast-text">${message}</span><button type="button" class="toast-close" aria-label="Dismiss notification">&#10005;</button>`;
+          toast.className = 'prototype-toast show ' + type;
+          const closeBtn = toast.querySelector('.toast-close');
+          if (closeBtn) {
+            closeBtn.onclick = () => toast.classList.remove('show');
+          }
           clearTimeout(toastTimer);
-          toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+          toastTimer = setTimeout(() => toast.classList.remove('show'), 3800);
+        }
+
+        // Universal Confirmation Modal Dialog
+        function showModalDialog(targetDocument, {
+          title,
+          message,
+          confirmText = 'Confirm',
+          cancelText = 'Cancel',
+          isDestructive = false,
+          extraAction = null,
+          onConfirm,
+          onCancel
+        }) {
+          const doc = targetDocument || document;
+          const backdrop = doc.createElement('div');
+          backdrop.className = 'sout-modal-backdrop';
+          backdrop.innerHTML = `
+            <div class="sout-modal" role="dialog" aria-modal="true">
+              <h3 class="sout-modal-title">${title}</h3>
+              <p class="sout-modal-message">${message}</p>
+              ${extraAction ? `<button type="button" class="sout-modal-extra">${extraAction.label}</button>` : ''}
+              <div class="sout-modal-actions">
+                <button type="button" class="sout-modal-cancel">${cancelText}</button>
+                <button type="button" class="sout-modal-confirm ${isDestructive ? 'destructive' : ''}">${confirmText}</button>
+              </div>
+            </div>
+          `;
+          doc.body.appendChild(backdrop);
+          setTimeout(() => backdrop.classList.add('visible'), 15);
+
+          const close = () => {
+            backdrop.classList.remove('visible');
+            setTimeout(() => backdrop.remove(), 220);
+          };
+
+          backdrop.querySelector('.sout-modal-cancel').addEventListener('click', () => {
+            close();
+            if (onCancel) onCancel();
+          });
+          backdrop.querySelector('.sout-modal-confirm').addEventListener('click', () => {
+            close();
+            if (onConfirm) onConfirm();
+          });
+          if (extraAction) {
+            backdrop.querySelector('.sout-modal-extra').addEventListener('click', () => {
+              extraAction.onClick();
+            });
+          }
+        }
+
+        // Export Helpers
+        function exportConversationAsTxt(conversation) {
+          if (!conversation) return;
+          let text = '================================================================================\n';
+          text += 'SOUT (صوت) - Egyptian Sign Language Conversation Record\n';
+          text += 'Title: ' + conversation.title + '\n';
+          text += 'Context: ' + (conversation.place || conversation.category) + '\n';
+          text += 'Date: ' + conversation.date + '\n';
+          text += 'Exported: ' + new Date().toLocaleString() + '\n';
+          text += 'Storage Mode: ' + (soutState.storageContent === 'text-only' ? 'Translated Text Only' : 'Full Conversation Exchange') + '\n';
+          text += '================================================================================\n\n';
+
+          conversation.messages.forEach(msg => {
+            if (soutState.storageContent === 'text-only' && msg.role !== 'user') return;
+            const speaker = msg.role === 'user' ? 'YOU SIGNED (Translation)' : 'HEARD REPLY';
+            text += '[' + (msg.meta || '') + '] ' + speaker + ':\n';
+            text += '  Arabic: ' + msg.arabic + '\n';
+            if (msg.translation) text += '  English: ' + msg.translation + '\n';
+            text += '\n';
+          });
+
+          const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'sout-' + conversation.title.toLowerCase().replace(/\s+/g, '-') + '.txt';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+          announcePrototype('Conversation exported as TXT file: ' + a.download, 'success');
+        }
+
+        function exportConversationAsPdf(conversation) {
+          if (!conversation) return;
+          const printWin = window.open('', '_blank');
+          if (!printWin) {
+            exportConversationAsTxt(conversation);
+            return;
+          }
+          const rows = conversation.messages
+            .filter(m => soutState.storageContent !== 'text-only' || m.role === 'user')
+            .map(m => `
+              <div style="margin-bottom:12px;padding:12px 14px;border-radius:10px;background:${m.role === 'user' ? '#EAF7F8' : '#F7F9FA'};border:1px solid #DCE3E8;">
+                <div style="font-size:11px;color:#5B6B78;margin-bottom:4px;"><strong>${m.role === 'user' ? 'You signed (Translation)' : 'Heard speech'}</strong> · ${m.meta || ''}</div>
+                <div dir="rtl" style="font-size:19px;font-weight:700;color:#10212F;font-family:sans-serif;">${m.arabic}</div>
+                ${m.translation ? `<div style="font-size:13px;color:#5B6B78;margin-top:4px;">${m.translation}</div>` : ''}
+              </div>
+            `).join('');
+
+          printWin.document.write(`
+            <!DOCTYPE html>
+            <html lang="ar">
+            <head>
+              <meta charset="utf-8">
+              <title>Sout - ${conversation.title} Transcript</title>
+              <style>
+                body{font-family:system-ui,-apple-system,sans-serif;padding:36px;max-width:720px;margin:0 auto;color:#10212F}
+                h1{color:#0B7A83;margin:0 0 4px}
+                .meta{color:#5B6B78;font-size:13px;margin-bottom:24px;border-bottom:1px solid #DCE3E8;padding-bottom:12px}
+                .footer{margin-top:32px;font-size:11px;color:#5B6B78;border-top:1px solid #DCE3E8;padding-top:10px}
+              </style>
+            </head>
+            <body>
+              <h1>صوت SOUT · Conversation Record</h1>
+              <div class="meta"><strong>${conversation.title}</strong> · ${conversation.date} · ${conversation.place || conversation.category}</div>
+              ${rows}
+              <div class="footer">Exported from Sout Mobile Prototype · Confidential & Private</div>
+              <script>setTimeout(() => window.print(), 250);<\/script>
+            </body>
+            </html>
+          `);
+          printWin.document.close();
+          announcePrototype('Printable PDF transcript prepared for "' + conversation.title + '"', 'success');
+        }
+
+        function exportAllConversationsAsTxt(conversations) {
+          if (!conversations || !conversations.length) {
+            announcePrototype('No saved conversations to export.', 'warning');
+            return;
+          }
+          let text = '================================================================================\n';
+          text += 'SOUT (صوت) - Complete Conversation History Export\n';
+          text += 'Total Saved Conversations: ' + conversations.length + '\n';
+          text += 'Exported Date: ' + new Date().toLocaleString() + '\n';
+          text += 'Storage Content Mode: ' + (soutState.storageContent === 'text-only' ? 'Translated Text Only' : 'Full Two-Way Dialogue') + '\n';
+          text += '================================================================================\n\n';
+
+          conversations.forEach((conv, idx) => {
+            text += '--- CONVERSATION ' + (idx + 1) + ': ' + conv.title + ' (' + conv.date + ') ---\n';
+            text += 'Location / Context: ' + (conv.place || conv.category) + '\n\n';
+            conv.messages.forEach(msg => {
+              if (soutState.storageContent === 'text-only' && msg.role !== 'user') return;
+              const speaker = msg.role === 'user' ? 'YOU SIGNED' : 'HEARD';
+              text += '  [' + (msg.meta || '') + '] ' + speaker + ': ' + msg.arabic + '\n';
+              if (msg.translation) text += '    Translation: ' + msg.translation + '\n';
+            });
+            text += '\n';
+          });
+
+          const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'sout-all-conversations-export.txt';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+          announcePrototype('Exported all ' + conversations.length + ' conversations as TXT', 'success');
+        }
+
+        function exportAllConversationsAsPdf(conversations) {
+          if (!conversations || !conversations.length) {
+            announcePrototype('No saved conversations to export.', 'warning');
+            return;
+          }
+          const printWin = window.open('', '_blank');
+          if (!printWin) {
+            exportAllConversationsAsTxt(conversations);
+            return;
+          }
+          const allHtml = conversations.map((conv, idx) => {
+            const msgs = conv.messages
+              .filter(m => soutState.storageContent !== 'text-only' || m.role === 'user')
+              .map(m => `
+                <div style="margin-bottom:8px;padding:9px 12px;border-radius:8px;background:${m.role === 'user' ? '#EAF7F8' : '#F7F9FA'};border:1px solid #DCE3E8;">
+                  <div style="font-size:10.5px;color:#5B6B78;"><strong>${m.role === 'user' ? 'You signed (Translation)' : 'Heard'}</strong> · ${m.meta || ''}</div>
+                  <div dir="rtl" style="font-size:17px;font-weight:700;color:#10212F;margin-top:2px;">${m.arabic}</div>
+                  ${m.translation ? `<div style="font-size:12px;color:#5B6B78;margin-top:2px;">${m.translation}</div>` : ''}
+                </div>
+              `).join('');
+            return `
+              <section style="margin-bottom:28px;page-break-inside:avoid;">
+                <h2 style="font-size:16px;color:#0B7A83;border-bottom:1px solid #DCE3E8;padding-bottom:4px;margin-bottom:8px;">${idx + 1}. ${conv.title} (${conv.date})</h2>
+                <div style="font-size:11px;color:#5B6B78;margin-bottom:10px;">Context: ${conv.place || conv.category}</div>
+                ${msgs}
+              </section>
+            `;
+          }).join('');
+
+          printWin.document.write(`
+            <!DOCTYPE html>
+            <html lang="ar">
+            <head>
+              <meta charset="utf-8">
+              <title>Sout - All Conversations History</title>
+              <style>
+                body{font-family:system-ui,-apple-system,sans-serif;padding:36px;max-width:760px;margin:0 auto;color:#10212F}
+                h1{color:#0B7A83;margin:0 0 4px}
+                .header-meta{font-size:12px;color:#5B6B78;margin-bottom:24px}
+              </style>
+            </head>
+            <body>
+              <h1>صوت SOUT · Complete Conversation History</h1>
+              <div class="header-meta">Total Conversations: ${conversations.length} · Exported: ${new Date().toLocaleString()}</div>
+              ${allHtml}
+              <script>setTimeout(() => window.print(), 250);<\/script>
+            </body>
+            </html>
+          `);
+          printWin.document.close();
+          announcePrototype('Printable PDF record opened for all conversations', 'success');
+        }
+
+        // Screen 15 Dynamic UI Syncer
+        function updateScreen20NotificationsUI() {
+          const container = document.getElementById('screen-20-notif-container');
+          if (!container) return;
+          const activeTab = document.querySelector('.notif-tab.active')?.dataset.notifTab || 'all';
+
+          const allNotifs = soutState.notifications || [];
+          const activeNotifs = allNotifs.filter(n => !n.isDismissed);
+          const remCount = activeNotifs.filter(n => n.type === 'reminder').length;
+          const warnCount = activeNotifs.filter(n => n.type === 'warning').length;
+          const infoCount = activeNotifs.filter(n => n.type === 'info').length;
+
+          const bAll = document.getElementById('notif-badge-all');
+          if (bAll) bAll.textContent = String(activeNotifs.length);
+          const bRem = document.getElementById('notif-badge-rem');
+          if (bRem) bRem.textContent = String(remCount);
+          const bWarn = document.getElementById('notif-badge-warn');
+          if (bWarn) bWarn.textContent = String(warnCount);
+          const bInfo = document.getElementById('notif-badge-info');
+          if (bInfo) bInfo.textContent = String(infoCount);
+
+          const summaryText = document.getElementById('notif-summary-text');
+          if (summaryText) {
+            summaryText.textContent = activeNotifs.length === 0
+              ? 'No active notifications or reminders'
+              : `${activeNotifs.length} active notification${activeNotifs.length === 1 ? '' : 's'} and privacy reminder${activeNotifs.length === 1 ? '' : 's'}`;
+          }
+
+          // Synchronize notification badge dots across headers
+          const hasActive = activeNotifs.length > 0;
+          document.querySelectorAll('.sout-notif-badge-dot, .bell-unread-dot').forEach(dot => {
+            dot.style.display = hasActive ? 'block' : 'none';
+          });
+          document.querySelectorAll('iframe').forEach(f => {
+            try {
+              f.contentDocument?.querySelectorAll('.sout-notif-badge-dot, .bell-unread-dot').forEach(dot => {
+                dot.style.display = hasActive ? 'block' : 'none';
+              });
+            } catch (e) {}
+          });
+
+          const filtered = activeNotifs.filter(n => activeTab === 'all' || n.type === activeTab);
+
+          if (filtered.length === 0) {
+            container.innerHTML = `
+              <div class="notif-empty-state">
+                <span class="notif-empty-icon">&#10003;</span>
+                <strong>All caught up!</strong>
+                <p style="margin:4px 0 0;font-size:12px;">No active notifications or reminders in this view.</p>
+              </div>`;
+            return;
+          }
+
+          container.innerHTML = filtered.map(item => `
+            <div class="notif-card ${item.type}" data-notif-id="${item.id}">
+              <div class="notif-card-header">
+                <span class="notif-type-icon">${item.type === 'warning' ? '&#9888;' : item.type === 'reminder' ? '&#128276;' : '&#8505;'}</span>
+                <div class="notif-title-wrap">
+                  <strong>${item.title}</strong>
+                  <small>${item.time}</small>
+                </div>
+                <button type="button" class="notif-dismiss-btn" data-dismiss-id="${item.id}" title="Dismiss" aria-label="Dismiss">&#215;</button>
+              </div>
+              <p class="notif-card-msg">${item.message}</p>
+              ${item.actionLabel ? `
+                <div class="notif-card-actions">
+                  <button type="button" class="notif-action-jump-btn" data-jump-screen="${item.actionScreen}">${item.actionLabel} &rarr;</button>
+                </div>` : ''}
+            </div>
+          `).join('');
+
+          // Wire dismiss
+          container.querySelectorAll('.notif-dismiss-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const id = btn.dataset.dismissId;
+              const found = soutState.notifications.find(n => n.id === id);
+              if (found) {
+                found.isDismissed = true;
+                saveSoutState();
+                updateScreen20NotificationsUI();
+                updateScreen15SettingsUI();
+                announcePrototype('Notification dismissed.', 'info');
+              }
+            });
+          });
+
+          // Wire action jumps
+          container.querySelectorAll('.notif-action-jump-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const scr = Number(btn.dataset.jumpScreen);
+              if (scr) showScreen(scr);
+            });
+          });
+
+          // Wire filter tabs
+          document.querySelectorAll('.notif-tab').forEach(tab => {
+            tab.onclick = () => {
+              document.querySelectorAll('.notif-tab').forEach(t => t.classList.toggle('active', t === tab));
+              updateScreen20NotificationsUI();
+            };
+          });
+
+          // Wire clear all dismissed
+          const clearBtn = document.getElementById('btn-clear-all-notifs');
+          if (clearBtn) {
+            clearBtn.onclick = () => {
+              soutState.notifications.forEach(n => { n.isDismissed = true; });
+              saveSoutState();
+              updateScreen20NotificationsUI();
+              updateScreen15SettingsUI();
+              announcePrototype('All read notifications cleared.', 'info');
+            };
+          }
+        }
+
+        function updateScreen15SettingsUI() {
+          const board = findScreen(15);
+          if (!board) return;
+
+          // 1. Reminders
+          const remContainer = board.querySelector('#settings-reminders-list');
+          const remCard = board.querySelector('#settings-reminders-card');
+          const remBadge = board.querySelector('#reminders-count-badge');
+          const activeReminders = soutState.reminders.filter(r => !r.dismissed);
+          if (remContainer && remCard && remBadge) {
+            remCard.style.display = (soutState.notificationsEnabled && activeReminders.length > 0) ? 'block' : 'none';
+            remBadge.textContent = String(activeReminders.length);
+            remContainer.innerHTML = activeReminders.map(r => `
+              <div class="reminder-item" data-reminder-id="${r.id}">
+                <span>${r.text}</span>
+                <button type="button" class="rem-dismiss" aria-label="Dismiss reminder" title="Dismiss">&#10005;</button>
+              </div>
+            `).join('');
+            remContainer.querySelectorAll('.rem-dismiss').forEach(btn => {
+              btn.addEventListener('click', (e) => {
+                const item = e.target.closest('.reminder-item');
+                const remId = item?.dataset.reminderId;
+                const rem = soutState.reminders.find(r => r.id === remId);
+                if (rem) {
+                  rem.dismissed = true;
+                  saveSoutState();
+                  updateScreen15SettingsUI();
+                  announcePrototype('Reminder dismissed.', 'info');
+                }
+              });
+            });
+          }
+
+          // Reminders toggle
+          const toggleReminders = board.querySelector('#setting-toggle-reminders');
+          if (toggleReminders) {
+            toggleReminders.classList.toggle('on', soutState.notificationsEnabled);
+            toggleReminders.setAttribute('aria-checked', String(soutState.notificationsEnabled));
+          }
+
+          // 2. History toggle
+          const toggleHist = board.querySelector('#setting-toggle-save-history');
+          const histDesc = board.querySelector('#save-history-desc');
+          if (toggleHist) {
+            toggleHist.classList.toggle('on', soutState.saveHistory);
+            toggleHist.setAttribute('aria-checked', String(soutState.saveHistory));
+          }
+          if (histDesc) {
+            histDesc.textContent = soutState.saveHistory
+              ? 'Currently enabled: new conversations are saved locally'
+              : 'Currently paused: new conversations will NOT be saved';
+          }
+
+          // Storage content choices
+          const storageChoices = board.querySelectorAll('#storage-content-choices .choice');
+          storageChoices.forEach(choice => {
+            const isSelected = choice.dataset.storageMode === soutState.storageContent;
+            choice.classList.toggle('selected', isSelected);
+          });
+
+          // 3. Cloud sync toggle & status box
+          const toggleSync = board.querySelector('#setting-toggle-cloud-sync');
+          const syncDesc = board.querySelector('#cloud-sync-desc');
+          const syncBox = board.querySelector('#cloud-sync-status-box');
+          const syncTitle = board.querySelector('#sync-status-title');
+          const syncSub = board.querySelector('#sync-status-subtitle');
+          if (toggleSync) {
+            toggleSync.classList.toggle('on', soutState.cloudSync);
+            toggleSync.setAttribute('aria-checked', String(soutState.cloudSync));
+          }
+          if (syncDesc) {
+            syncDesc.textContent = soutState.cloudSync
+              ? 'Simulated sync active: eligible conversations marked for sync'
+              : 'Sync disabled: conversations stay solely on this device';
+          }
+          if (syncBox && syncTitle && syncSub) {
+            if (soutState.cloudSync) {
+              syncBox.className = 'sync-status-box synced';
+              syncBox.querySelector('.sync-icon').textContent = '☁️';
+              syncTitle.textContent = 'Cloud Synchronization: Simulated Active';
+              syncSub.textContent = 'Eligible saved conversations backed up. (Real cloud storage requires backend account).';
+            } else {
+              syncBox.className = 'sync-status-box local';
+              syncBox.querySelector('.sync-icon').textContent = '📱';
+              syncTitle.textContent = 'Local storage only';
+              syncSub.textContent = 'Conversations remain solely on this phone. No records are uploaded.';
+            }
+          }
+
+          // Storage breakdown
+          const storageCalc = board.querySelector('#settings-storage-calc');
+          const storageVal = board.querySelector('#settings-storage-val');
+          const convCount = soutState.conversations.length;
+          const approxBytes = JSON.stringify(soutState.conversations).length;
+          const approxKb = (approxBytes / 1024).toFixed(1);
+          if (storageCalc) storageCalc.textContent = convCount + ' conversations · ' + approxKb + ' KB';
+          if (storageVal) storageVal.textContent = String(convCount);
+
+          // 4. Selective Sharing List
+          const sharingList = board.querySelector('#settings-sharing-list');
+          if (sharingList) {
+            if (convCount === 0) {
+              sharingList.innerHTML = '<div style="font-size:11px;color:#5B6B78;padding:6px;">No saved conversations available to share.</div>';
+            } else {
+              sharingList.innerHTML = soutState.conversations.map(c => {
+                const isShared = soutState.sharedConversationIds.includes(c.id);
+                return `
+                  <div class="sharing-row">
+                    <div>
+                      <strong>${c.title}</strong>
+                      <small>${c.date} · ${c.messages.length} messages</small>
+                    </div>
+                    <button type="button" class="share-toggle-btn ${isShared ? 'shared' : ''}" data-share-conv-id="${c.id}">
+                      ${isShared ? '✓ Shared' : '+ Share'}
+                    </button>
+                  </div>
+                `;
+              }).join('');
+
+              sharingList.querySelectorAll('.share-toggle-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                  const convId = btn.dataset.shareConvId;
+                  const idx = soutState.sharedConversationIds.indexOf(convId);
+                  const conv = soutState.conversations.find(c => c.id === convId);
+                  if (idx === -1) {
+                    soutState.sharedConversationIds.push(convId);
+                    announcePrototype('Private sharing enabled for "' + (conv ? conv.title : 'Chat') + '". (Simulated link generated).', 'success');
+                  } else {
+                    soutState.sharedConversationIds.splice(idx, 1);
+                    announcePrototype('Sharing revoked for "' + (conv ? conv.title : 'Chat') + '".', 'info');
+                  }
+                  saveSoutState();
+                  updateScreen15SettingsUI();
+                });
+              });
+            }
+          }
+
+          // 5. AI consent toggle
+          const toggleAi = board.querySelector('#setting-toggle-ai-consent');
+          if (toggleAi) {
+            toggleAi.classList.toggle('on', soutState.aiImprovementConsent);
+            toggleAi.setAttribute('aria-checked', String(soutState.aiImprovementConsent));
+          }
         }
 
         function findScreen(number) {
@@ -1081,6 +2047,11 @@
           host.classList.remove('gallery-mode');
           document.querySelectorAll('.board').forEach(board => board.classList.toggle('is-active', board === target));
           if (parsedNumber === 3) resetUnifiedSigningScreen(target);
+          if (parsedNumber === 15) updateScreen15SettingsUI();
+          if (parsedNumber === 20) updateScreen20NotificationsUI();
+          if (parsedNumber === 5) {
+            window.__soutSyncAll?.();
+          }
           const label = target.querySelector('h2');
           toolbar.querySelector('.prototype-screen-label').textContent = label ? label.textContent.replace(/^\d+\s*/, '') : 'Sout';
           toolbar.querySelector('.prototype-exit').textContent = 'View all';
@@ -1121,6 +2092,7 @@
           showScreen(8);
           announcePrototype('Offline mode simulated: local features remain available.');
         });
+        toolbar.querySelector('.prototype-notifications')?.addEventListener('click', () => showScreen(20));
         toolbar.querySelector('.prototype-status').addEventListener('click', () => showScreen(27));
         toolbar.querySelector('.prototype-exit').addEventListener('click', () => {
           if (host.classList.contains('prototype-mode')) showAllScreens();
@@ -1163,14 +2135,54 @@
 
           const style = root.createElement('style');
           style.textContent = `
-          .chat-menu-toggle{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;margin-right:4px;border:0;border-radius:50%;background:transparent;color:#10212F;cursor:pointer;flex-shrink:0;transition:background .15s ease}
+          .chat-menu-toggle{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;min-width:34px;border:1px solid #DCE3E8;border-radius:50%;background:#FFFFFF;color:#10212F;cursor:pointer;flex-shrink:0;transition:all .15s ease}
           .chat-menu-toggle:hover{background:#E4EAEE}
-          .chat-place{display:block;margin-top:3px;padding:0;border:0;background:transparent;color:#0B7A83;font:600 11px system-ui,sans-serif;text-align:left;cursor:pointer}
+          .chat-place{display:block;margin-top:1px;padding:0;border:0;background:transparent;color:#0B7A83;font:600 10.5px system-ui,sans-serif;text-align:left;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+          .chat-header-actions{display:flex;align-items:center;gap:5px;flex-shrink:0;margin-left:auto}
+          .chat-bell-btn{position:relative;width:32px;height:32px;min-width:32px;border:1px solid #DCE3E8;border-radius:50%;background:#FFFFFF;color:#5B6B78;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s ease;padding:0}
+          .chat-bell-btn:hover{background:#F0F4F7;border-color:#BAC9D4}
+          .chat-bell-badge{position:absolute;top:-3px;right:-3px;background:#C8381F;color:#FFFFFF;border-radius:999px;font-size:8.5px;min-width:13px;height:13px;display:flex;align-items:center;justify-content:center;font-weight:800;border:1.5px solid #FFFFFF;padding:0 2px}
+          /* Temporary Chat Toggle Switch */
+          .chat-temp-switch-container{display:inline-flex;align-items:center;gap:5px;padding:3px 6px 3px 8px;border-radius:999px;background:#F8FAFC;border:1px solid #DCE3E8;cursor:pointer;user-select:none;transition:all .18s ease;flex-shrink:0}
+          .chat-temp-switch-container:hover{background:#F1F5F9;border-color:#BAC9D4}
+          .chat-temp-switch-container.active{background:#F5EEFF;border-color:#C4B5FD;box-shadow:0 0 0 2px rgba(154,108,232,0.18)}
+          .chat-temp-switch-label{font:700 10.5px system-ui,sans-serif;color:#64748B;letter-spacing:-0.1px;pointer-events:none;white-space:nowrap}
+          .chat-temp-switch-container.active .chat-temp-switch-label{color:#6D28D9}
+          .chat-temp-toggle{position:relative;width:30px;height:17px;border:0;border-radius:999px;background:#CBD5E1;cursor:pointer;padding:0;transition:background .2s ease;flex-shrink:0;outline:0;display:inline-block}
+          .chat-temp-toggle i{position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 3px rgba(0,0,0,0.25);transition:transform .2s ease;display:block}
+          .chat-temp-toggle.on{background:#8A4BE6}
+          .chat-temp-toggle.on i{transform:translateX(13px)}
+
+          /* Modal Dialog Component inside iframe */
+          .sout-modal-backdrop{position:fixed;inset:0;z-index:99999;background:rgba(16,33,47,.58);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:18px;opacity:0;pointer-events:none;transition:opacity .2s ease}
+          .sout-modal-backdrop.visible{opacity:1;pointer-events:auto}
+          .sout-modal{width:100%;max-width:320px;border-radius:20px;background:#FFFFFF;box-shadow:0 18px 50px rgba(16,33,47,.3);padding:20px 18px 16px;text-align:center;font-family:system-ui,-apple-system,sans-serif;box-sizing:border-box}
+          .sout-modal-title{margin:0 0 8px;font-size:16px;font-weight:750;color:#10212F}
+          .sout-modal-message{margin:0 0 16px;font-size:12.5px;color:#5B6B78;line-height:1.45}
+          .sout-modal-actions{display:flex;gap:8px}
+          .sout-modal-cancel{flex:1;min-height:38px;border:1px solid #DCE3E8;border-radius:10px;background:#FFFFFF;color:#10212F;font:700 12px system-ui,sans-serif;cursor:pointer}
+          .sout-modal-confirm{flex:1;min-height:38px;border:0;border-radius:10px;background:#0B7A83;color:#FFFFFF;font:700 12px system-ui,sans-serif;cursor:pointer}
+          .sout-modal-confirm.destructive{background:#C8381F}
+          .chat-online-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border-radius:999px;background:#F2F5F7;border:1px solid #DCE3E8;font-size:11px;font-weight:600;color:#10212F;flex-shrink:0}
+          .temp-mode-badge{display:inline-flex;align-items:center;gap:6px;background:#F5EEFF;border:1px solid #D6BFFF;color:#5E24B8;padding:6px 12px;border-radius:999px;font:700 12px system-ui,sans-serif}
+          .temp-pulse{width:7px;height:7px;border-radius:50%;background:#8A4BE6;animation:tempPulse 1.2s infinite ease-in-out}
+          @keyframes tempPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.75)}}
+          .temp-session-banner{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#F8F4FF;border:1.5px dashed #A379EA;border-radius:14px;padding:10px 12px;margin-bottom:12px}
+          .temp-session-copy strong{display:block;font-size:12px;color:#451493}
+          .temp-session-copy small{display:block;font-size:10px;color:#6C44B6;margin-top:2px}
+          .temp-session-end-btn{border:0;background:#6C2FC9;color:#fff;padding:6px 10px;border-radius:8px;font:700 11px system-ui,sans-serif;cursor:pointer;white-space:nowrap}
+          .temp-session-end-btn:hover{background:#551DAF}
+          .history-disabled-banner{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#FFF4E6;border:1px solid #FCD4A5;border-radius:12px;padding:9px 12px;margin-bottom:10px;font-size:11px;color:#7A4300}
+          .history-disabled-banner strong{display:block;font-size:11.5px}
+          .history-disabled-banner small{display:block;font-size:9.5px;color:#8F5409}
+          .history-enable-btn{border:0;background:#B26A00;color:#fff;padding:5px 9px;border-radius:7px;font:700 10px system-ui,sans-serif;cursor:pointer}
           .chat-history-open{min-height:36px;padding:0 12px;border:1px solid #9ED7DB;border-radius:999px;background:#EAF7F8;color:#0A4B52;font:700 11px system-ui,sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .15s ease}
           .chat-history-open:hover{background:#DDF1F2;border-color:#0B7A83}
-          .chat-history-backdrop{display:none;position:fixed;inset:0;z-index:90;background:rgba(16,33,47,.45);backdrop-filter:blur(2px);opacity:0;transition:opacity .24s cubic-bezier(.2,0,0,1)}
+          
+          /* Drawer backdrop and panel */
+          .chat-history-backdrop{display:none;position:fixed;inset:0;z-index:9999;background:rgba(16,33,47,.55);backdrop-filter:blur(2px);opacity:0;transition:opacity .24s cubic-bezier(.2,0,0,1)}
           .chat-history-backdrop.open{display:block;opacity:1}
-          .chat-history-panel{position:absolute;left:0;top:0;bottom:0;width:304px;max-width:86%;height:100%;display:flex;flex-direction:column;padding:16px 12px 14px;background:#F0F4F9;box-shadow:6px 0 28px rgba(16,33,47,.24);color:#10212F;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;transform:translateX(-100%);transition:transform .28s cubic-bezier(.2,0,0,1);border-top-right-radius:20px;border-bottom-right-radius:20px;box-sizing:border-box}
+          .chat-history-panel{position:absolute;left:0;top:0;bottom:0;width:318px;max-width:88%;height:100%;display:flex;flex-direction:column;padding:16px 12px 14px;background:#F0F4F9;box-shadow:6px 0 28px rgba(16,33,47,.28);color:#10212F;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;transform:translateX(-100%);transition:transform .28s cubic-bezier(.2,0,0,1);border-top-right-radius:20px;border-bottom-right-radius:20px;box-sizing:border-box}
           .chat-history-backdrop.open .chat-history-panel{transform:translateX(0)}
           .chat-sidebar-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 4px 12px}
           .chat-sidebar-brand{display:flex;align-items:center;gap:8px}
@@ -1182,7 +2194,6 @@
           .chat-new-btn{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;padding:0 16px;border-radius:999px;background:#DDF1F2;color:#085057;font:700 13px system-ui,sans-serif;border:1px solid #BCE2E5;cursor:pointer;box-shadow:0 1px 3px rgba(11,122,131,.08);transition:all .15s ease;margin-bottom:10px}
           .chat-new-btn:hover{background:#CEEBEF;border-color:#0B7A83}
           .chat-new-btn svg{flex-shrink:0}
-          .chat-new-sparkle{margin-left:auto;color:#0B7A83;font-size:12px;opacity:.8}
           .chat-history-search{display:flex;align-items:center;gap:8px;padding:0 12px;height:38px;border:1px solid #DCE3E8;border-radius:12px;background:#FFFFFF}
           .chat-history-search input{width:100%;border:0;outline:0;background:transparent;font:13px system-ui,sans-serif;color:#10212F}
           .chat-history-search svg{color:#5B6B78;flex-shrink:0}
@@ -1191,68 +2202,128 @@
           .chat-history-filters button{min-height:30px;padding:0 11px;border:1px solid #DCE3E8;border-radius:999px;background:#FFFFFF;color:#5B6B78;font:700 11px system-ui,sans-serif;white-space:nowrap;cursor:pointer;transition:all .15s ease}
           .chat-history-filters button.active{border-color:#0B7A83;background:#0B7A83;color:#FFFFFF}
           .chat-history-list{flex:1;overflow-y:auto;scrollbar-width:thin;padding-right:2px}
-          .chat-history-group{margin:12px 6px 5px;color:#5B6B78;font-size:10.5px;font-weight:800;letter-spacing:.8px;text-transform:uppercase}
-          .chat-history-card{display:grid;grid-template-columns:1fr 28px;gap:6px;align-items:center;margin-bottom:5px;padding:8px 10px;border-radius:12px;background:#FFFFFF;border:1px solid #E4EAEE;transition:background .15s ease,border-color .15s ease}
+          .chat-history-card{display:grid;grid-template-columns:1fr auto 28px;gap:6px;align-items:center;margin-bottom:5px;padding:8px 10px;border-radius:12px;background:#FFFFFF;border:1px solid #E4EAEE;transition:background .15s ease,border-color .15s ease}
           .chat-history-card:hover{background:#F8FAFD;border-color:#C8D7E3}
           .chat-history-card.selected{border-color:#0B7A83;background:#EAF7F8;box-shadow:inset 3.5px 0 0 #0B7A83}
           .chat-history-main{border:0;background:transparent;text-align:left;color:#10212F;cursor:pointer;display:flex;align-items:flex-start;gap:9px;min-width:0;padding:0}
           .chat-item-icon{font-size:14px;margin-top:1px;color:#0B7A83;flex-shrink:0}
           .chat-item-text{min-width:0;flex:1}
-          .chat-item-text strong{display:block;font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#10212F}
+          .chat-item-text strong{display:block;font-size:13px;font-weight:750;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#10212F}
           .chat-item-text small{display:block;margin-top:2px;color:#0B7A83;font-size:10.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
           .chat-item-text span{display:block;margin-top:4px;color:#5B6B78;font-size:11px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-          .chat-history-delete{width:26px;height:26px;border:0;border-radius:8px;background:transparent;color:#8C99A4;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s ease}
+          .card-export-btn{border:0;background:transparent;color:#71808b;font-size:13px;cursor:pointer;padding:4px;border-radius:6px;line-height:1}
+          .card-export-btn:hover{background:#E4EAEE;color:#0B7A83}
+          .chat-history-delete{width:26px;height:26px;border:0;border-radius:8px;background:transparent;color:#8C99A4;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s ease}
           .chat-history-delete:hover{background:#FCE9E5;color:#C8381F}
-          .chat-history-card[hidden],.chat-history-group[hidden]{display:none}
+          .chat-history-card[hidden]{display:none}
           .chat-sidebar-footer{margin-top:auto;padding-top:10px;border-top:1px solid #DCE3E8}
           .chat-sidebar-tools{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
-          .chat-tool-btn{min-height:38px;padding:0 9px;border:1px solid #DCE3E8;border-radius:10px;background:#FFFFFF;color:#10212F;font:700 11px system-ui,sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .15s ease}
+          .chat-tool-btn{min-height:36px;padding:0 8px;border:1px solid #DCE3E8;border-radius:10px;background:#FFFFFF;color:#10212F;font:700 10.5px system-ui,sans-serif;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .15s ease}
           .chat-tool-btn:hover{background:#EAF7F8;border-color:#9ED7DB;color:#0A4B52}
+          .chat-tool-btn.danger{color:#C8381F;border-color:#F5CAC2}
+          .chat-tool-btn.danger:hover{background:#FDECE8}
           .chat-tool-icon{font-size:13px;color:#0B7A83}
-          .chat-history-toast{min-height:16px;margin:6px 0 2px;text-align:center;color:#1E7B4A;font-size:11px;font-weight:600}
-          .chat-sidebar-note{margin:4px 0 0;display:flex;align-items:center;justify-content:center;gap:5px;color:#5B6B78;font-size:10px}
+          .chat-tool-btn.danger .chat-tool-icon{color:#C8381F}
+          .chat-sidebar-note{margin:6px 0 0;display:flex;align-items:center;justify-content:center;gap:5px;color:#5B6B78;font-size:10px}
           .chat-inline-rate{align-self:flex-end;display:inline-flex;align-items:center;gap:5px;min-height:30px;margin-top:4px;padding:0 9px;border:1px solid #9ED7DB;border-radius:10px;background:#EAF7F8;color:#0A4B52;font:750 9px system-ui,sans-serif;text-decoration:none}
-        `;
+          
+          /* Message bubble styling */
+          .chat-msg-row{position:relative;display:flex;flex-direction:column}
+          .msg-meta-row{display:flex;align-items:center;gap:6px}
+          .msg-delete-btn{opacity:0;border:0;background:transparent;color:#94A3B8;cursor:pointer;padding:2px 4px;border-radius:4px;font-size:12px;line-height:1;transition:all .15s ease}
+          .chat-msg-row:hover .msg-delete-btn{opacity:1}
+          .msg-delete-btn:hover{color:#C8381F;background:#FFE3DD}
+
+          /* Deleted message appearance */
+          .deleted-bubble{background:#F1F4F7!important;border:1.5px dashed #CBD5E1!important;border-radius:18px!important;padding:10px 14px!important;display:flex!important;align-items:center!important;gap:9px!important;color:#64748B!important}
+          .msg-purge-btn{border:0;background:transparent;color:#94A3B8;cursor:pointer;font-size:11px;padding:1px 4px;border-radius:4px}
+          .msg-purge-btn:hover{color:#C8381F;background:#FFE3DD}
+
+          /* Quick chat input bar */
+          .chat-input-bar{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#FFFFFF;border-top:1px solid #DCE3E8;margin-top:auto}
+          .chat-sign-btn{min-height:38px;padding:0 11px;border-radius:10px;background:#0B7A83;color:#FFFFFF;border:0;font:700 11.5px system-ui,sans-serif;cursor:pointer;display:flex;align-items:center;gap:5px;flex-shrink:0}
+          .chat-sign-btn:hover{background:#095C63}
+          .chat-text-input{flex:1;min-height:38px;padding:0 12px;border:1px solid #DCE3E8;border-radius:10px;background:#F7F9FA;font:13px system-ui,sans-serif;color:#10212F;outline:0}
+          .chat-text-input:focus{background:#FFFFFF;border-color:#0B7A83}
+          .chat-send-msg-btn{width:38px;height:38px;border-radius:10px;background:#DDF1F2;color:#085057;border:1px solid #BCE2E5;display:grid;place-items:center;cursor:pointer;flex-shrink:0}
+          .chat-send-msg-btn:hover{background:#CEEBEF;border-color:#0B7A83}
+          `;
           root.head.appendChild(style);
+
+          // Make <main> scrollable and properly laid out
+          const main = root.querySelector('main');
+          if (main) {
+            main.style.cssText = 'flex:1;overflow-y:auto;scrollbar-width:thin;padding:14px 16px 12px;box-sizing:border-box;display:flex;flex-direction:column;';
+          }
+
+          // Header Layout - responsive & fits 390px/360px screen width perfectly
+          header.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:18px 12px 10px;border-bottom:1px solid #DCE3E8;background:#FFFFFF;width:100%;box-sizing:border-box;gap:6px;overflow:hidden;';
 
           const menuToggle = root.createElement('button');
           menuToggle.type = 'button';
           menuToggle.className = 'chat-menu-toggle';
           menuToggle.dataset.chatHistoryOpen = 'true';
           menuToggle.setAttribute('aria-label', 'Open conversation history sidebar');
-          menuToggle.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>`;
+          menuToggle.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>`;
           header.insertBefore(menuToggle, header.firstElementChild);
 
           const titleBlock = header.querySelector('div') || header.firstElementChild;
+          if (titleBlock) {
+            titleBlock.style.cssText = 'flex:1;min-width:0;overflow:hidden;display:flex;flex-direction:column;justify-content:center;margin:0 4px;';
+          }
           const title = titleBlock && titleBlock.firstElementChild;
+          if (title) {
+            title.style.cssText = 'font-size:16px;font-weight:750;color:#10212F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2;margin:0;';
+          }
           const subtitle = titleBlock && titleBlock.children[1];
+          if (subtitle) {
+            subtitle.style.display = 'none'; // Replaced by placeButton for clean 2-line header
+          }
+
           const placeButton = root.createElement('button');
           placeButton.type = 'button';
           placeButton.className = 'chat-place';
-          placeButton.textContent = '◎ Pharmacy context · Kasr El Ainy Street';
+          placeButton.textContent = '◎ Pharmacy · Kasr El Ainy';
           placeButton.setAttribute('aria-label', 'Change the place context used for inference');
           if (titleBlock) titleBlock.appendChild(placeButton);
 
-          const historyButton = root.createElement('button');
-          historyButton.type = 'button';
-          historyButton.className = 'chat-history-open';
-          historyButton.dataset.chatHistoryOpen = 'true';
-          historyButton.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><span>History · 14</span>`;
-          historyButton.setAttribute('aria-label', 'Open saved conversation history menu');
-          header.insertBefore(historyButton, header.lastElementChild);
+          // Right side controls container - cleanly grouped actions
+          const headerRight = header.lastElementChild;
+          headerRight.className = 'chat-online-pill';
+          headerRight.style.cssText = 'display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border-radius:999px;background:#F2F5F7;border:1px solid #DCE3E8;font-size:11px;font-weight:600;color:#10212F;flex-shrink:0;';
+          headerRight.innerHTML = `<span style="width:7px;height:7px;border-radius:50%;background:#1E7B4A;flex-shrink:0;"></span><span>Online</span>`;
 
-          const main = root.querySelector('main');
+          const headerActions = root.createElement('div');
+          headerActions.className = 'chat-header-actions';
 
-          const outgoingMessages = main ? Array.from(main.children).filter(item => item.style.alignSelf === 'flex-end') : [];
-          const latestOutgoing = outgoingMessages[outgoingMessages.length - 1];
-          if (latestOutgoing) {
-            const inlineRate = root.createElement('a');
-            inlineRate.href = 'Feedback.dc.html';
-            inlineRate.className = 'chat-inline-rate';
-            inlineRate.textContent = '☆ Rate this translation';
-            latestOutgoing.appendChild(inlineRate);
-          }
+          // Temporary Mode Toggle Switch
+          const tempSwitchContainer = root.createElement('div');
+          tempSwitchContainer.className = 'chat-temp-switch-container' + (soutState.temporaryMode ? ' active' : '');
+          tempSwitchContainer.setAttribute('title', 'Toggle Temporary Chat Mode');
+          tempSwitchContainer.innerHTML = `
+            <span class="chat-temp-switch-label">⚡ Temp</span>
+            <button type="button" class="chat-temp-toggle toggle ${soutState.temporaryMode ? 'on' : ''}" role="switch" aria-checked="${Boolean(soutState.temporaryMode)}" aria-label="Toggle Temporary Gesture Mode">
+              <i></i>
+            </button>
+          `;
+          headerActions.appendChild(tempSwitchContainer);
+          const tempToggleBtn = tempSwitchContainer.querySelector('.chat-temp-toggle');
 
+          // Bell button to open Screen 20 Notifications & Reminders
+          const bellBtn = root.createElement('button');
+          bellBtn.type = 'button';
+          bellBtn.className = 'chat-bell-btn';
+          bellBtn.setAttribute('aria-label', 'Open Notifications & Reminders');
+          bellBtn.setAttribute('title', 'Notifications & Reminders');
+          bellBtn.innerHTML = `<span style="font-size:14px;line-height:1;">&#128276;</span><span class="chat-bell-badge">2</span>`;
+          bellBtn.addEventListener('click', () => showScreen(20));
+          headerActions.appendChild(bellBtn);
+
+          // Online pill in actions container
+          headerActions.appendChild(headerRight);
+          header.appendChild(headerActions);
+
+          // Sidebar Drawer
           const backdrop = root.createElement('div');
           backdrop.className = 'chat-history-backdrop';
           backdrop.innerHTML = `
@@ -1288,58 +2359,7 @@
               <button type="button" data-chat-filter="other">Other</button>
             </div>
 
-            <div class="chat-history-list">
-              <div class="chat-history-group" data-history-group="today">RECENT</div>
-              <article class="chat-history-card" data-category="pharmacy" data-group="today" data-title="Pharmacy" data-place="Kasr El Ainy Street · Cairo" data-date="Today" data-search="pharmacy kasr el ainy cairo headache medicine">
-                <button type="button" class="chat-history-main" data-chat-conversation-index="0">
-                  <span class="chat-item-icon">💬</span>
-                  <div class="chat-item-text">
-                    <strong>Pharmacy</strong>
-                    <small>⌖ Kasr El Ainy · Cairo</small>
-                    <span dir="rtl">الدوا ده بعد الأكل، مرتين في اليوم</span>
-                  </div>
-                </button>
-                <button type="button" class="chat-history-delete" aria-label="Delete Pharmacy conversation" title="Delete conversation">×</button>
-              </article>
-
-              <div class="chat-history-group" data-history-group="yesterday">YESTERDAY</div>
-              <article class="chat-history-card" data-category="doctor" data-group="yesterday" data-title="Doctor visit" data-place="Dokki · Giza" data-date="Yesterday" data-search="doctor clinic dokki giza appointment">
-                <button type="button" class="chat-history-main" data-chat-conversation-index="1">
-                  <span class="chat-item-icon">💬</span>
-                  <div class="chat-item-text">
-                    <strong>Doctor visit</strong>
-                    <small>⌖ Dokki · Giza</small>
-                    <span dir="rtl">أنا عايز أحجز كشف</span>
-                  </div>
-                </button>
-                <button type="button" class="chat-history-delete" aria-label="Delete Doctor visit conversation" title="Delete conversation">×</button>
-              </article>
-
-              <div class="chat-history-group" data-history-group="earlier">PREVIOUS 7 DAYS</div>
-              <article class="chat-history-card" data-category="bank" data-group="earlier" data-title="Bank" data-place="Nasr City · Cairo" data-date="14 Oct" data-search="bank nasr city cairo card">
-                <button type="button" class="chat-history-main" data-chat-conversation-index="2">
-                  <span class="chat-item-icon">💬</span>
-                  <div class="chat-item-text">
-                    <strong>Bank</strong>
-                    <small>⌖ Nasr City · Cairo</small>
-                    <span dir="rtl">محتاج أفتح حساب جديد</span>
-                  </div>
-                </button>
-                <button type="button" class="chat-history-delete" aria-label="Delete Bank conversation" title="Delete conversation">×</button>
-              </article>
-
-              <article class="chat-history-card" data-category="transport" data-group="earlier" data-title="Minibus" data-place="Ramses Square · Cairo" data-date="12 Oct" data-search="transport minibus ramses cairo stop">
-                <button type="button" class="chat-history-main" data-chat-conversation-index="3">
-                  <span class="chat-item-icon">💬</span>
-                  <div class="chat-item-text">
-                    <strong>Minibus</strong>
-                    <small>⌖ Ramses Square · Cairo</small>
-                    <span dir="rtl">لو سمحت نزلني هنا</span>
-                  </div>
-                </button>
-                <button type="button" class="chat-history-delete" aria-label="Delete Minibus conversation" title="Delete conversation">×</button>
-              </article>
-            </div>
+            <div class="chat-history-list" id="sidebar-conv-list"></div>
 
             <div class="chat-sidebar-footer">
               <div class="chat-sidebar-tools">
@@ -1347,21 +2367,32 @@
                   <span class="chat-tool-icon">◎</span>
                   <span>Edit context</span>
                 </button>
-                <button type="button" data-chat-action="signs" class="chat-tool-btn">
-                  <span class="chat-tool-icon">👋</span>
-                  <span>Reply signs</span>
+                <button type="button" data-chat-action="temp-mode" class="chat-tool-btn">
+                  <span class="chat-tool-icon">&#9889;</span>
+                  <span>Temp mode</span>
+                </button>
+                <button type="button" data-chat-action="export-chat" class="chat-tool-btn">
+                  <span class="chat-tool-icon">&#8679;</span>
+                  <span>Export TXT</span>
+                </button>
+                <button type="button" data-chat-action="export-pdf" class="chat-tool-btn">
+                  <span class="chat-tool-icon">&#128442;</span>
+                  <span>Export PDF</span>
+                </button>
+                <button type="button" data-chat-action="notifs" class="chat-tool-btn">
+                  <span class="chat-tool-icon">&#128276;</span>
+                  <span>Alerts</span>
                 </button>
                 <button type="button" data-chat-action="settings" class="chat-tool-btn">
-                  <span class="chat-tool-icon">⚙</span>
+                  <span class="chat-tool-icon">&#9881;</span>
                   <span>Settings</span>
                 </button>
-                <button type="button" data-chat-action="export" class="chat-tool-btn">
-                  <span class="chat-tool-icon">⤓</span>
-                  <span>Export</span>
+                <button type="button" data-chat-action="delete-all" class="chat-tool-btn danger" style="grid-column:span 2">
+                  <span class="chat-tool-icon">&#128465;</span>
+                  <span>Delete all history</span>
                 </button>
               </div>
-              <p class="chat-history-toast" role="status" aria-live="polite"></p>
-              <p class="chat-sidebar-note">🔒 Saved on phone only · Private local inference</p>
+              <p class="chat-sidebar-note">&#128274; Saved on phone only · Private local inference</p>
             </div>
           </aside>`;
           root.body.appendChild(backdrop);
@@ -1373,94 +2404,424 @@
             backdrop.classList.remove('open');
           };
 
-          menuToggle.addEventListener('click', openHistory);
-          historyButton.addEventListener('click', openHistory);
-          backdrop.querySelector('.chat-history-close').addEventListener('click', closeHistory);
-          backdrop.addEventListener('click', event => { if (event.target === backdrop) closeHistory(); });
-
-          const search = backdrop.querySelector('.chat-history-search input');
-          const cards = Array.from(backdrop.querySelectorAll('.chat-history-card'));
-          const groups = Array.from(backdrop.querySelectorAll('.chat-history-group'));
-          let category = 'all';
-          const filterHistory = () => {
-            const query = search.value.trim().toLowerCase();
-            cards.forEach(card => {
-              if (!card.isConnected) return;
-              const categoryMatches = category === 'all' || card.dataset.category === category;
-              const textMatches = !query || card.dataset.search.includes(query) || card.textContent.toLowerCase().includes(query);
-              card.hidden = !(categoryMatches && textMatches);
-            });
-            groups.forEach(group => { group.hidden = !cards.some(card => card.isConnected && card.dataset.group === group.dataset.historyGroup && !card.hidden); });
+          // Attach to root.defaultView so wireBundledFlow also delegates cleanly
+          root.defaultView.__soutOpenChatHistory = openHistory;
+          root.defaultView.__soutRenderConversation = (idx) => {
+            activeConversationIndex = idx;
+            soutState.temporaryMode = false;
+            renderChatMessages();
+            updateHeaderState();
+            renderDrawerList();
+            closeHistory();
           };
-          search.addEventListener('input', filterHistory);
-          backdrop.querySelectorAll('[data-chat-filter]').forEach(button => button.addEventListener('click', () => {
-            category = button.dataset.chatFilter;
-            backdrop.querySelectorAll('[data-chat-filter]').forEach(item => item.classList.toggle('active', item === button));
-            filterHistory();
-          }));
+
+          menuToggle.addEventListener('click', openHistory);
+          backdrop.querySelector('.chat-history-close').addEventListener('click', closeHistory);
+          backdrop.addEventListener('click', e => { if (e.target === backdrop) closeHistory(); });
+
           const contextNames = { pharmacy: 'Pharmacy', doctor: 'Clinic', bank: 'Bank', transport: 'Transport', other: 'Other' };
           let activeContext = 'pharmacy';
-          const messageRows = main ? Array.from(main.children).filter(item => item.querySelector && item.querySelector('[lang="ar"], [dir="rtl"]')) : [];
-          const conversations = [
-            { title: 'Pharmacy', category: 'pharmacy', date: 'Today', place: 'Kasr El Ainy Street · Cairo', messages: [['ممكن دوا للصداع؟', 'You signed · spoken 12:38'], ['الوجع بقاله قد إيه؟', 'Heard · 12:39'], ['عندي صداع من يومين', 'You signed · spoken 12:40'], ['الدوا ده بعد الأكل، مرتين في اليوم', 'Heard · 12:41']] },
-            { title: 'Doctor visit', category: 'doctor', date: 'Yesterday', place: 'Dokki · Giza', messages: [['أنا عايز أحجز كشف', 'You signed · spoken 10:14'], ['الكشف بكرة الساعة عشرة', 'Heard · 10:15'], ['تمام، شكراً', 'You signed · spoken 10:15'], ['من فضلك هات البطاقة', 'Heard · 10:16']] },
-            { title: 'Bank', category: 'bank', date: '14 Oct', place: 'Nasr City · Cairo', messages: [['محتاج أفتح حساب جديد', 'You signed · spoken 14:02'], ['معاك بطاقة الرقم القومي؟', 'Heard · 14:03'], ['أيوه، معايا', 'You signed · spoken 14:03'], ['اتفضل املى الاستمارة دي', 'Heard · 14:04']] },
-            { title: 'Minibus', category: 'transport', date: '12 Oct', place: 'Ramses Square · Cairo', messages: [['لو سمحت نزلني هنا', 'You signed · spoken 18:20'], ['حاضر، المحطة الجاية', 'Heard · 18:20'], ['شكراً', 'You signed · spoken 18:21'], ['العفو', 'Heard · 18:21']] }
-          ];
           let activeConversationIndex = 0;
 
-          const renderConversation = index => {
-            const liveCards = Array.from(root.querySelectorAll('.chat-history-card'));
-            const availableIndexes = liveCards.map(card => Number(card.querySelector('[data-chat-conversation-index]')?.dataset.chatConversationIndex)).filter(item => Number.isInteger(item) && conversations[item]);
-            if (!availableIndexes.length) return;
-            const requestedIndex = Number(index);
-            activeConversationIndex = availableIndexes.includes(requestedIndex) ? requestedIndex : availableIndexes[0];
-            const conversation = conversations[activeConversationIndex];
-            const liveHeader = root.querySelector('header');
-            const liveTitleBlock = liveHeader && (liveHeader.querySelector('div') || liveHeader.children[1] || liveHeader.firstElementChild);
-            const liveTitle = liveTitleBlock && liveTitleBlock.firstElementChild;
-            const liveSubtitle = liveTitleBlock && liveTitleBlock.children[1];
-            const livePlaceButton = root.querySelector('.chat-place');
-            const liveMessageRows = Array.from(root.querySelectorAll('main > *')).filter(item => item.querySelector && item.querySelector('[lang="ar"], [dir="rtl"]'));
-            if (liveTitle) liveTitle.textContent = conversation.title;
-            if (liveSubtitle) liveSubtitle.textContent = `${conversation.date} · saved on this phone only`;
-            activeContext = conversation.category;
-            if (livePlaceButton) livePlaceButton.textContent = `◎ ${contextNames[activeContext]} context · ${conversation.place}`;
-            liveMessageRows.forEach((row, messageIndex) => {
-              const arabic = row.querySelector('[lang="ar"], [dir="rtl"]');
-              const meta = Array.from(row.children).find(child => child.tagName === 'SPAN');
-              const message = conversation.messages[messageIndex];
-              if (arabic && message) arabic.textContent = message[0];
-              if (meta && message) meta.textContent = message[1];
+          // Render active chat messages into <main>
+          const renderChatMessages = () => {
+            if (!main) return;
+            main.innerHTML = '';
+
+            // 1. Temporary Mode Banner
+            if (soutState.temporaryMode) {
+              const banner = root.createElement('div');
+              banner.className = 'temp-session-banner';
+              banner.innerHTML = `
+                <div class="temp-session-copy">
+                  <strong>⚡ Temporary Gesture Mode Active</strong>
+                  <small>Messages are private to this temporary session and will NOT be saved to history or cloud.</small>
+                </div>
+                <button type="button" class="temp-session-end-btn" aria-label="End temporary session">End & Clear</button>
+              `;
+              banner.querySelector('.temp-session-end-btn').addEventListener('click', () => {
+                toggleTemporaryMode();
+              });
+              main.appendChild(banner);
+            } else if (!soutState.saveHistory) {
+              // History paused banner
+              const histBanner = root.createElement('div');
+              histBanner.className = 'history-disabled-banner';
+              histBanner.innerHTML = `
+                <span>⚠️</span>
+                <div>
+                  <strong>Conversation history is paused</strong>
+                  <small>New messages will not be saved. Previously saved conversations are retained.</small>
+                </div>
+                <button type="button" class="history-enable-btn">Enable</button>
+              `;
+              histBanner.querySelector('.history-enable-btn').addEventListener('click', () => {
+                soutState.saveHistory = true;
+                saveSoutState();
+                renderChatMessages();
+                announcePrototype('Conversation history enabled.', 'success');
+              });
+              main.appendChild(histBanner);
+            }
+
+            // 2. Messages list
+            const messages = soutState.temporaryMode
+              ? soutState.temporaryMessages
+              : (soutState.conversations[activeConversationIndex] ? soutState.conversations[activeConversationIndex].messages : []);
+
+            if (messages.length === 0) {
+              const empty = root.createElement('div');
+              empty.style.cssText = 'text-align:center;padding:48px 16px;color:#5B6B78;font-size:13px;line-height:1.5;';
+              empty.innerHTML = '<strong>No messages yet</strong><p style="margin:4px 0 0;font-size:12px;">Start signing with the armband to begin the conversation.</p>';
+              main.appendChild(empty);
+              return;
+            }
+
+            messages.forEach((msg, mIdx) => {
+              const isUser = msg.role === 'user';
+              const row = root.createElement('div');
+              row.className = 'chat-msg-row';
+              row.style.cssText = `align-self:${isUser ? 'flex-end' : 'flex-start'};max-width:82%;display:flex;flex-direction:column;gap:4px;align-items:${isUser ? 'flex-end' : 'flex-start'};margin-bottom:12px;`;
+
+              // Check if message is marked as deleted
+              if (msg.isDeleted) {
+                const delBubble = root.createElement('div');
+                delBubble.className = 'deleted-bubble';
+                delBubble.innerHTML = `
+                  <span style="font-size:16px;line-height:1;color:#94A3B8;">&#8856;</span>
+                  <div style="display:flex;flex-direction:column;gap:1px;">
+                    <span style="font-size:12.5px;font-style:italic;font-weight:600;color:#64748B;">This message was deleted</span>
+                    <span dir="rtl" style="font-size:11px;color:#94A3B8;">تم حذف هذه الرسالة</span>
+                  </div>
+                `;
+
+                const metaRow = root.createElement('div');
+                metaRow.className = 'msg-meta-row';
+                metaRow.innerHTML = `
+                  <span style="font-size:10px;color:#94A3B8;">${msg.meta || 'Deleted'}</span>
+                  <button type="button" class="msg-purge-btn" title="Remove placeholder permanently" aria-label="Remove placeholder">&#215;</button>
+                `;
+
+                metaRow.querySelector('.msg-purge-btn').addEventListener('click', () => {
+                  messages.splice(mIdx, 1);
+                  saveSoutState();
+                  renderChatMessages();
+                  announcePrototype('Deleted message placeholder removed.', 'info');
+                });
+
+                row.appendChild(delBubble);
+                row.appendChild(metaRow);
+                main.appendChild(row);
+                return;
+              }
+
+              // Normal active message bubble
+              const bubble = root.createElement('div');
+              bubble.style.cssText = isUser
+                ? 'background:#0B7A83;color:#FFFFFF;border-radius:20px 20px 6px 20px;padding:12px 16px;display:flex;flex-direction:column;gap:2px;'
+                : 'background:#FFFFFF;border:1px solid #DCE3E8;border-radius:20px 20px 20px 6px;padding:12px 16px;display:flex;flex-direction:column;gap:2px;' ;
+
+              bubble.innerHTML = `
+                <span lang="ar" dir="rtl" style="font-size:20px;font-weight:600;line-height:1.5">${msg.arabic}</span>
+                ${msg.translation ? `<span style="font-size:12px;${isUser ? '' : 'color:#5B6B78'}">${msg.translation}</span>` : ''}
+              `;
+
+              const metaRow = root.createElement('div');
+              metaRow.className = 'msg-meta-row';
+              metaRow.innerHTML = `
+                <span style="font-size:11px;color:#5B6B78">${msg.meta || (isUser ? 'Signed' : 'Heard')}</span>
+                <button type="button" class="msg-delete-btn" title="Delete message" aria-label="Delete message">&#128465;</button>
+              `;
+
+              metaRow.querySelector('.msg-delete-btn').addEventListener('click', () => {
+                showModalDialog(root, {
+                  title: 'Delete Message?',
+                  message: 'This message will appear as deleted in your chat history: "' + msg.arabic + '". Its content will no longer be visible.',
+                  confirmText: 'Delete Message',
+                  isDestructive: true,
+                  onConfirm: () => {
+                    msg.isDeleted = true;
+                    saveSoutState();
+                    renderChatMessages();
+                    announcePrototype('Message marked as deleted.', 'info');
+                  }
+                });
+              });
+
+              row.appendChild(bubble);
+              row.appendChild(metaRow);
+
+              // Inline rate translation button for latest signed message
+              if (isUser && mIdx === messages.length - 1 && !soutState.temporaryMode) {
+                const rate = root.createElement('a');
+                rate.href = 'Feedback.dc.html';
+                rate.className = 'chat-inline-rate';
+                rate.textContent = '☆ Rate this translation';
+                rate.addEventListener('click', (e) => {
+                  e.preventDefault();
+                  showScreen(21);
+                });
+                row.appendChild(rate);
+              }
+
+              main.appendChild(row);
             });
-            liveCards.forEach(card => card.classList.toggle('selected', Number(card.querySelector('[data-chat-conversation-index]')?.dataset.chatConversationIndex) === activeConversationIndex));
           };
 
-          const moveConversation = direction => {
-            const availableIndexes = Array.from(root.querySelectorAll('[data-chat-conversation-index]')).map(item => Number(item.dataset.chatConversationIndex)).filter((item, position, all) => Number.isInteger(item) && conversations[item] && all.indexOf(item) === position);
-            if (!availableIndexes.length) return;
-            const currentAvailableIndex = Math.max(0, availableIndexes.indexOf(activeConversationIndex));
-            renderConversation(availableIndexes[(currentAvailableIndex + direction + availableIndexes.length) % availableIndexes.length]);
-          };
-          root.defaultView.__soutMoveConversation = moveConversation;
-          root.defaultView.__soutRenderConversation = renderConversation;
-          root.defaultView.__soutOpenChatHistory = openHistory;
+          // Update header title, context, and mode badges
+          const updateHeaderState = () => {
+            const currentConv = soutState.conversations[activeConversationIndex];
+            const isTemp = Boolean(soutState.temporaryMode);
+            tempToggleBtn.classList.toggle('on', isTemp);
+            tempToggleBtn.setAttribute('aria-checked', String(isTemp));
+            tempSwitchContainer.classList.toggle('active', isTemp);
+            tempSwitchContainer.setAttribute('title', isTemp ? 'Temporary Mode Active (tap switch to exit)' : 'Toggle Temporary Chat Mode');
 
-          cards.forEach((card, index) => {
-            card.querySelector('.chat-history-main').dataset.chatConversationIndex = String(index);
-            card.querySelector('.chat-history-main').addEventListener('click', () => {
-              renderConversation(index);
-              closeHistory();
+            if (isTemp) {
+              if (title) title.textContent = 'Temporary Chat';
+              placeButton.innerHTML = '<span style="color:#8A4BE6;">⚡ Not saved · Temporary session</span>';
+              headerRight.style.cssText = 'display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border-radius:999px;background:#F5EEFF;border:1px solid #D6BFFF;font-size:11px;font-weight:700;color:#5E24B8;flex-shrink:0;';
+              headerRight.innerHTML = `<span class="temp-pulse"></span><span>Temp</span>`;
+            } else if (currentConv) {
+              if (title) title.textContent = currentConv.title;
+              activeContext = currentConv.category;
+              placeButton.textContent = `◎ ${contextNames[activeContext] || 'Context'} · ${currentConv.place || 'Current place'}`;
+              headerRight.style.cssText = 'display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border-radius:999px;background:#F2F5F7;border:1px solid #DCE3E8;font-size:11px;font-weight:600;color:#10212F;flex-shrink:0;';
+              headerRight.innerHTML = `<span style="width:7px;height:7px;border-radius:50%;background:#1E7B4A;flex-shrink:0;"></span><span>Online</span>`;
+            } else {
+              if (title) title.textContent = 'New chat';
+              placeButton.textContent = '◎ Set place context';
+              headerRight.style.cssText = 'display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border-radius:999px;background:#F2F5F7;border:1px solid #DCE3E8;font-size:11px;font-weight:600;color:#10212F;flex-shrink:0;';
+              headerRight.innerHTML = `<span style="width:7px;height:7px;border-radius:50%;background:#1E7B4A;flex-shrink:0;"></span><span>Online</span>`;
+            }
+          };
+
+          // Render drawer conversations list
+          const renderDrawerList = () => {
+            const listEl = backdrop.querySelector('#sidebar-conv-list');
+            if (!listEl) return;
+            if (soutState.conversations.length === 0) {
+              listEl.innerHTML = '<div style="text-align:center;padding:32px 12px;color:#5B6B78;font-size:12px;line-height:1.5;">No saved conversations yet.<br>Start signing to record a new conversation.</div>';
+              return;
+            }
+
+            listEl.innerHTML = soutState.conversations.map((c, idx) => {
+              const nonDeletedMessages = c.messages.filter(m => !m.isDeleted);
+              const lastMsg = nonDeletedMessages[nonDeletedMessages.length - 1] || c.messages[c.messages.length - 1];
+              return `
+                <article class="chat-history-card ${idx === activeConversationIndex && !soutState.temporaryMode ? 'selected' : ''}" data-category="${c.category}" data-conv-idx="${idx}" data-chat-conversation-index="${idx}">
+                  <button type="button" class="chat-history-main" data-conv-idx="${idx}" data-chat-conversation-index="${idx}">
+                    <span class="chat-item-icon">💬</span>
+                    <div class="chat-item-text">
+                      <strong>${c.title}</strong>
+                      <small>⌖ ${c.place || c.category}</small>
+                      <span dir="rtl">${lastMsg ? (lastMsg.isDeleted ? '⊘ تم حذف الرسالة' : lastMsg.arabic) : 'No messages'}</span>
+                    </div>
+                  </button>
+                  <button type="button" class="card-export-btn" data-export-idx="${idx}" aria-label="Export ${c.title}" title="Export TXT">&#8679;</button>
+                  <button type="button" class="chat-history-delete" data-delete-idx="${idx}" aria-label="Delete ${c.title} conversation" title="Delete conversation">&#128465;</button>
+                </article>
+              `;
+            }).join('');
+
+            // Bind card selection
+            listEl.querySelectorAll('.chat-history-main').forEach(btn => {
+              btn.addEventListener('click', () => {
+                activeConversationIndex = Number(btn.dataset.convIdx);
+                soutState.temporaryMode = false;
+                renderChatMessages();
+                updateHeaderState();
+                renderDrawerList();
+                closeHistory();
+              });
             });
-            card.querySelector('.chat-history-delete').addEventListener('click', () => {
-              const deletingCurrent = conversations[activeConversationIndex] && conversations[activeConversationIndex].card === card;
-              card.remove();
-              filterHistory();
-              if (deletingCurrent) moveConversation(1);
-              backdrop.querySelector('.chat-history-toast').textContent = 'Conversation removed from this prototype.';
+
+            // Bind card export
+            listEl.querySelectorAll('.card-export-btn').forEach(btn => {
+              btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const idx = Number(btn.dataset.exportIdx);
+                const conv = soutState.conversations[idx];
+                exportConversationAsTxt(conv);
+              });
+            });
+
+            // Bind card delete
+            listEl.querySelectorAll('.chat-history-delete').forEach(btn => {
+              btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const idx = Number(btn.dataset.deleteIdx);
+                const conv = soutState.conversations[idx];
+                if (!conv) return;
+
+                showModalDialog(root, {
+                  title: 'Delete Conversation?',
+                  message: 'Are you sure you want to delete "' + conv.title + '" and all its ' + conv.messages.length + ' messages? This cannot be undone.',
+                  confirmText: 'Delete',
+                  isDestructive: true,
+                  onConfirm: () => {
+                    soutState.conversations.splice(idx, 1);
+                    if (activeConversationIndex >= soutState.conversations.length) {
+                      activeConversationIndex = Math.max(0, soutState.conversations.length - 1);
+                    }
+                    saveSoutState();
+                    renderChatMessages();
+                    updateHeaderState();
+                    renderDrawerList();
+                    announcePrototype('Conversation "' + conv.title + '" deleted.', 'destructive');
+                  }
+                });
+              });
+            });
+          };
+
+          // Search in drawer
+          const searchInput = backdrop.querySelector('.chat-history-search input');
+          searchInput.addEventListener('input', () => {
+            const q = searchInput.value.trim().toLowerCase();
+            backdrop.querySelectorAll('.chat-history-card').forEach(card => {
+              const matches = !q || card.textContent.toLowerCase().includes(q);
+              card.hidden = !matches;
             });
           });
-          renderConversation(0);
+
+          // Category filters in drawer
+          backdrop.querySelectorAll('[data-chat-filter]').forEach(button => {
+            button.addEventListener('click', () => {
+              const cat = button.dataset.chatFilter;
+              backdrop.querySelectorAll('[data-chat-filter]').forEach(b => b.classList.toggle('active', b === button));
+              backdrop.querySelectorAll('.chat-history-card').forEach(card => {
+                const matches = cat === 'all' || card.dataset.category === cat;
+                card.hidden = !matches;
+              });
+            });
+          });
+
+          // New chat action
+          backdrop.querySelector('[data-chat-action="new"]').addEventListener('click', () => {
+            if (soutState.temporaryMode) {
+              announcePrototype('End temporary mode before creating a permanent conversation.', 'warning');
+              closeHistory();
+              return;
+            }
+            if (!soutState.saveHistory) {
+              announcePrototype('Conversation history is paused. New conversations will not be saved.', 'warning');
+            }
+            const newConv = {
+              id: 'conv-' + Date.now(),
+              title: 'New conversation',
+              category: 'other',
+              date: 'Just now',
+              place: 'Current place',
+              messages: [
+                { id: 'm-' + Date.now(), role: 'user', arabic: 'السلام عليكم', translation: 'Peace be upon you (Hello)', meta: 'You signed · spoken now', isDeleted: false }
+              ]
+            };
+            if (soutState.saveHistory) {
+              soutState.conversations.unshift(newConv);
+              activeConversationIndex = 0;
+              saveSoutState();
+            }
+            renderChatMessages();
+            updateHeaderState();
+            renderDrawerList();
+            closeHistory();
+            announcePrototype('New chat ready.', 'success');
+          });
+
+          // Toggle Temporary Chat Mode logic
+          const toggleTemporaryMode = () => {
+            if (soutState.temporaryMode) {
+              soutState.temporaryMode = false;
+              soutState.temporaryMessages = [];
+              saveSoutState();
+              renderChatMessages();
+              updateHeaderState();
+              renderDrawerList();
+              announcePrototype('Temporary session ended and data cleared.', 'info');
+            } else {
+              soutState.temporaryMode = true;
+              soutState.temporaryMessages = [
+                { id: 'tmp-1', role: 'user', arabic: 'مساء الخير، لو سمحت عايز أسأل سؤال خاص عن الحساب', translation: 'Good evening, I want to ask a private question about the account', meta: 'You signed · temporary session', isDeleted: false },
+                { id: 'tmp-2', role: 'peer', arabic: 'اتفضل يا فندم، أنا سامعك وبجاوبك', translation: 'Go ahead, I am listening and will reply', meta: 'Heard · temporary session', isDeleted: false }
+              ];
+              saveSoutState();
+              renderChatMessages();
+              updateHeaderState();
+              renderDrawerList();
+              announcePrototype('Temporary Gesture Mode enabled. Conversation will not be saved.', 'warning');
+            }
+          };
+
+          // Temporary Mode Switch in Header (both container and switch button trigger toggle)
+          tempSwitchContainer.addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleTemporaryMode();
+          });
+          tempToggleBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleTemporaryMode();
+          });
+
+          // Drawer Tools
+          backdrop.querySelector('[data-chat-action="temp-mode"]').addEventListener('click', () => {
+            closeHistory();
+            toggleTemporaryMode();
+          });
+
+          backdrop.querySelector('[data-chat-action="export-chat"]').addEventListener('click', () => {
+            const currentConv = soutState.conversations[activeConversationIndex];
+            if (currentConv) {
+              exportConversationAsTxt(currentConv);
+            } else {
+              announcePrototype('No saved conversation to export.', 'warning');
+            }
+          });
+
+          backdrop.querySelector('[data-chat-action="export-pdf"]').addEventListener('click', () => {
+            const currentConv = soutState.conversations[activeConversationIndex];
+            if (currentConv) {
+              exportConversationAsPdf(currentConv);
+            } else {
+              announcePrototype('No saved conversation to export.', 'warning');
+            }
+          });
+
+          backdrop.querySelector('[data-chat-action="notifs"]').addEventListener('click', () => {
+            closeHistory();
+            showScreen(20);
+          });
+
+          backdrop.querySelector('[data-chat-action="settings"]').addEventListener('click', () => {
+            closeHistory();
+            showScreen(15);
+          });
+
+          backdrop.querySelector('[data-chat-action="delete-all"]').addEventListener('click', () => {
+            if (soutState.conversations.length === 0) {
+              announcePrototype('No saved conversations to delete.', 'warning');
+              return;
+            }
+            showModalDialog(root, {
+              title: 'Delete All Saved History?',
+              message: 'Are you sure you want to permanently delete all ' + soutState.conversations.length + ' saved conversations? This cannot be undone.',
+              confirmText: 'Delete All History',
+              isDestructive: true,
+              onConfirm: () => {
+                soutState.conversations = [];
+                activeConversationIndex = 0;
+                saveSoutState();
+                renderChatMessages();
+                updateHeaderState();
+                renderDrawerList();
+                closeHistory();
+                announcePrototype('All saved conversation history has been deleted.', 'destructive');
+              }
+            });
+          });
+
+          // Edit Place
           const editPlace = () => {
             const selected = root.defaultView.prompt('Context category: pharmacy, doctor, bank, transport, other, or off', activeContext);
             if (!selected) return;
@@ -1473,31 +2834,30 @@
             if (!contextNames[normalized]) return;
             activeContext = normalized;
             const updatedPlace = root.defaultView.prompt('Optional place label kept on this phone', 'Current location');
-            placeButton.textContent = `◎ ${contextNames[activeContext]} context${updatedPlace && updatedPlace.trim() ? ` · ${updatedPlace.trim()}` : ''}`;
+            placeButton.textContent = `◎ ${contextNames[activeContext]} context${updatedPlace && updatedPlace.trim() ? ' · ' + updatedPlace.trim() : ''}`;
+            if (soutState.conversations[activeConversationIndex] && !soutState.temporaryMode) {
+              soutState.conversations[activeConversationIndex].category = activeContext;
+              soutState.conversations[activeConversationIndex].place = updatedPlace || contextNames[activeContext];
+              saveSoutState();
+              renderDrawerList();
+            }
           };
           placeButton.addEventListener('click', editPlace);
           backdrop.querySelector('[data-chat-action="place"]').addEventListener('click', editPlace);
-          backdrop.querySelector('[data-chat-action="new"]').addEventListener('click', () => {
-            if (title) title.textContent = 'New conversation';
-            if (subtitle) subtitle.textContent = 'Not saved yet';
-            activeContext = 'other';
-            placeButton.textContent = '◎ Detecting place context…';
-            liveCards = Array.from(root.querySelectorAll('.chat-history-card'));
-            liveCards.forEach(c => c.classList.remove('selected'));
-            backdrop.querySelector('.chat-history-toast').textContent = 'New chat ready.';
-            closeHistory();
-          });
-          backdrop.querySelector('[data-chat-action="export"]').addEventListener('click', () => {
-            backdrop.querySelector('.chat-history-toast').textContent = 'Private conversation export prepared in the full app.';
-          });
-          backdrop.querySelector('[data-chat-action="settings"]')?.addEventListener('click', () => {
-            closeHistory();
-            showScreen(15);
-          });
-          backdrop.querySelector('[data-chat-action="signs"]').addEventListener('click', () => {
-            closeHistory();
-            showScreen(19);
-          });
+
+          // Sync handler
+          window.__soutSyncAll = () => {
+            renderChatMessages();
+            updateHeaderState();
+            renderDrawerList();
+            updateScreen15SettingsUI();
+            updateScreen20NotificationsUI();
+          };
+
+          // Initial Render
+          renderChatMessages();
+          updateHeaderState();
+          renderDrawerList();
         }
 
         function enhanceBundledNavigation(root) {
@@ -1669,36 +3029,126 @@
           }, 1000);
         }
 
-        function triggerBandGesture() {
+        function triggerArmbandGiveGesture(root) {
+          if (!root || !root.body || !root.body.classList.contains('sout-unified-signing')) return;
+          const state = root.body.dataset.signingState;
+          if (state === 'confirm') {
+            setUnifiedSigningState(root, 'capture');
+          }
+          root.body.dataset.isPaused = 'false';
+
+          const giveBtn = root.querySelector('.btn-give');
+          if (giveBtn) {
+            giveBtn.classList.add('firing');
+            root.defaultView.setTimeout(() => giveBtn.classList.remove('firing'), 500);
+          }
+
+          const wave = root.querySelector('.unified-wave');
+          if (wave) {
+            wave.classList.add('gesture-pulse');
+            root.defaultView.setTimeout(() => wave.classList.remove('gesture-pulse'), 900);
+          }
+
+          const sampleSigns = [
+            { ar: 'محتاج دواء للصداع', en: 'Need headache medicine', conf: '98%' },
+            { ar: 'لو سمحت، فين الصيدلية؟', en: 'Where is the pharmacy?', conf: '96%' },
+            { ar: 'عايز مسكن للألم', en: 'I want a painkiller', conf: '97%' },
+            { ar: 'شكراً جزيلاً لحضرتك', en: 'Thank you very much', conf: '99%' }
+          ];
+
+          let gIdx = Number(root.body.dataset.gestureCount || 0);
+          const chosen = sampleSigns[gIdx % sampleSigns.length];
+          root.body.dataset.gestureCount = String(gIdx + 1);
+
+          const caption = root.querySelector('.unified-stage-caption');
+          if (caption) {
+            caption.innerHTML = '<span>8 EMG channels · Armband gesture recognized</span><strong lang="ar" dir="rtl" style="color:#73E2DC">⚡ ' + chosen.ar + ' (' + chosen.conf + ')</strong>';
+          }
+
+          const bandState = root.querySelector('.unified-band-state');
+          if (bandState) {
+            bandState.textContent = 'Armband gesture detected: "' + chosen.ar + '" · Ready to stop or add sign';
+          }
+
+          const signal = root.querySelector('.unified-signal-value');
+          if (signal) signal.textContent = '98%';
+
+          announcePrototype('Armband gesture recognized: "' + chosen.ar + '" (' + chosen.en + ') · ' + chosen.conf + ' EMG match.', 'success');
+        }
+
+        function triggerBandGesture(specificAction) {
           const board = findScreen(3);
           const root = board && board.querySelector('iframe')?.contentDocument;
           if (activeScreenNumber !== 3) {
             showScreen(3);
             if (root && root.body.classList.contains('sout-unified-signing')) {
               setUnifiedSigningState(root, 'capture');
+              root.body.dataset.isPaused = 'false';
               const bandState = root.querySelector('.unified-band-state');
-              if (bandState) bandState.textContent = 'Start gesture detected · signing is live';
+              if (bandState) bandState.textContent = 'Armband connected · Ready for gesture';
             }
-            announcePrototype('Band start gesture detected. Signing is now live.');
+            announcePrototype('Armband connected. Signing is now live.');
             return;
           }
-          if (!root || !root.body.classList.contains('sout-unified-signing')) return;
+          if (!root || !root.body || !root.body.classList.contains('sout-unified-signing')) return;
           const state = root.body.dataset.signingState;
-          if (state === 'capture') {
-            const bandState = root.querySelector('.unified-band-state');
-            if (bandState) bandState.textContent = 'Stop gesture detected · capture complete';
+
+          if (specificAction === 'stop') {
             beginUnifiedSigningProcessing(root, 'band');
-            announcePrototype('Band stop gesture detected. Translating the full sentence.');
+            announcePrototype('Armband stop gesture received. Translating sentence...', 'info');
+            return;
+          }
+
+          if (specificAction === 'resume') {
+            if (state === 'confirm') {
+              setUnifiedSigningState(root, 'capture');
+              root.body.dataset.isPaused = 'false';
+              announcePrototype('Armband resume gesture received. Ready to sign.', 'success');
+            } else if (state === 'capture') {
+              root.body.dataset.isPaused = 'false';
+              const liveStatus = root.querySelector('.unified-live-status');
+              if (liveStatus) liveStatus.innerHTML = '<i></i><span><strong>Live capture</strong><small>Armband streaming</small></span>';
+              announcePrototype('Armband resume gesture received. Live capture active.', 'success');
+            }
+            return;
+          }
+
+          if (specificAction === 'give-gesture') {
+            triggerArmbandGiveGesture(root);
+            return;
+          }
+
+          // Default cycle when clicking the Armband control card
+          if (state === 'capture') {
+            const isPaused = root.body.dataset.isPaused === 'true';
+            if (isPaused) {
+              root.body.dataset.isPaused = 'false';
+              const liveStatus = root.querySelector('.unified-live-status');
+              if (liveStatus) liveStatus.innerHTML = '<i></i><span><strong>Live capture</strong><small>Armband streaming</small></span>';
+              announcePrototype('Armband resume gesture received. Streaming unpaused.', 'success');
+              return;
+            }
+            const gCount = Number(root.body.dataset.gestureCount || 0);
+            if (gCount === 0) {
+              triggerArmbandGiveGesture(root);
+            } else {
+              const bandState = root.querySelector('.unified-band-state');
+              if (bandState) bandState.textContent = 'Stop gesture detected · capture complete';
+              beginUnifiedSigningProcessing(root, 'band');
+              announcePrototype('Armband stop gesture received. Translating sentence...', 'info');
+            }
             return;
           }
           if (state === 'confirm') {
             setUnifiedSigningState(root, 'capture');
+            root.body.dataset.isPaused = 'false';
+            root.body.dataset.gestureCount = '0';
             const bandState = root.querySelector('.unified-band-state');
-            if (bandState) bandState.textContent = 'Start gesture detected · signing is live';
-            announcePrototype('Band start gesture detected. New sentence started.');
+            if (bandState) bandState.textContent = 'Resume gesture detected · ready for new sentence';
+            announcePrototype('Armband resume gesture detected. Ready to sign.', 'success');
             return;
           }
-          announcePrototype('Sout is already processing the captured sentence.');
+          announcePrototype('Sout is currently processing the captured sentence.');
         }
 
         function enhanceUnifiedSigning(root, screenNumber) {
@@ -1726,7 +3176,30 @@
           .unified-guidance{margin:14px 2px 0;text-align:center}.unified-guidance strong{display:block;font-size:18px}.unified-guidance p{margin:5px auto 0;max-width:310px;color:#5D7078;font-size:12px;line-height:1.45}
           .unified-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:13px}.unified-metrics div{padding:11px 8px;border:1px solid #DCE6E8;border-radius:15px;background:#FFFFFF;text-align:center}.unified-metrics small,.unified-metrics strong{display:block}.unified-metrics small{color:#72838A;font-size:9px}.unified-metrics strong{margin-top:4px;font-size:14px}.unified-metrics strong.good{color:#18784A}
           .unified-primary,.unified-secondary,.unified-rate-choice{width:100%;min-height:54px;border-radius:17px;font-size:15px;font-weight:800;cursor:pointer}.unified-primary{margin-top:14px;border:0;background:#0B7A83;color:#FFFFFF;box-shadow:0 8px 20px rgba(11,122,131,.2)}.unified-secondary{border:1.5px solid #B8CDD1;background:#FFFFFF;color:#0B7A83}
-          .unified-finish{display:flex;align-items:center;justify-content:center;gap:9px}.unified-finish span{width:18px;height:18px;border:2px solid currentColor;border-radius:6px}.unified-finish small{padding:3px 6px;border-radius:999px;background:rgba(255,255,255,.16);font-size:8px;text-transform:uppercase;letter-spacing:.06em}
+          .unified-gesture-controls{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+          .unified-gesture-btn{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:74px;padding:9px 6px 7px;border-radius:16px;border:1.5px solid #D5E1E3;background:#FFFFFF;color:#10212F;cursor:pointer;transition:all .18s cubic-bezier(.2,0,0,1);box-shadow:0 2px 7px rgba(16,33,47,.05);text-align:center}
+          .unified-gesture-btn:hover{transform:translateY(-1.5px);box-shadow:0 6px 14px rgba(16,33,47,.1)}
+          .unified-gesture-btn:active{transform:scale(.96)}
+          .btn-glyph-wrap{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-style:normal;font-weight:700;transition:all .18s ease}
+          .btn-glyph-wrap i{font-style:normal;line-height:1}
+          .btn-meta-wrap{display:flex;flex-direction:column;align-items:center}
+          .btn-heading{display:block;font-size:12px;font-weight:750;line-height:1.2;color:#10212F}
+          .btn-subtext{display:block;margin-top:2px;font-size:8px;color:#607B83;font-weight:600;letter-spacing:.02em}
+          .btn-band-tag{display:inline-block;margin-top:2px;padding:2px 5px;border-radius:999px;font-size:7px;font-weight:750;text-transform:uppercase;letter-spacing:.04em;background:#F0F4F7;color:#526673}
+          .btn-stop .btn-glyph-wrap{background:#FEECE9;color:#C8381F}
+          .btn-stop:hover{border-color:#F5ABA0;background:#FFF8F7}
+          .btn-stop:hover .btn-band-tag{background:#FCE9E5;color:#C8381F}
+          .btn-resume .btn-glyph-wrap{background:#E6F7ED;color:#18784A}
+          .btn-resume:hover{border-color:#97DEB6;background:#F4FCF7}
+          .btn-resume:hover .btn-band-tag{background:#E0F5E9;color:#18784A}
+          body.sout-unified-signing[data-is-paused="true"] .btn-resume{border-color:#18784A;background:#EAF8F0;box-shadow:0 0 0 3px rgba(24,120,74,.22);animation:resumeGlow 1.3s infinite ease-in-out}
+          @keyframes resumeGlow{0%,100%{box-shadow:0 0 0 2px rgba(24,120,74,.2)}50%{box-shadow:0 0 0 5px rgba(24,120,74,.4)}}
+          .btn-give .btn-glyph-wrap{background:#E8F7F8;color:#0B7A83}
+          .btn-give:hover{border-color:#96D4D8;background:#F2FBFB}
+          .btn-give:hover .btn-band-tag{background:#DEF2F4;color:#0B7A83}
+          .btn-give.firing .btn-glyph-wrap{background:#0B7A83;color:#FFFFFF;transform:scale(1.15)}
+          .unified-wave.gesture-pulse span{background:linear-gradient(180deg,#FFE58F,#FFA940);animation-duration:.5s!important}
+          body.sout-unified-signing[data-is-paused="true"] .unified-wave span{animation-play-state:paused!important;opacity:.45}
           [hidden]{display:none!important}.unified-processing{padding:58px 8px 20px;text-align:center}.unified-orbit{position:relative;width:126px;height:126px;margin:0 auto 24px;border:2px solid #B7E1E4;border-radius:50%;animation:unified-spin 1.4s linear infinite}.unified-orbit:before,.unified-orbit:after{content:"";position:absolute;border-radius:50%}.unified-orbit:before{inset:14px;border:2px dashed #38ABB3}.unified-orbit:after{width:24px;height:24px;left:50%;top:-12px;transform:translateX(-50%);background:#0B7A83;box-shadow:0 5px 16px rgba(11,122,131,.3)}.unified-processing h2{margin:0;font-size:24px}.unified-processing p{margin:8px auto 0;max-width:280px;color:#60747C;font-size:13px;line-height:1.5}.unified-progress{height:7px;margin:25px 22px 0;border-radius:999px;background:#DCE7E9;overflow:hidden}.unified-progress i{display:block;width:70%;height:100%;border-radius:inherit;background:#0B7A83;animation:unified-progress 1.1s ease-in-out infinite}
           .unified-result-head{display:flex;align-items:center;gap:11px;margin-top:12px}.unified-result-check{width:42px;height:42px;display:grid;place-items:center;border-radius:14px;background:#DDF4E7;color:#18784A;font-size:22px;font-weight:900}.unified-result-head strong,.unified-result-head small{display:block}.unified-result-head strong{font-size:18px}.unified-result-head small{margin-top:2px;color:#62757D;font-size:10px}
           .unified-result-card{margin-top:13px;padding:18px;border:2px solid #0B7A83;border-radius:23px;background:#FFFFFF;box-shadow:0 12px 30px rgba(27,65,76,.08)}.unified-result-meta{display:flex;align-items:center;justify-content:space-between;color:#60747C;font-size:10px}.unified-confidence{padding:6px 9px;border-radius:999px;background:#E6F5EA;color:#18784A;font-weight:800}.unified-result-card p{margin:19px 0 17px;text-align:right;color:#10212F;font:750 31px/1.55 "IBM Plex Sans Arabic",Tahoma,Arial,sans-serif}.unified-result-details{display:flex;align-items:center;gap:7px;padding-top:12px;border-top:1px solid #E1E8EA;color:#62757D;font-size:10px}.unified-result-details b{color:#0B7A83}
@@ -1752,16 +3225,44 @@
             <main class="unified-content">
               <button type="button" class="unified-context" data-sign-action="context"><span>&#9673; Context <em class="unified-context-source">Smart detected</em></span><strong><b class="unified-context-value">Pharmacy</b> &#8250;</strong></button>
               <section class="unified-mode-selector" aria-label="Speech confirmation mode"><div class="unified-mode-heading"><strong>After translation</strong><small>Change at any time</small></div><div class="unified-mode-options" role="group"><button type="button" class="selected" data-sign-mode="manual" aria-pressed="true"><span>Preview</span><small>Tap Speak now</small></button><button type="button" data-sign-mode="auto" aria-pressed="false"><span>Wait 3s</span><small>Preview, then speak</small></button><button type="button" data-sign-mode="instant" aria-pressed="false"><span>Instant</span><small>Speak immediately</small></button></div></section>
-              <button type="button" class="unified-band-control" data-sign-action="band-gesture"><span class="unified-band-icon">&#8981;</span><span class="unified-band-copy"><strong>Armband gesture control</strong><small class="unified-band-state">Ready · make the gesture to stop</small></span><em>Simulate gesture</em></button>
-              <section data-signing-panel="capture">
+                            <section data-signing-panel="capture">
                 <div class="unified-stage">
                   <div class="unified-stage-head"><div class="unified-live-status"><i></i><span><strong>Live capture</strong><small>Armband streaming</small></span></div><time class="unified-signing-timer">00:00</time></div>
                   <div class="unified-wave" aria-label="Live armband signal">${waves}</div>
-                  <div class="unified-stage-caption"><span>8 EMG channels streaming</span><strong>Sentence in progress</strong></div>
+                  <div class="unified-stage-caption"><span>8 sEMG channels + 6-axis IMU streaming</span><strong>Sentence in progress</strong></div>
                 </div>
-                <div class="unified-guidance"><strong>Keep signing naturally</strong><p>Sout reads the complete sentence before translating it. Pause briefly when you finish.</p></div>
-                <div class="unified-metrics"><div><small>Band</small><strong class="good">Connected</strong></div><div><small>Signal</small><strong class="good unified-signal-value">94%</strong></div><div><small>Battery</small><strong>82%</strong></div></div>
-                <button type="button" class="unified-primary unified-finish" data-sign-action="finish"><span></span> Stop on phone <small>fallback</small></button>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin:8px 0 10px;padding:6px 12px;border-radius:12px;background:#EAF4F6;border:1px solid #D2E7EA;font-size:10.5px;color:#284E57;">
+                  <span style="display:flex;align-items:center;gap:5px;"><b>🧭 IMU 6-DoF:</b> Streaming (100 Hz)</span>
+                  <span style="display:flex;align-items:center;gap:8px;"><span><b>Pitch:</b> 14°</span><span><b>Roll:</b> -6°</span><span><b>Accel:</b> 1.01g</span></span>
+                </div>
+                <div class="unified-guidance"><strong>Keep signing naturally</strong><p>Sout fuses muscle activations (sEMG) with arm kinematics (IMU) before translating. Pause briefly when you finish.</p></div>
+                <div class="unified-metrics"><div><small>Band</small><strong class="good">Connected</strong></div><div><small>sEMG</small><strong class="good">8 Channels</strong></div><div><small>IMU</small><strong class="good">6-Axis Active</strong></div><div><small>Signal</small><strong class="good unified-signal-value">94%</strong></div><div><small>Battery</small><strong>82%</strong></div></div>
+                <div class="unified-gesture-controls" role="group" aria-label="Gesture recording and armband controls">
+                  <button type="button" class="unified-gesture-btn btn-stop" data-sign-action="stop" data-source="band" aria-label="Stop gesture recording and translate">
+                    <span class="btn-glyph-wrap stop-glyph"><i class="glyph-stop">■</i></span>
+                    <span class="btn-meta-wrap">
+                      <strong class="btn-heading">Stop</strong>
+                      <small class="btn-subtext">Armband / Phone</small>
+                    </span>
+                    <span class="btn-band-tag">Armband clench</span>
+                  </button>
+                  <button type="button" class="unified-gesture-btn btn-resume" data-sign-action="resume" data-source="band" aria-label="Resume gesture recording">
+                    <span class="btn-glyph-wrap resume-glyph"><i class="glyph-play">▶</i></span>
+                    <span class="btn-meta-wrap">
+                      <strong class="btn-heading">Resume</strong>
+                      <small class="btn-subtext">Armband / Phone</small>
+                    </span>
+                    <span class="btn-band-tag">Armband tap</span>
+                  </button>
+                  <button type="button" class="unified-gesture-btn btn-give" data-sign-action="give-gesture" data-source="band" aria-label="Give gesture from armband">
+                    <span class="btn-glyph-wrap give-glyph"><i class="glyph-gesture">⚡</i></span>
+                    <span class="btn-meta-wrap">
+                      <strong class="btn-heading">Give gesture</strong>
+                      <small class="btn-subtext">Armband input</small>
+                    </span>
+                    <span class="btn-band-tag">Armband sign</span>
+                  </button>
+                </div>
               </section>
               <section class="unified-processing" data-signing-panel="processing" hidden>
                 <div class="unified-orbit" aria-hidden="true"></div><h2>Understanding your sentence</h2><p>Sout is combining the full movement sequence with your Pharmacy context.</p><div class="unified-progress"><i></i></div>
@@ -1780,6 +3281,7 @@
 
           root.defaultView.setInterval(() => {
             if (root.body.dataset.signingState !== 'capture') return;
+            if (root.body.dataset.isPaused === 'true') return;
             const seconds = Number(root.body.dataset.signingSeconds || 0) + 1;
             root.body.dataset.signingSeconds = String(seconds);
             const timer = root.querySelector('.unified-signing-timer');
@@ -1835,6 +3337,27 @@
           const statusLabel = statusControl.querySelector('span:last-child');
           if (statusLabel) statusLabel.style.fontSize = '12px';
 
+          // Notification Bell Button beside Profile
+          const notifBtn = root.createElement('button');
+          notifBtn.type = 'button';
+          notifBtn.dataset.soutNotifEntry = 'true';
+          notifBtn.title = 'Notifications & Reminders';
+          notifBtn.setAttribute('aria-label', 'Open Notifications & Reminders');
+          const hasUnread = soutState && soutState.notifications && soutState.notifications.some(n => !n.isDismissed);
+          notifBtn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="sout-notif-badge-dot" style="position:absolute;top:7px;right:7px;width:8px;height:8px;background:#C8381F;border-radius:50%;border:1.5px solid #FFFFFF;display:' + (hasUnread ? 'block' : 'none') + '"></span>';
+          Object.assign(notifBtn.style, {
+            position: 'relative', flex: 'none', width: '38px', height: '38px', display: 'grid', placeItems: 'center', padding: '0',
+            border: '1px solid #DCE3E8', borderRadius: '50%', background: '#FFFFFF', color: '#0B7A83', cursor: 'pointer', transition: 'all .15s ease'
+          });
+          const notifIcon = notifBtn.querySelector('svg');
+          Object.assign(notifIcon.style, { width: '19px', height: '19px', fill: 'none', stroke: 'currentColor', strokeWidth: '1.9', strokeLinecap: 'round', strokeLinejoin: 'round' });
+          notifBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            showScreen(20);
+          });
+
+          // Profile Button
           const profile = root.createElement('button');
           profile.type = 'button';
           profile.dataset.soutProfileEntry = 'true';
@@ -1843,12 +3366,17 @@
           profile.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-4 3-6 7-6s7 2 7 6"/></svg>';
           Object.assign(profile.style, {
             flex: 'none', width: '38px', height: '38px', display: 'grid', placeItems: 'center', padding: '0',
-            border: '1px solid #DCE3E8', borderRadius: '50%', background: '#FFFFFF', color: '#0B7A83', cursor: 'pointer'
+            border: '1px solid #DCE3E8', borderRadius: '50%', background: '#FFFFFF', color: '#0B7A83', cursor: 'pointer', transition: 'all .15s ease'
           });
           const icon = profile.querySelector('svg');
           Object.assign(icon.style, { width: '20px', height: '20px', fill: 'none', stroke: 'currentColor', strokeWidth: '1.9', strokeLinecap: 'round', strokeLinejoin: 'round' });
-          profile.addEventListener('click', () => showScreen(9));
-          controls.append(statusControl, profile);
+          profile.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            showScreen(9);
+          });
+
+          controls.append(statusControl, notifBtn, profile);
           header.appendChild(controls);
         }
 
@@ -1904,7 +3432,41 @@
                 showScreen(30);
               }
               if (action === 'band-gesture') triggerBandGesture();
-              if (action === 'finish') beginUnifiedSigningProcessing(root, 'phone');
+              if (action === 'finish' || action === 'stop') {
+                const source = signingAction.dataset.source || 'band';
+                beginUnifiedSigningProcessing(root, source);
+                announcePrototype(source === 'band'
+                  ? 'Armband stop gesture received. Translating sentence...'
+                  : 'Stop received. Translating sentence...', 'info');
+              }
+              if (action === 'resume') {
+                const state = root.body.dataset.signingState;
+                if (state === 'confirm') {
+                  setUnifiedSigningState(root, 'capture');
+                  root.body.dataset.isPaused = 'false';
+                  announcePrototype('Resumed live capture from armband. Ready to sign.', 'success');
+                } else if (state === 'capture') {
+                  const wasPaused = root.body.dataset.isPaused === 'true';
+                  if (wasPaused) {
+                    root.body.dataset.isPaused = 'false';
+                    const liveStatus = root.querySelector('.unified-live-status');
+                    if (liveStatus) liveStatus.innerHTML = '<i></i><span><strong>Live capture</strong><small>Armband streaming</small></span>';
+                    const bandState = root.querySelector('.unified-band-state');
+                    if (bandState) bandState.textContent = 'Armband streaming resumed · 8 sEMG + 6-axis IMU';
+                    announcePrototype('Armband capture resumed. Streaming active.', 'success');
+                  } else {
+                    root.body.dataset.isPaused = 'true';
+                    const liveStatus = root.querySelector('.unified-live-status');
+                    if (liveStatus) liveStatus.innerHTML = '<i style="background:#F3B94F"></i><span><strong>Capture paused</strong><small>Tap Resume or use Armband tap</small></span>';
+                    const bandState = root.querySelector('.unified-band-state');
+                    if (bandState) bandState.textContent = 'Capture paused · Tap Resume to continue';
+                    announcePrototype('Armband capture paused. Tap Resume or double-tap armband.', 'warning');
+                  }
+                }
+              }
+              if (action === 'give-gesture') {
+                triggerArmbandGiveGesture(root);
+              }
               if (action === 'again') setUnifiedSigningState(root, 'capture');
               if (action === 'speak') {
                 if (root.defaultView.__soutAutoSpeakTimer) {
@@ -1918,6 +3480,13 @@
               if (action === 'history') showScreen(5);
               if (action === 'play-history') announcePrototype('Saved sentence played with Egyptian Arabic text-to-speech.');
               if (action === 'rate-correct' || action === 'rate-fix') showScreen(21);
+              return;
+            }
+            const notifControl = event.target.closest && event.target.closest('[data-sout-notif-entry]');
+            if (notifControl) {
+              event.preventDefault();
+              event.stopImmediatePropagation();
+              showScreen(20);
               return;
             }
             const profileControl = event.target.closest && event.target.closest('[data-sout-profile-entry]');
@@ -2085,8 +3654,194 @@
         messageButton(9, 'Help and accessibility', 'Accessibility guide opened in the full mobile app.');
         messageButton(11, 'Pair a different armband', 'Bluetooth pairing is simulated in this prototype.');
         messageButton(13, 'I need to see it again', 'Movement guide replayed.');
-        messageButton(15, 'Export my data', 'Private data export prepared in the full mobile app.');
-        messageButton(15, 'Delete all history', 'Destructive actions are disabled in the prototype.');
+        // --- Wire Screen 15 Settings & Privacy Controls ---
+        const s15Board = findScreen(15);
+        if (s15Board) {
+          // 1. Toggle Save History
+          const s15ToggleHist = s15Board.querySelector('#setting-toggle-save-history');
+          if (s15ToggleHist) {
+            s15ToggleHist.addEventListener('click', (e) => {
+              e.stopPropagation();
+              soutState.saveHistory = !soutState.saveHistory;
+              if (!soutState.saveHistory) {
+                if (!soutState.reminders.some(r => r.id === 'rem-hist-off')) {
+                  soutState.reminders.unshift({
+                    id: 'rem-hist-off',
+                    text: 'Conversation history is paused. New conversations will not be saved.',
+                    dismissed: false
+                  });
+                }
+                announcePrototype('Conversation history paused. New conversations will not be saved.', 'warning');
+              } else {
+                const r = soutState.reminders.find(rem => rem.id === 'rem-hist-off');
+                if (r) r.dismissed = true;
+                announcePrototype('Conversation history enabled.', 'success');
+              }
+              saveSoutState();
+              updateScreen15SettingsUI();
+            });
+          }
+
+          // 2. Storage Content Preference Choices
+          s15Board.querySelectorAll('#storage-content-choices .choice').forEach(choice => {
+            choice.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const mode = choice.dataset.storageMode;
+              soutState.storageContent = mode;
+              s15Board.querySelectorAll('#storage-content-choices .choice').forEach(c => c.classList.toggle('selected', c === choice));
+              saveSoutState();
+              announcePrototype('Storage preference set to: ' + (mode === 'text-only' ? 'Translated text only (Recommended)' : 'Full conversation dialogue'), 'info');
+            });
+          });
+
+          // 3. Toggle Cloud Sync
+          const s15ToggleSync = s15Board.querySelector('#setting-toggle-cloud-sync');
+          if (s15ToggleSync) {
+            s15ToggleSync.addEventListener('click', (e) => {
+              e.stopPropagation();
+              soutState.cloudSync = !soutState.cloudSync;
+              if (soutState.cloudSync) {
+                if (!soutState.reminders.some(r => r.id === 'rem-cloud-sync')) {
+                  soutState.reminders.unshift({
+                    id: 'rem-cloud-sync',
+                    text: 'Cloud synchronization is in prototype simulation mode. Review what is backed up on your device.',
+                    dismissed: false
+                  });
+                }
+                announcePrototype('Cloud synchronization enabled (simulated). Eligible conversations marked for sync.', 'success');
+              } else {
+                announcePrototype('Cloud synchronization disabled. History stored locally only.', 'info');
+              }
+              saveSoutState();
+              updateScreen15SettingsUI();
+            });
+          }
+
+          // 4. Toggle AI Consent
+          const s15ToggleAi = s15Board.querySelector('#setting-toggle-ai-consent');
+          if (s15ToggleAi) {
+            s15ToggleAi.addEventListener('click', (e) => {
+              e.stopPropagation();
+              soutState.aiImprovementConsent = !soutState.aiImprovementConsent;
+              if (soutState.aiImprovementConsent) {
+                announcePrototype('AI model improvement consent granted. (Anonymized text used only; raw signals never saved).', 'success');
+              } else {
+                announcePrototype('AI model improvement consent revoked.', 'info');
+              }
+              saveSoutState();
+              updateScreen15SettingsUI();
+            });
+          }
+
+          // 5. Toggle Reminders
+          const s15ToggleReminders = s15Board.querySelector('#setting-toggle-reminders');
+          if (s15ToggleReminders) {
+            s15ToggleReminders.addEventListener('click', (e) => {
+              e.stopPropagation();
+              soutState.notificationsEnabled = !soutState.notificationsEnabled;
+              saveSoutState();
+              updateScreen15SettingsUI();
+              announcePrototype(soutState.notificationsEnabled ? 'In-app reminders enabled.' : 'In-app reminders paused.', 'info');
+            });
+          }
+
+          // 6. Revoke All Shared Conversations
+          const s15BtnRevoke = s15Board.querySelector('#btn-revoke-all-shared');
+          if (s15BtnRevoke) {
+            s15BtnRevoke.addEventListener('click', () => {
+              if (soutState.sharedConversationIds.length === 0) {
+                announcePrototype('No conversations currently shared.', 'info');
+                return;
+              }
+              showModalDialog(document, {
+                title: 'Revoke All Shared Access?',
+                message: 'Are you sure you want to revoke access to all shared conversations? All external private links will be invalidated immediately.',
+                confirmText: 'Revoke All',
+                isDestructive: true,
+                onConfirm: () => {
+                  soutState.sharedConversationIds = [];
+                  saveSoutState();
+                  updateScreen15SettingsUI();
+                  announcePrototype('Access to all shared conversations has been revoked.', 'info');
+                }
+              });
+            });
+          }
+
+          // 7. Export All (TXT)
+          const s15BtnExportTxt = s15Board.querySelector('#btn-settings-export-txt');
+          if (s15BtnExportTxt) {
+            s15BtnExportTxt.addEventListener('click', () => {
+              exportAllConversationsAsTxt(soutState.conversations);
+            });
+          }
+
+          // 8. Export All (PDF)
+          const s15BtnExportPdf = s15Board.querySelector('#btn-settings-export-pdf');
+          if (s15BtnExportPdf) {
+            s15BtnExportPdf.addEventListener('click', () => {
+              exportAllConversationsAsPdf(soutState.conversations);
+            });
+          }
+
+          // 9. Delete All History
+          const s15BtnDeleteHistory = s15Board.querySelector('#btn-settings-delete-all-history');
+          if (s15BtnDeleteHistory) {
+            s15BtnDeleteHistory.addEventListener('click', () => {
+              if (soutState.conversations.length === 0) {
+                announcePrototype('No saved conversations to delete.', 'warning');
+                return;
+              }
+              showModalDialog(document, {
+                title: 'Delete All Conversation History?',
+                message: 'Are you sure you want to permanently delete all ' + soutState.conversations.length + ' saved conversations? This cannot be undone.',
+                confirmText: 'Delete All History',
+                isDestructive: true,
+                onConfirm: () => {
+                  soutState.conversations = [];
+                  soutState.sharedConversationIds = [];
+                  saveSoutState();
+                  updateScreen15SettingsUI();
+                  announcePrototype('All conversation history permanently deleted.', 'destructive');
+                }
+              });
+            });
+          }
+
+          // 10. Delete Account and All Data
+          const s15BtnDeleteAccount = s15Board.querySelector('#btn-settings-delete-account');
+          if (s15BtnDeleteAccount) {
+            s15BtnDeleteAccount.addEventListener('click', () => {
+              showModalDialog(document, {
+                title: 'Delete Sout Account and All Data?',
+                message: 'Deleting your account will permanently erase: your user profile (Mona Hassan), calibration normalization profile, all ' + soutState.conversations.length + ' saved conversations, and simulated cloud backups. You can export a copy of your conversations before proceeding.',
+                confirmText: 'Delete Account & All Data',
+                cancelText: 'Cancel',
+                isDestructive: true,
+                extraAction: {
+                  label: 'Export history before deletion (TXT)',
+                  onClick: () => exportAllConversationsAsTxt(soutState.conversations)
+                },
+                onConfirm: () => {
+                  soutState.conversations = [];
+                  soutState.temporaryMessages = [];
+                  soutState.sharedConversationIds = [];
+                  soutState.temporaryMode = false;
+                  soutState.cloudSync = false;
+                  soutState.aiImprovementConsent = false;
+                  try {
+                    localStorage.removeItem('soutPrototypeState_v2');
+                    localStorage.removeItem('soutInferenceFeedbackV1');
+                  } catch (e) {}
+                  saveSoutState();
+                  updateScreen15SettingsUI();
+                  announcePrototype('Account and all data deleted. Local storage purged. (Simulated backend deletion complete).', 'destructive');
+                  setTimeout(() => showScreen(22, { replace: true }), 1200);
+                }
+              });
+            });
+          }
+        }
         messageButton(16, 'Edit message', 'Emergency message editor opened.');
         messageButton(16, 'Add emergency contact', 'Contact picker opened. No contact was added.');
 

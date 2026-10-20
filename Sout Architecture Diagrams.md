@@ -14,7 +14,7 @@ The solid components cover F1–F8. The future content path covers F9–F10 and 
 
 ```mermaid
 graph LR
-    Band[EMG armband]
+    Band[sEMG & 6-Axis IMU Armband]
     Hearing[Hearing person]
     Contacts[Emergency contacts]
 
@@ -22,7 +22,7 @@ graph LR
         Screens[App screens and mode banner]
         Controllers[Application controllers]
         BLE[Bluetooth adapter]
-        Signal[Signal preprocessing]
+        Signal[Multi-modal sensor fusion & preprocessing<br/>(8-ch sEMG + 6-axis IMU kinematics)]
         Context[Coarse place context resolver]
         Mode[Connection and capability selector]
         LocalModel[On-device translation model]
