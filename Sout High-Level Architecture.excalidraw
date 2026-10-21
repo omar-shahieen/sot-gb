@@ -1750,7 +1750,7 @@
       "created": 1792234127973,
       "link": null,
       "locked": false,
-      "text": "Mic / local STT • speech\nSMS / GPS • coarse place type\nnotifications • model download",
+      "text": "Mic / local STT • speech\nSMS / GPS • coarse place type\nhardware alerts • model download",
       "originalText": "Mic / local STT • speech\nSMS / GPS • coarse place type\nnotifications • model download",
       "fontSize": 17,
       "fontFamily": 1,
@@ -1759,7 +1759,8 @@
       "containerId": null,
       "autoResize": false,
       "lineHeight": 1.25,
-      "index": "b6f"
+      "index": "b6f",
+      "rawText": "Mic / local STT • speech\nSMS / GPS • coarse place type\nhardware alerts • model download"
     },
     {
       "id": "8LxrxJvoqtZfnIJqWn-x3",

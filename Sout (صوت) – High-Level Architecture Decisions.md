@@ -12,7 +12,7 @@ Sout is an Android app paired with an 8-channel EMG armband that turns Egyptian 
 - **Privacy by design and Right-to-Erasure.** Signals are encrypted in transit via TLS 1.3 and stored only with explicit consent. Local databases and E2EE backups use AES-256 encryption. History and precise location stay on the phone; only a coarse place category is ever used for inference. Users have full right-to-erasure to completely purge their accounts and cloud data. F2b provides an ephemeral temporary mode that operates strictly in-memory without persistence.
 - **Parallel teams.** Mobile, AI and Backend (plus the armband) work in parallel, so every boundary needs an explicit, versioned contract.
 
-The designed screens (Home, Calibration, Signing, Preview, Conversation, Phrases, Emergency, Offline home, Notification Center) match this split: the Offline home screen lists only the features that run locally.
+The designed screens (Home, Calibration, Signing, Preview, Conversation, Phrases, Emergency, Offline home) match this split: the Offline home screen lists only the features that run locally.
 
 ## System overview
 
@@ -25,14 +25,14 @@ The stack is native on the phone, Java on the API, and Python only where the mod
 
 | Component | Technology | Why |
 | --- | --- | --- |
-| Android app | Kotlin, Jetpack Compose, Room with AES-256 encryption at rest (SQLCipher), foreground service for BLE | Best BLE reliability, background streaming, silent emergency SMS, offline TTS, F2b in-memory zeroing, and F8b notification center |
+| Android app | Kotlin, Jetpack Compose, Room with AES-256 encryption at rest (SQLCipher), foreground service for BLE | Best BLE reliability, background streaming, silent emergency SMS, offline TTS, and F2b in-memory zeroing |
 | Preprocessing library | Rust shared library (`libs/preprocessing`), JNI / UniFFI bindings | Runs on mobile only; guarantees identical signal math to AI training pipelines with zero server preprocessing |
 | On-device model runtime | Not chosen yet; candidates LiteRT, ONNX Runtime Mobile, ExecuTorch, behind one runtime interface | BiLSTM and CTC conversion and low-end phone speed must be benchmarked first |
 | Speech output (F1, F7) | Android on-device TTS for Egyptian Arabic; server neural TTS online | F7 must work offline; online voice is higher quality |
 | Speech input (F5) | Server speech-to-text on the GPU worker online; Android SpeechRecognizer offline | Matches the requirements doc |
-| API gateway | Java, Spring Boot, Spring Security with OAuth2 (JWT tokens), TLS 1.3, AES-256 | Accounts, OAuth2 auth, sync, push notification dispatch (F8b), right-to-erasure account deletion, model downloads, routing to worker |
+| API gateway | Java, Spring Boot, Spring Security with OAuth2 (JWT tokens), TLS 1.3, AES-256 | Accounts, OAuth2 auth, sync, right-to-erasure account deletion, model downloads, routing to worker |
 | Model worker | Python, gRPC server, PyTorch or ONNX on GPU | Translation, speech-to-text and server TTS next to the models |
-| Database | PostgreSQL | Users, devices, favorites, settings, notifications, sync cursors, right-to-erasure cascade support |
+| Database | PostgreSQL | Users, devices, favorites, settings, sync cursors, right-to-erasure cascade support |
 | Object storage | S3-compatible bucket \|\| R2 Bucket | Encrypted backup blobs (AES-256-GCM), on-device model files, dictionary videos |
 | Armband | Hardware undecided, but it has an IMU beside the EMG electrodes; hardware-agnostic BLE GATT contract with EMG and IMU streams | Open decision, see the last section |
 | Contracts | Protobuf with buf; OpenAPI for REST | Versioned, checked for breaking changes in CI |
@@ -48,7 +48,6 @@ Three links carry data, and each has one versioned contract: BLE to the phone, s
 | --- | --- | --- | --- |
 | Armband to phone | BLE GATT, custom EMG service | Time-stamped 8-channel EMG samples and IMU samples, battery, per-channel contact quality | Hardware undecided, so the contract fixes sample rates, channel order and scaling once, shared by Mobile and AI. EMG and IMU share one clock so they can be aligned. |
 | Phone to API: accounts, sync, downloads, erasure | REST with OpenAPI over TLS 1.3 | JSON | OAuth2 JWT: short-lived access token, rotating refresh token. AES-256 for encrypted payloads. Right-to-erasure endpoint completely purges user account and cloud data. |
-| Phone to API: notifications (F8b) | FCM & REST over TLS 1.3 | JSON | Notification Center categories (Reminders, Warnings, Updates), badge counts, and deep-link action cards. |
 | Phone to API: translation | Streaming (WebSocket / gRPC over HTTP/2) with Protobuf over TLS 1.3 | Real-time stream of preprocessed EMG and IMU chunks, calibration values, optional coarse place category, sentence completion flag | Preprocessed on mobile only by `libs/preprocessing`. Signal chunks are streamed continuously during signing to reduce end-to-end latency. Ephemeral mode (F2b) sessions remain strictly in RAM. |
 | API to worker | gRPC client/bidirectional streaming | Streamed protobuf signal chunks | Methods: StreamTranslate (streaming chunks $\rightarrow$ translated Arabic text upon end-of-sentence flag), SpeechToText, TextToSpeech. |
 | Phone to object storage | HTTPS download, signed manifest | Model files, dictionary videos | The app checks the manifest version and checksum before activating a model. |
@@ -65,7 +64,6 @@ The phone is the source of truth for everything personal; the cloud holds accoun
 | --- | --- | --- | --- |
 | Conversation history | Yes, Room (AES-256 SQLCipher), PIN or biometric lock | Only as an opt-in, end-to-end encrypted blob (AES-256-GCM) | The server cannot read it. |
 | Ephemeral / Temporary mode (F2b) | In-memory (RAM) only; memory zeroed on exit | Never | Bypasses Room SQLite database and cloud sync completely; leaves zero disk traces. |
-| Notifications & Alerts (F8b) | Yes, cached locally | Yes, PostgreSQL notification store | Categorized into Reminders, Warnings, and Updates; supports action cards and unread sync. |
 | Favorite phrases | Yes | Yes, synced per record | Low sensitivity. |
 | Settings (confirm mode, contacts, message) | Yes | Yes, synced | Emergency contacts are sensitive, so they sync only with the authenticated account. |
 | Calibration profile | Yes | Yes, as a starting hint | Band placement changes, so a restored profile needs a quick channel check. |
@@ -82,7 +80,6 @@ Sync is local-first: Room on the phone is the source of truth, and the app works
 - **Favorites and settings.** Each record has an ID, a modified time and a deleted flag. The phone queues changes while offline and pushes them when connected. On conflict the latest edit wins, and deletions propagate as tombstones.
 - **History backup (opt-in).** The phone encrypts new conversation entries with AES-256-GCM using a key derived from the user's PIN or passphrase, then uploads them as append-only encrypted chunks. The server stores ciphertext only. A forgotten passphrase means the backup cannot be recovered, and the app must say so before the user enables it.
 - **Temporary gesture mode (F2b).** Operates completely in volatile memory (RAM). Translations and dialogue during an ephemeral session bypass Room SQLite persistence and cloud sync entirely. When the session terminates, all buffered data is actively zeroed out in memory.
-- **Notification center & push alerts (F8b).** In-app notification center (Screen 20) with category tabs (`Reminders`, `Warnings`, `Updates`) and unread badges. Critical alerts (firmware battery warnings, model release updates, calibration reminders) are pushed via FCM over TLS 1.3 with deep-link action cards.
 - **Right-to-erasure account deletion.** A dedicated REST endpoint initiates an immediate cascading purge across PostgreSQL and object storage, removing user accounts, credentials, device tokens, synced settings, and all encrypted backup blobs, accompanied by a clean local database reset.
 - **Models and dictionary.** One-way download from the signed manifest, over Wi-Fi by default.
 
@@ -129,7 +126,7 @@ sout-ai/                   (separate repo)
 
 ## Decision log
 
-Twenty-three decisions are made, one is deferred to a benchmark, and one waits on hardware.
+Twenty-two decisions are made, one is deferred to a benchmark, and one waits on hardware.
 
 | # | Decision | Chosen | Alternatives rejected | Main reason |
 | --- | --- | --- | --- | --- |
@@ -156,8 +153,7 @@ Twenty-three decisions are made, one is deferred to a benchmark, and one waits o
 | 21 | On-device runtime | Deferred until benchmarking | LiteRT, ONNX Runtime Mobile, ExecuTorch | BiLSTM and CTC conversion must be tested on a low-end phone |
 | 22 | Armband hardware | Deferred | ESP32, nRF52, vendor device | Decides BLE throughput for the EMG and IMU streams, and the firmware toolchain |
 | 23 | Temporary mode (F2b) | In-memory only ephemeral session state with memory zeroing | Persisting with temporary flags | Strict privacy guarantee; leaves zero trace in local storage or cloud |
-| 24 | Notifications (F8b) | Notification Center (tabbed categories) + Push (FCM/TLS 1.3) | Silent polling, local-only toasts | Unifies reminders, hardware warnings, and model updates |
-| 25 | Right to erasure | Cascade hard delete endpoint (PostgreSQL + S3/R2 blobs) | Soft-delete only, manual DB cleanups | Fulfills user privacy rights and GDPR compliance |
+| 24 | Right to erasure | Cascade hard delete endpoint (PostgreSQL + S3/R2 blobs) | Soft-delete only, manual DB cleanups | Fulfills user privacy rights and GDPR compliance |
 
 ## Open questions, risks and next steps
 

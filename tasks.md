@@ -20,14 +20,14 @@
   - [ ] Ephemeral in-memory translation session state bypassing Room DB and cloud sync.
   - [ ] Status badge, memory zeroing on session end, and termination confirmation dialog.
 - [ ] **History Privacy & Export (F6)**
-  - [ ] Tombstone soft-delete (`⊘ This message was deleted`) with permanent purge.
+  - [ ] Immediate clean local hard delete from Room DB without residual tombstones.
   - [ ] Storage preferences toggle ("Translated text only" vs "Full dialogue").
   - [ ] Single and bulk transcript export to `.txt` and printable `.pdf`.
   - [ ] Biometric / PIN lock for local history archive.
   - [ ] Client-side E2EE backup encryption (AES-GCM derived from user passphrase/PIN).
-- [ ] **Notification Center & Alerts (F8b)**
-  - [ ] Screen 20 with category tabs (`Reminders`, `Warnings`, `Updates`) and unread badges.
-  - [ ] Deep-link action cards and reusable confirmation modal framework.
+- [ ] **In-Context Hardware Status & Warnings**
+  - [ ] Real-time battery, disconnection, and electrode contact quality indicators/warning banners on active screens.
+  - [ ] Reusable confirmation modal framework for destructive actions.
 - [ ] **Location Context & Privacy Abstraction (F1)**
   - [ ] Coarse place category selector and custom user place labels.
   - [ ] GPS isolation ensuring coordinates stay on-device for emergency SMS only.

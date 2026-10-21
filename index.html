@@ -673,37 +673,8 @@
           body: `
           ${top('Settings & Privacy', 'ON THIS PHONE')}
           <main class="screen-body compact scrollable" id="settings-screen-15-main">
-            <!-- 1. NOTIFICATIONS & REMINDERS -->
-            <p class="section-label first">NOTIFICATIONS & REMINDERS</p>
-            <section class="list-card">
-              <button class="menu-row" id="btn-open-notifications-screen" data-open-screen="20">
-                <span class="row-icon">&#128276;</span>
-                <span class="row-copy">
-                  <strong>Notifications & Reminders Center</strong>
-                  <small>View all alerts, privacy notices, and preferences</small>
-                </span>
-                <span class="value" id="s15-notif-count-val">2</span>${icons.chevron}
-              </button>
-            </section>
-            <div id="settings-reminders-card" class="settings-reminders-box">
-              <div class="reminders-header">
-                <strong><span class="rem-bell">&#128276;</span> Active Reminders</strong>
-                <span class="rem-count-badge" id="reminders-count-badge">2</span>
-              </div>
-              <div id="settings-reminders-list" class="reminders-list"></div>
-            </div>
-            <section class="list-card settings-card">
-              <div class="setting-row">
-                <div>
-                  <strong>Show in-app reminders</strong>
-                  <small>Display notices when privacy, sync, or history settings require review</small>
-                </div>
-                <button class="toggle on" id="setting-toggle-reminders" role="switch" aria-checked="true"><i></i></button>
-              </div>
-            </section>
-
-            <!-- 2. CONVERSATION HISTORY -->
-            <p class="section-label">CONVERSATION HISTORY</p>
+            <!-- CONVERSATION HISTORY -->
+            <p class="section-label first">CONVERSATION HISTORY</p>
             <section class="list-card settings-card">
               <div class="setting-row">
                 <div>
@@ -903,60 +874,6 @@
             <div class="speed-control"><strong>Playback speed</strong><div><button>0.5×</button><button class="active">1×</button><button>1.5×</button></div></div>
             <div class="warning-note"><span>!</span><p><strong>Limited vocabulary</strong><br>The phrase “national ID” is shown as “ID card”. Written Arabic stays visible for checking.</p></div>
             <button class="secondary-button">Repeat all signs</button>
-          </main>`
-        },
-        {
-          n: 20, title: 'Notifications & Reminders', active: 'home',
-          body: `
-          ${top('Notifications & Reminders', 'SYSTEM & PRIVACY')}
-          <main class="screen-body compact scrollable" id="screen-20-notifications-main">
-            <!-- Filter Tabs -->
-            <div class="notif-filter-tabs" role="tablist">
-              <button type="button" class="notif-tab active" data-notif-tab="all">All (<span id="notif-badge-all">4</span>)</button>
-              <button type="button" class="notif-tab" data-notif-tab="reminder">Reminders (<span id="notif-badge-rem">2</span>)</button>
-              <button type="button" class="notif-tab" data-notif-tab="warning">Warnings (<span id="notif-badge-warn">1</span>)</button>
-              <button type="button" class="notif-tab" data-notif-tab="info">Updates (<span id="notif-badge-info">1</span>)</button>
-            </div>
-
-            <div class="notif-summary-bar">
-              <span id="notif-summary-text">Active notifications and privacy reminders</span>
-              <button type="button" class="notif-clear-btn" id="btn-clear-all-notifs">Clear dismissed</button>
-            </div>
-
-            <!-- List of notification cards -->
-            <div class="notif-cards-container" id="screen-20-notif-container"></div>
-
-            <!-- System Reminder Guidance -->
-            <div class="privacy-callout">
-              <span class="callout-icon">&#128276;</span>
-              <p><strong>Proactive Privacy Reminders:</strong> Sout alerts you whenever important settings like conversation history, cloud sync, or sensor calibration require your review.</p>
-            </div>
-
-            <!-- Notification Settings -->
-            <p class="section-label">NOTIFICATION PREFERENCES</p>
-            <section class="list-card settings-card">
-              <div class="setting-row">
-                <div>
-                  <strong>Show in-app reminders</strong>
-                  <small>Display notices when privacy, sync, or history settings require review</small>
-                </div>
-                <button class="toggle on" id="toggle-screen20-reminders" role="switch" aria-checked="true"><i></i></button>
-              </div>
-              <div class="setting-row">
-                <div>
-                  <strong>Haptic alerts on translate</strong>
-                  <small>Subtle armband vibration when a translation finishes</small>
-                </div>
-                <button class="toggle on" id="toggle-screen20-haptics" role="switch" aria-checked="true"><i></i></button>
-              </div>
-              <div class="setting-row">
-                <div>
-                  <strong>Important privacy warnings</strong>
-                  <small>Immediate alerts before destructive actions or cloud sync changes</small>
-                </div>
-                <button class="toggle on" id="toggle-screen20-warnings" role="switch" aria-checked="true"><i></i></button>
-              </div>
-            </section>
           </main>`
         },
         {
@@ -1593,61 +1510,12 @@
         .prototype-toast.destructive{background:#4D120B;box-shadow:0 10px 28px rgba(77,18,11,.35)}
         .prototype-toast.warning{background:#4A2C00;box-shadow:0 10px 28px rgba(74,44,0,.35)}
         
-        /* Screen 20 Notifications & Reminders Styles & Responsive Layout */
-        .board[data-screen-number="20"] .sout-phone{display:flex!important;flex-direction:column!important;height:844px;position:relative;overflow:hidden;background:#F7F9FA}
-        .board[data-screen-number="20"] .app-head{flex:0 0 auto!important;height:auto!important;min-height:64px!important;padding:22px 20px 8px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;border-bottom:1px solid #DCE3E8!important;background:#FFFFFF!important;z-index:2}
-        .board[data-screen-number="20"] .page-title{flex:0 0 auto!important;height:auto!important;min-height:46px!important;padding:8px 20px 8px!important;background:#FFFFFF!important;border-bottom:1px solid #EBF0F2!important;z-index:2}
-        .board[data-screen-number="20"] .page-title h1{margin:0!important;font-size:22px!important;line-height:1.25!important;font-weight:750!important;color:#10212F!important;word-break:break-word!important}
-        .board[data-screen-number="20"] .screen-body#screen-20-notifications-main{flex:1 1 0%!important;height:auto!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;padding:14px 18px 96px!important;-webkit-overflow-scrolling:touch!important;scrollbar-width:thin!important}
-        .board[data-screen-number="20"] .screen-body#screen-20-notifications-main::-webkit-scrollbar{width:5px;display:block!important}
-        .board[data-screen-number="20"] .screen-body#screen-20-notifications-main::-webkit-scrollbar-thumb{background:#CBD4D9;border-radius:4px}
-        .board[data-screen-number="20"] .bottom-nav{position:absolute!important;bottom:0!important;left:0!important;right:0!important;height:72px!important;background:#FFFFFF!important;border-top:1px solid #DCE3E8!important;box-shadow:0 -3px 12px rgba(16,33,47,.06)!important;z-index:10!important}
-
-        .notif-filter-tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:4px;margin-bottom:10px;flex-wrap:nowrap}
-        .notif-filter-tabs::-webkit-scrollbar{display:none}
-        .notif-tab{min-height:34px;padding:0 12px;border:1px solid #DCE3E8;border-radius:999px;background:#FFFFFF;color:#5B6B78;font:700 11.5px system-ui,sans-serif;white-space:nowrap;flex-shrink:0;cursor:pointer;transition:all .15s ease}
-        .notif-tab.active{border-color:#0B7A83;background:#0B7A83;color:#FFFFFF}
-        .notif-summary-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;font-size:11.5px;color:#5B6B78}
-        #notif-summary-text{flex:1;min-width:0;word-break:break-word}
-        .notif-clear-btn{border:0;background:transparent;color:#0B7A83;font:700 11px system-ui,sans-serif;cursor:pointer;padding:2px 4px;flex-shrink:0;white-space:nowrap}
-        .notif-clear-btn:hover{text-decoration:underline}
-        .notif-cards-container{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
-        .notif-card{padding:12px 14px;border-radius:14px;background:#FFFFFF;border:1px solid #DCE3E8;box-shadow:0 1px 4px rgba(16,33,47,.05);display:flex;flex-direction:column;gap:6px;transition:all .15s ease;word-break:break-word;width:100%;box-sizing:border-box}
-        .notif-card.reminder{border-left:4px solid #0B7A83}
-        .notif-card.warning{border-left:4px solid #B26A00;background:#FFFDF8}
-        .notif-card.info{border-left:4px solid #1E7B4A}
-        .notif-card-header{display:flex;align-items:flex-start;gap:9px}
-        .notif-type-icon{font-size:16px;line-height:1.2;flex-shrink:0}
-        .notif-title-wrap{flex:1;min-width:0}
-        .notif-title-wrap strong{display:block;font-size:13.5px;font-weight:750;color:#10212F;line-height:1.3;word-break:break-word}
-        .notif-title-wrap small{display:block;font-size:10px;color:#718096;margin-top:1px}
-        .notif-dismiss-btn{width:24px;height:24px;border:0;border-radius:50%;background:transparent;color:#8C99A4;font-size:16px;cursor:pointer;display:grid;place-items:center;line-height:1;flex-shrink:0}
-        .notif-dismiss-btn:hover{background:#E2E8F0;color:#10212F}
-        .notif-card-msg{margin:0;font-size:12px;line-height:1.45;color:#4A5568;word-break:break-word}
-        .notif-card-actions{display:flex;justify-content:flex-end;margin-top:4px}
-        .notif-action-jump-btn{border:1px solid #0B7A83;background:#EAF7F8;color:#075E66;padding:6px 12px;border-radius:8px;font:700 11.5px system-ui,sans-serif;cursor:pointer;transition:background .15s ease}
-        .notif-action-jump-btn:hover{background:#D7F0F2}
-        .notif-empty-state{text-align:center;padding:32px 16px;background:#FFFFFF;border-radius:14px;border:1px dashed #CBD5E1;color:#64748B}
-        .notif-empty-icon{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:50%;background:#E4F3E9;color:#1E7B4A;font-size:20px;font-weight:800;margin-bottom:8px}
-
-        /* Top header bell buttons and badge */
-        .home-notif-bell, .chat-bell-btn{display:inline-flex;align-items:center;justify-content:center;gap:4px;min-height:36px;padding:0 9px;border:1px solid #DCE3E8;border-radius:999px;background:#FFFFFF;color:#5B6B78;font:700 11px system-ui,sans-serif;cursor:pointer;transition:all .15s ease}
-        .home-notif-bell:hover, .chat-bell-btn:hover{background:#F0F4F7;border-color:#BAC9D4}
-        .bell-unread-dot, .sout-notif-badge-dot{background:#C8381F;color:#FFFFFF;border-radius:999px;font-size:9px;padding:1px 5px;font-weight:800}
-
         @media(max-width:480px){
           body.prototype-mode{padding:0!important;display:flex!important;flex-direction:column!important;height:100vh!important;height:100dvh!important;overflow:hidden!important;background:#F7F9FA!important}
           body.prototype-mode .board{width:100%!important;height:100%!important;display:flex!important;flex-direction:column!important;margin:0!important}
           body.prototype-mode .board.is-active{display:flex!important;flex-direction:column!important;height:100%!important;width:100%!important}
-          body.prototype-mode .board>.sout-phone,
-          body.prototype-mode .board[data-screen-number="20"] .sout-phone{width:100%!important;max-width:100%!important;height:100%!important;max-height:100dvh!important;border-radius:0!important;box-shadow:none!important}
-          body.prototype-mode .board[data-screen-number="20"] .screen-body#screen-20-notifications-main{padding-bottom:96px!important}
+          body.prototype-mode .board>.sout-phone{width:100%!important;max-width:100%!important;height:100%!important;max-height:100dvh!important;border-radius:0!important;box-shadow:none!important}
         }
-
-        /* Deleted message bubble styling */
-        .deleted-bubble{background:#F1F4F7!important;border:1.5px dashed #CBD5E1!important;border-radius:18px!important;padding:10px 14px!important;display:flex!important;align-items:center!important;gap:9px!important;color:#64748B!important}
-        .msg-purge-btn{border:0;background:transparent;color:#94A3B8;cursor:pointer;font-size:11px;padding:1px 4px;border-radius:4px}
-        .msg-purge-btn:hover{color:#C8381F;background:#FFE3DD}
 
         /* Chat input bar styling */
         .chat-input-bar{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#FFFFFF;border-top:1px solid #DCE3E8;margin-top:auto}
@@ -1750,22 +1618,10 @@
           storageContent: 'text-only', // 'text-only' | 'full-dialogue'
           cloudSync: false,
           aiImprovementConsent: false,
-          notificationsEnabled: true,
           lockFingerprint: true,
           temporaryMode: false,
           temporaryMessages: [
-            { id: 'tmp-1', role: 'user', arabic: 'مساء الخير، لو سمحت عايز أسأل سؤال خاص عن الحساب', translation: 'Good evening, I want to ask a private question about the account', meta: 'You signed · temporary session' },
-            { id: 'tmp-2', role: 'peer', arabic: 'اتفضل يا فندم، أنا سامعك وبجاوبك', translation: 'Go ahead, I am listening and will reply', meta: 'Heard · temporary session' }
-          ],
-          notifications: [
-            { id: 'notif-1', type: 'reminder', title: 'Cloud Sync Review', message: 'Cloud sync is currently in local-only mode. Saved conversations remain solely on this device unless cloud sync is enabled.', time: 'Today', actionLabel: 'Review Sync Settings', actionScreen: 15, isDismissed: false },
-            { id: 'notif-2', type: 'reminder', title: 'History Storage Mode', message: 'Conversation storage is set to "Translated text only" to protect partner privacy. Raw sEMG/IMU sensors are never saved.', time: 'Today', actionLabel: 'Review History', actionScreen: 15, isDismissed: false },
-            { id: 'notif-3', type: 'warning', title: 'Armband Calibration Notice', message: '8-channel muscle sensors streaming normally. Perform re-calibration if gesture detection accuracy drops.', time: 'Yesterday', actionLabel: 'Check Calibration', actionScreen: 12, isDismissed: false },
-            { id: 'notif-4', type: 'info', title: 'Temporary Gesture Mode Ready', message: 'You can enable Temporary Gesture Mode at any time from Chat. Temporary sessions are never saved or uploaded.', time: '3 days ago', actionLabel: 'Open Chat', actionScreen: 5, isDismissed: false }
-          ],
-          reminders: [
-            { id: 'rem-cloud-sync', text: 'Cloud synchronization is in prototype simulation mode. Review what is backed up on your device.', dismissed: false },
-            { id: 'rem-storage-pref', text: 'Conversation storage is set to "Translated text only" (Recommended). Review storage content preferences.', dismissed: false }
+            { id: 'tmp-1', role: 'user', arabic: 'مساء الخير، لو سمحت عايز أسأل سؤال خاص عن الحساب', translation: 'Good evening, I want to ask a private question about the account', meta: 'You signed · temporary session' }
           ],
           conversations: [
             {
@@ -1776,9 +1632,7 @@
               place: 'Kasr El Ainy Street · Cairo',
               messages: [
                 { id: 'm1', role: 'user', arabic: 'ممكن دوا للصداع؟', translation: 'Can I have medicine for a headache?', meta: 'You signed · spoken 12:38' },
-                { id: 'm2', role: 'peer', arabic: 'الوجع بقاله قد إيه؟', translation: 'How long has the pain been there?', meta: 'Heard · 12:39' },
-                { id: 'm3', role: 'user', arabic: 'عندي صداع من يومين', translation: 'I have had a headache for two days', meta: 'You signed · spoken 12:40' },
-                { id: 'm4', role: 'peer', arabic: 'الدوا ده بعد الأكل، مرتين في اليوم', translation: 'Take this after meals, twice a day', meta: 'Heard · 12:41' }
+                { id: 'm3', role: 'user', arabic: 'عندي صداع من يومين', translation: 'I have had a headache for two days', meta: 'You signed · spoken 12:40' }
               ]
             },
             {
@@ -1789,9 +1643,7 @@
               place: 'Dokki · Giza',
               messages: [
                 { id: 'm5', role: 'user', arabic: 'أنا عايز أحجز كشف', translation: 'I want to book an examination', meta: 'You signed · spoken 10:14' },
-                { id: 'm6', role: 'peer', arabic: 'الكشف بكرة الساعة عشرة', translation: 'The appointment is tomorrow at ten', meta: 'Heard · 10:15' },
-                { id: 'm7', role: 'user', arabic: 'تمام، شكراً', translation: 'Great, thank you', meta: 'You signed · spoken 10:15' },
-                { id: 'm8', role: 'peer', arabic: 'من فضلك هات البطاقة', translation: 'Please provide your ID', meta: 'Heard · 10:16' }
+                { id: 'm7', role: 'user', arabic: 'تمام، شكراً', translation: 'Great, thank you', meta: 'You signed · spoken 10:15' }
               ]
             },
             {
@@ -1802,9 +1654,7 @@
               place: 'Nasr City · Cairo',
               messages: [
                 { id: 'm9', role: 'user', arabic: 'محتاج أفتح حساب جديد', translation: 'I need to open a new account', meta: 'You signed · spoken 14:02' },
-                { id: 'm10', role: 'peer', arabic: 'معاك بطاقة الرقم القومي؟', translation: 'Do you have your national ID?', meta: 'Heard · 14:03' },
-                { id: 'm11', role: 'user', arabic: 'أيوه، معايا', translation: 'Yes, I have it with me', meta: 'You signed · spoken 14:03' },
-                { id: 'm12', role: 'peer', arabic: 'اتفضل املى الاستمارة دي', translation: 'Please fill out this form', meta: 'Heard · 14:04' }
+                { id: 'm11', role: 'user', arabic: 'أيوه، معايا', translation: 'Yes, I have it with me', meta: 'You signed · spoken 14:03' }
               ]
             },
             {
@@ -1815,9 +1665,7 @@
               place: 'Ramses Square · Cairo',
               messages: [
                 { id: 'm13', role: 'user', arabic: 'لو سمحت نزلني هنا', translation: 'Please drop me off here', meta: 'You signed · spoken 18:20' },
-                { id: 'm14', role: 'peer', arabic: 'حاضر، المحطة الجاية', translation: 'Sure, next stop', meta: 'Heard · 18:20' },
-                { id: 'm15', role: 'user', arabic: 'شكراً', translation: 'Thank you', meta: 'You signed · spoken 18:21' },
-                { id: 'm16', role: 'peer', arabic: 'العفو', translation: 'You are welcome', meta: 'Heard · 18:21' }
+                { id: 'm15', role: 'user', arabic: 'شكراً', translation: 'Thank you', meta: 'You signed · spoken 18:21' }
               ]
             }
           ]
@@ -1825,13 +1673,10 @@
 
         function loadSoutState() {
           try {
-            const raw = localStorage.getItem('soutPrototypeState_v2');
+            const raw = localStorage.getItem('soutPrototypeState_v3');
             if (raw) {
               const parsed = JSON.parse(raw);
               if (parsed && Array.isArray(parsed.conversations)) {
-                if (!parsed.notifications || !parsed.notifications.length) {
-                  parsed.notifications = JSON.parse(JSON.stringify(defaultSoutState.notifications));
-                }
                 return Object.assign({}, defaultSoutState, parsed);
               }
             }
@@ -1844,7 +1689,7 @@
 
         function saveSoutState() {
           try {
-            localStorage.setItem('soutPrototypeState_v2', JSON.stringify(soutState));
+            localStorage.setItem('soutPrototypeState_v3', JSON.stringify(soutState));
           } catch (e) {}
           window.__soutState = soutState;
           if (typeof window.__soutSyncAll === 'function') {
@@ -1853,7 +1698,6 @@
         }
 
         function announcePrototype(message, type = 'info') {
-          if (!soutState.notificationsEnabled && type === 'info') return;
           toast.innerHTML = `<span class="toast-text">${message}</span><button type="button" class="toast-close" aria-label="Dismiss notification">&#10005;</button>`;
           toast.className = 'prototype-toast show ' + type;
           const closeBtn = toast.querySelector('.toast-close');
@@ -2077,164 +1921,11 @@
           announcePrototype('Printable PDF record opened for all conversations', 'success');
         }
 
-        // Screen 15 Dynamic UI Syncer
-        function updateScreen20NotificationsUI() {
-          const container = document.getElementById('screen-20-notif-container');
-          if (!container) return;
-          const activeTab = document.querySelector('.notif-tab.active')?.dataset.notifTab || 'all';
-
-          const allNotifs = soutState.notifications || [];
-          const activeNotifs = allNotifs.filter(n => !n.isDismissed);
-          const remCount = activeNotifs.filter(n => n.type === 'reminder').length;
-          const warnCount = activeNotifs.filter(n => n.type === 'warning').length;
-          const infoCount = activeNotifs.filter(n => n.type === 'info').length;
-
-          const bAll = document.getElementById('notif-badge-all');
-          if (bAll) bAll.textContent = String(activeNotifs.length);
-          const bRem = document.getElementById('notif-badge-rem');
-          if (bRem) bRem.textContent = String(remCount);
-          const bWarn = document.getElementById('notif-badge-warn');
-          if (bWarn) bWarn.textContent = String(warnCount);
-          const bInfo = document.getElementById('notif-badge-info');
-          if (bInfo) bInfo.textContent = String(infoCount);
-
-          const summaryText = document.getElementById('notif-summary-text');
-          if (summaryText) {
-            summaryText.textContent = activeNotifs.length === 0
-              ? 'No active notifications or reminders'
-              : `${activeNotifs.length} active notification${activeNotifs.length === 1 ? '' : 's'} and privacy reminder${activeNotifs.length === 1 ? '' : 's'}`;
-          }
-
-          // Synchronize notification badge dots across headers
-          const hasActive = activeNotifs.length > 0;
-          document.querySelectorAll('.sout-notif-badge-dot, .bell-unread-dot').forEach(dot => {
-            dot.style.display = hasActive ? 'block' : 'none';
-          });
-          document.querySelectorAll('iframe').forEach(f => {
-            try {
-              f.contentDocument?.querySelectorAll('.sout-notif-badge-dot, .bell-unread-dot').forEach(dot => {
-                dot.style.display = hasActive ? 'block' : 'none';
-              });
-            } catch (e) {}
-          });
-
-          const filtered = activeNotifs.filter(n => activeTab === 'all' || n.type === activeTab);
-
-          if (filtered.length === 0) {
-            container.innerHTML = `
-              <div class="notif-empty-state">
-                <span class="notif-empty-icon">&#10003;</span>
-                <strong>All caught up!</strong>
-                <p style="margin:4px 0 0;font-size:12px;">No active notifications or reminders in this view.</p>
-              </div>`;
-            return;
-          }
-
-          container.innerHTML = filtered.map(item => `
-            <div class="notif-card ${item.type}" data-notif-id="${item.id}">
-              <div class="notif-card-header">
-                <span class="notif-type-icon">${item.type === 'warning' ? '&#9888;' : item.type === 'reminder' ? '&#128276;' : '&#8505;'}</span>
-                <div class="notif-title-wrap">
-                  <strong>${item.title}</strong>
-                  <small>${item.time}</small>
-                </div>
-                <button type="button" class="notif-dismiss-btn" data-dismiss-id="${item.id}" title="Dismiss" aria-label="Dismiss">&#215;</button>
-              </div>
-              <p class="notif-card-msg">${item.message}</p>
-              ${item.actionLabel ? `
-                <div class="notif-card-actions">
-                  <button type="button" class="notif-action-jump-btn" data-jump-screen="${item.actionScreen}">${item.actionLabel} &rarr;</button>
-                </div>` : ''}
-            </div>
-          `).join('');
-
-          // Wire dismiss
-          container.querySelectorAll('.notif-dismiss-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-              e.stopPropagation();
-              const id = btn.dataset.dismissId;
-              const found = soutState.notifications.find(n => n.id === id);
-              if (found) {
-                found.isDismissed = true;
-                saveSoutState();
-                updateScreen20NotificationsUI();
-                updateScreen15SettingsUI();
-                announcePrototype('Notification dismissed.', 'info');
-              }
-            });
-          });
-
-          // Wire action jumps
-          container.querySelectorAll('.notif-action-jump-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-              e.stopPropagation();
-              const scr = Number(btn.dataset.jumpScreen);
-              if (scr) showScreen(scr);
-            });
-          });
-
-          // Wire filter tabs
-          document.querySelectorAll('.notif-tab').forEach(tab => {
-            tab.onclick = () => {
-              document.querySelectorAll('.notif-tab').forEach(t => t.classList.toggle('active', t === tab));
-              updateScreen20NotificationsUI();
-            };
-          });
-
-          // Wire clear all dismissed
-          const clearBtn = document.getElementById('btn-clear-all-notifs');
-          if (clearBtn) {
-            clearBtn.onclick = () => {
-              soutState.notifications.forEach(n => { n.isDismissed = true; });
-              saveSoutState();
-              updateScreen20NotificationsUI();
-              updateScreen15SettingsUI();
-              announcePrototype('All read notifications cleared.', 'info');
-            };
-          }
-        }
-
         function updateScreen15SettingsUI() {
           const board = findScreen(15);
           if (!board) return;
 
-          // 1. Reminders
-          const remContainer = board.querySelector('#settings-reminders-list');
-          const remCard = board.querySelector('#settings-reminders-card');
-          const remBadge = board.querySelector('#reminders-count-badge');
-          const activeReminders = soutState.reminders.filter(r => !r.dismissed);
-          if (remContainer && remCard && remBadge) {
-            remCard.style.display = (soutState.notificationsEnabled && activeReminders.length > 0) ? 'block' : 'none';
-            remBadge.textContent = String(activeReminders.length);
-            remContainer.innerHTML = activeReminders.map(r => `
-              <div class="reminder-item" data-reminder-id="${r.id}">
-                <span>${r.text}</span>
-                <button type="button" class="rem-dismiss" aria-label="Dismiss reminder" title="Dismiss">&#10005;</button>
-              </div>
-            `).join('');
-            remContainer.querySelectorAll('.rem-dismiss').forEach(btn => {
-              btn.addEventListener('click', (e) => {
-                const item = e.target.closest('.reminder-item');
-                const remId = item?.dataset.reminderId;
-                const rem = soutState.reminders.find(r => r.id === remId);
-                if (rem) {
-                  rem.dismissed = true;
-                  saveSoutState();
-                  updateScreen15SettingsUI();
-                  announcePrototype('Reminder dismissed.', 'info');
-                }
-              });
-            });
-          }
-
-          // Reminders toggle
-          const toggleReminders = board.querySelector('#setting-toggle-reminders');
-          if (toggleReminders) {
-            toggleReminders.classList.toggle('on', soutState.notificationsEnabled);
-            toggleReminders.setAttribute('aria-checked', String(soutState.notificationsEnabled));
-          }
-
-          // 2. History toggle
+          // History toggle
           const toggleHist = board.querySelector('#setting-toggle-save-history');
           const histDesc = board.querySelector('#save-history-desc');
           if (toggleHist) {
@@ -2315,7 +2006,7 @@
           document.querySelectorAll('.board').forEach(board => board.classList.toggle('is-active', board === target));
           if (parsedNumber === 3) resetUnifiedSigningScreen(target);
           if (parsedNumber === 15) updateScreen15SettingsUI();
-          if (parsedNumber === 20) updateScreen20NotificationsUI();
+          
           if (parsedNumber === 5) {
             window.__soutSyncAll?.();
           }
@@ -2498,10 +2189,7 @@
           .chat-msg-row:hover .msg-delete-btn{opacity:1}
           .msg-delete-btn:hover{color:#C8381F;background:#FFE3DD}
 
-          /* Deleted message appearance */
-          .deleted-bubble{background:#F1F4F7!important;border:1.5px dashed #CBD5E1!important;border-radius:18px!important;padding:10px 14px!important;display:flex!important;align-items:center!important;gap:9px!important;color:#64748B!important}
-          .msg-purge-btn{border:0;background:transparent;color:#94A3B8;cursor:pointer;font-size:11px;padding:1px 4px;border-radius:4px}
-          .msg-purge-btn:hover{color:#C8381F;background:#FFE3DD}
+          
 
           /* Quick chat input bar */
           .chat-input-bar{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#FFFFFF;border-top:1px solid #DCE3E8;margin-top:auto}
@@ -2573,15 +2261,7 @@
           headerActions.appendChild(tempSwitchContainer);
           const tempToggleBtn = tempSwitchContainer.querySelector('.chat-temp-toggle');
 
-          // Bell button to open Screen 20 Notifications & Reminders
-          const bellBtn = root.createElement('button');
-          bellBtn.type = 'button';
-          bellBtn.className = 'chat-bell-btn';
-          bellBtn.setAttribute('aria-label', 'Open Notifications & Reminders');
-          bellBtn.setAttribute('title', 'Notifications & Reminders');
-          bellBtn.innerHTML = `<span style="font-size:14px;line-height:1;">&#128276;</span><span class="chat-bell-badge">2</span>`;
-          bellBtn.addEventListener('click', () => showScreen(20));
-          headerActions.appendChild(bellBtn);
+          
 
           // Online pill in actions container
           headerActions.appendChild(headerRight);
@@ -2643,10 +2323,7 @@
                   <span class="chat-tool-icon">&#128442;</span>
                   <span>Export PDF</span>
                 </button>
-                <button type="button" data-chat-action="notifs" class="chat-tool-btn">
-                  <span class="chat-tool-icon">&#128276;</span>
-                  <span>Alerts</span>
-                </button>
+                
                 <button type="button" data-chat-action="settings" class="chat-tool-btn">
                   <span class="chat-tool-icon">&#9881;</span>
                   <span>Settings</span>
@@ -2747,37 +2424,7 @@
               row.className = 'chat-msg-row';
               row.style.cssText = `align-self:${isUser ? 'flex-end' : 'flex-start'};max-width:82%;display:flex;flex-direction:column;gap:4px;align-items:${isUser ? 'flex-end' : 'flex-start'};margin-bottom:12px;`;
 
-              // Check if message is marked as deleted
-              if (msg.isDeleted) {
-                const delBubble = root.createElement('div');
-                delBubble.className = 'deleted-bubble';
-                delBubble.innerHTML = `
-                  <span style="font-size:16px;line-height:1;color:#94A3B8;">&#8856;</span>
-                  <div style="display:flex;flex-direction:column;gap:1px;">
-                    <span style="font-size:12.5px;font-style:italic;font-weight:600;color:#64748B;">This message was deleted</span>
-                    <span dir="rtl" style="font-size:11px;color:#94A3B8;">تم حذف هذه الرسالة</span>
-                  </div>
-                `;
-
-                const metaRow = root.createElement('div');
-                metaRow.className = 'msg-meta-row';
-                metaRow.innerHTML = `
-                  <span style="font-size:10px;color:#94A3B8;">${msg.meta || 'Deleted'}</span>
-                  <button type="button" class="msg-purge-btn" title="Remove placeholder permanently" aria-label="Remove placeholder">&#215;</button>
-                `;
-
-                metaRow.querySelector('.msg-purge-btn').addEventListener('click', () => {
-                  messages.splice(mIdx, 1);
-                  saveSoutState();
-                  renderChatMessages();
-                  announcePrototype('Deleted message placeholder removed.', 'info');
-                });
-
-                row.appendChild(delBubble);
-                row.appendChild(metaRow);
-                main.appendChild(row);
-                return;
-              }
+              
 
               // Normal active message bubble
               const bubble = root.createElement('div');
@@ -2800,14 +2447,14 @@
               metaRow.querySelector('.msg-delete-btn').addEventListener('click', () => {
                 showModalDialog(root, {
                   title: 'Delete Message?',
-                  message: 'This message will appear as deleted in your chat history: "' + msg.arabic + '". Its content will no longer be visible.',
+                  message: 'Are you sure you want to permanently delete this message? It will be immediately purged from local device storage.',
                   confirmText: 'Delete Message',
                   isDestructive: true,
                   onConfirm: () => {
-                    msg.isDeleted = true;
+                    messages.splice(mIdx, 1);
                     saveSoutState();
                     renderChatMessages();
-                    announcePrototype('Message marked as deleted.', 'info');
+                    announcePrototype('Message permanently deleted from device storage.', 'info');
                   }
                 });
               });
@@ -3006,8 +2653,7 @@
             } else {
               soutState.temporaryMode = true;
               soutState.temporaryMessages = [
-                { id: 'tmp-1', role: 'user', arabic: 'مساء الخير، لو سمحت عايز أسأل سؤال خاص عن الحساب', translation: 'Good evening, I want to ask a private question about the account', meta: 'You signed · temporary session', isDeleted: false },
-                { id: 'tmp-2', role: 'peer', arabic: 'اتفضل يا فندم، أنا سامعك وبجاوبك', translation: 'Go ahead, I am listening and will reply', meta: 'Heard · temporary session', isDeleted: false }
+                { id: 'tmp-1', role: 'user', arabic: 'مساء الخير، لو سمحت عايز أسأل سؤال خاص عن الحساب', translation: 'Good evening, I want to ask a private question about the account', meta: 'You signed · temporary session' }
               ];
               saveSoutState();
               renderChatMessages();
@@ -3052,10 +2698,7 @@
             }
           });
 
-          backdrop.querySelector('[data-chat-action="notifs"]').addEventListener('click', () => {
-            closeHistory();
-            showScreen(20);
-          });
+          
 
           backdrop.querySelector('[data-chat-action="settings"]').addEventListener('click', () => {
             closeHistory();
@@ -3115,7 +2758,7 @@
             updateHeaderState();
             renderDrawerList();
             updateScreen15SettingsUI();
-            updateScreen20NotificationsUI();
+            
           };
 
           // Initial Render
@@ -3377,10 +3020,7 @@
             return;
           }
 
-          if (specificAction === 'give-gesture') {
-            triggerArmbandGiveGesture(root);
-            return;
-          }
+          
 
           // Default cycle when clicking the Armband control card
           if (state === 'capture') {
@@ -3554,25 +3194,7 @@
           const statusLabel = statusControl.querySelector('span:last-child');
           if (statusLabel) statusLabel.style.fontSize = '12px';
 
-          // Notification Bell Button beside Profile
-          const notifBtn = root.createElement('button');
-          notifBtn.type = 'button';
-          notifBtn.dataset.soutNotifEntry = 'true';
-          notifBtn.title = 'Notifications & Reminders';
-          notifBtn.setAttribute('aria-label', 'Open Notifications & Reminders');
-          const hasUnread = soutState && soutState.notifications && soutState.notifications.some(n => !n.isDismissed);
-          notifBtn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="sout-notif-badge-dot" style="position:absolute;top:7px;right:7px;width:8px;height:8px;background:#C8381F;border-radius:50%;border:1.5px solid #FFFFFF;display:' + (hasUnread ? 'block' : 'none') + '"></span>';
-          Object.assign(notifBtn.style, {
-            position: 'relative', flex: 'none', width: '38px', height: '38px', display: 'grid', placeItems: 'center', padding: '0',
-            border: '1px solid #DCE3E8', borderRadius: '50%', background: '#FFFFFF', color: '#0B7A83', cursor: 'pointer', transition: 'all .15s ease'
-          });
-          const notifIcon = notifBtn.querySelector('svg');
-          Object.assign(notifIcon.style, { width: '19px', height: '19px', fill: 'none', stroke: 'currentColor', strokeWidth: '1.9', strokeLinecap: 'round', strokeLinejoin: 'round' });
-          notifBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            showScreen(20);
-          });
+          
 
           // Profile Button
           const profile = root.createElement('button');
@@ -3593,7 +3215,7 @@
             showScreen(9);
           });
 
-          controls.append(statusControl, notifBtn, profile);
+          controls.append(statusControl, profile);
           header.appendChild(controls);
         }
 
@@ -3681,9 +3303,7 @@
                   }
                 }
               }
-              if (action === 'give-gesture') {
-                triggerArmbandGiveGesture(root);
-              }
+              
               if (action === 'again') setUnifiedSigningState(root, 'capture');
               if (action === 'speak') {
                 if (root.defaultView.__soutAutoSpeakTimer) {
@@ -3699,13 +3319,7 @@
               if (action === 'rate-correct' || action === 'rate-fix') showScreen(21);
               return;
             }
-            const notifControl = event.target.closest && event.target.closest('[data-sout-notif-entry]');
-            if (notifControl) {
-              event.preventDefault();
-              event.stopImmediatePropagation();
-              showScreen(20);
-              return;
-            }
+            
             const profileControl = event.target.closest && event.target.closest('[data-sout-profile-entry]');
             if (profileControl) {
               event.preventDefault();

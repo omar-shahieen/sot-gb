@@ -1795,7 +1795,7 @@
       "link": null,
       "locked": false,
       "index": "b5F",
-      "text": "• AES-256 SQLCipher DB, biometric / PIN lock\n• Storage: text only or full dialogue\n• Deleted message: tombstone + hard purge",
+      "text": "• AES-256 SQLCipher DB, biometric / PIN lock\n• Storage: text only or full dialogue\n• Deleted message: clean local hard delete",
       "originalText": "• AES-256 SQLCipher DB, biometric / PIN lock\n• Storage: text only or full dialogue\n• Deleted message: tombstone + hard purge",
       "fontSize": 14,
       "fontFamily": 1,
@@ -1803,7 +1803,8 @@
       "verticalAlign": "top",
       "containerId": null,
       "autoResize": false,
-      "lineHeight": 1.25
+      "lineHeight": 1.25,
+      "rawText": "• AES-256 SQLCipher DB, biometric / PIN lock\n• Storage: text only or full dialogue\n• Deleted message: clean local hard delete"
     },
     {
       "id": "HlTjOVPny6QKsIVRWZddn",
@@ -2409,7 +2410,7 @@
       "link": null,
       "locked": false,
       "index": "b5X",
-      "text": "FOUNDATION — EXECUTION MODES & NOTIFICATIONS (apply to every column)",
+      "text": "FOUNDATION — EXECUTION MODES & HARDWARE STATUS (apply to every column)",
       "originalText": "FOUNDATION — EXECUTION MODES & NOTIFICATIONS (apply to every column)",
       "fontSize": 18,
       "fontFamily": 1,
@@ -2417,7 +2418,8 @@
       "verticalAlign": "middle",
       "containerId": null,
       "autoResize": false,
-      "lineHeight": 1.25
+      "lineHeight": 1.25,
+      "rawText": "FOUNDATION — EXECUTION MODES & HARDWARE STATUS (apply to every column)"
     },
     {
       "id": "OEP94PFof6TmV638cCPG8",
@@ -2799,7 +2801,7 @@
       "link": null,
       "locked": false,
       "index": "b5i",
-      "text": "Notifications",
+      "text": "Hardware Status & Warnings",
       "originalText": "Notifications",
       "fontSize": 16,
       "fontFamily": 1,
@@ -2807,7 +2809,8 @@
       "verticalAlign": "top",
       "containerId": null,
       "autoResize": false,
-      "lineHeight": 1.25
+      "lineHeight": 1.25,
+      "rawText": "Hardware Status & Warnings"
     },
     {
       "id": "ZGLaXCAGls1NfU4SP7W2i",
@@ -2837,7 +2840,7 @@
       "link": null,
       "locked": false,
       "index": "b5j",
-      "text": "• Reminders\n• Hardware warnings\n• Updates",
+      "text": "• In-context warning banners\n• Battery & disconnect alerts\n• Electrode contact check",
       "originalText": "• Reminders\n• Hardware warnings\n• Updates",
       "fontSize": 14,
       "fontFamily": 1,
@@ -2845,7 +2848,8 @@
       "verticalAlign": "top",
       "containerId": null,
       "autoResize": false,
-      "lineHeight": 1.25
+      "lineHeight": 1.25,
+      "rawText": "• In-context warning banners\n• Battery & disconnect alerts\n• Electrode contact check"
     }
   ],
   "appState": {
