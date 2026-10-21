@@ -9,7 +9,7 @@ Sout is an Android app paired with an 8-channel EMG armband that turns Egyptian 
 - **Offline-first phone.** F2 (sensor link), F2b (temporary mode), F3 (preview), F4 (calibration), F6 (history, favorites), F7 (emergency) and F8 (offline mode) must work with no server, so the phone is a full runtime, not a thin client.
 - **Two models, one input.** A large server model and a small on-device model must receive identically preprocessed signals (EMG and IMU together), or their results diverge.
 - **Streaming inference for low latency.** Signal data is preprocessed and streamed to the models in real time as the user signs rather than buffered and sent in a single bulk request after signing ends. The encoder processes features incrementally on the fly, allowing the translated Egyptian Arabic sentence to be emitted almost immediately when the signing gesture completes, drastically reducing conversational latency.
-- **Privacy by design and Right-to-Erasure.** Signals are encrypted in transit via TLS 1.3 and stored only with explicit consent. Local databases and E2EE backups use AES-256 encryption. History and precise location stay on the phone; only a coarse place category is ever used for inference. Users have full right-to-erasure to completely purge their accounts and cloud data. F2b provides an ephemeral temporary mode that operates strictly in-memory without persistence.
+- **Privacy by design and Right-to-Erasure.** Signals are encrypted in transit via TLS 1.3 and stored only with explicit consent. Local databases and E2EE backups use AES-256 encryption. History and precise location stay on the phone; only coarse place categories, conversation topics, or phrase keywords (user context hints) are ever sent for inference. Users have full right-to-erasure to completely purge their accounts and cloud data. F2b provides an ephemeral temporary mode that operates strictly in-memory without persistence, and F6 provides local storage preferences and offline transcript export (.txt/.pdf).
 - **Parallel teams.** Mobile, AI and Backend (plus the armband) work in parallel, so every boundary needs an explicit, versioned contract.
 
 The designed screens (Home, Calibration, Signing, Preview, Conversation, Phrases, Emergency, Offline home) match this split: the Offline home screen lists only the features that run locally.
@@ -25,13 +25,13 @@ The stack is native on the phone, Java on the API, and Python only where the mod
 
 | Component | Technology | Why |
 | --- | --- | --- |
-| Android app | Kotlin, Jetpack Compose, Room with AES-256 encryption at rest (SQLCipher), foreground service for BLE | Best BLE reliability, background streaming, silent emergency SMS, offline TTS, and F2b in-memory zeroing |
+| Android app | Kotlin, Jetpack Compose, Room with AES-256 encryption at rest (SQLCipher), foreground service for BLE, local TXT/PDF export, in-context warning banners | Best BLE reliability, background streaming, silent emergency SMS, offline TTS, local privacy export, and F2b in-memory zeroing |
 | Preprocessing library | Rust shared library (`libs/preprocessing`), JNI / UniFFI bindings | Runs on mobile only; guarantees identical signal math to AI training pipelines with zero server preprocessing |
 | On-device model runtime | Not chosen yet; candidates LiteRT, ONNX Runtime Mobile, ExecuTorch, behind one runtime interface | BiLSTM and CTC conversion and low-end phone speed must be benchmarked first |
 | Speech output (F1, F7) | Android on-device TTS for Egyptian Arabic; server neural TTS online | F7 must work offline; online voice is higher quality |
 | Speech input (F5) | Server speech-to-text on the GPU worker online; Android SpeechRecognizer offline | Matches the requirements doc |
 | API gateway | Java, Spring Boot, Spring Security with OAuth2 (JWT tokens), TLS 1.3, AES-256 | Accounts, OAuth2 auth, sync, right-to-erasure account deletion, model downloads, routing to worker |
-| Model worker | Python, gRPC server, PyTorch or ONNX on GPU | Translation, speech-to-text and server TTS next to the models |
+| Model worker | Python, gRPC server, PyTorch or ONNX on GPU | Translation (BiLSTM + CTC), speech-to-text and server neural TTS next to the models |
 | Database | PostgreSQL | Users, devices, favorites, settings, sync cursors, right-to-erasure cascade support |
 | Object storage | S3-compatible bucket \|\| R2 Bucket | Encrypted backup blobs (AES-256-GCM), on-device model files, dictionary videos |
 | Armband | Hardware undecided, but it has an IMU beside the EMG electrodes; hardware-agnostic BLE GATT contract with EMG and IMU streams | Open decision, see the last section |
@@ -46,13 +46,13 @@ Three links carry data, and each has one versioned contract: BLE to the phone, s
 
 | Link | Protocol | Payload | Notes |
 | --- | --- | --- | --- |
-| Armband to phone | BLE GATT, custom EMG service | Time-stamped 8-channel EMG samples and IMU samples, battery, per-channel contact quality | Hardware undecided, so the contract fixes sample rates, channel order and scaling once, shared by Mobile and AI. EMG and IMU share one clock so they can be aligned. |
+| Armband to phone | BLE GATT, custom EMG service | Time-stamped 8-channel EMG samples and IMU samples, battery, per-channel contact quality | Hardware undecided, so the contract fixes sample rates, channel order and scaling once, shared by Mobile, Hardware, and AI. EMG and IMU share one clock so they can be aligned. |
 | Phone to API: accounts, sync, downloads, erasure | REST with OpenAPI over TLS 1.3 | JSON | OAuth2 JWT: short-lived access token, rotating refresh token. AES-256 for encrypted payloads. Right-to-erasure endpoint completely purges user account and cloud data. |
-| Phone to API: translation | Streaming (WebSocket / gRPC over HTTP/2) with Protobuf over TLS 1.3 | Real-time stream of preprocessed EMG and IMU chunks, calibration values, optional coarse place category, sentence completion flag | Preprocessed on mobile only by `libs/preprocessing`. Signal chunks are streamed continuously during signing to reduce end-to-end latency. Ephemeral mode (F2b) sessions remain strictly in RAM. |
-| API to worker | gRPC client/bidirectional streaming | Streamed protobuf signal chunks | Methods: StreamTranslate (streaming chunks $\rightarrow$ translated Arabic text upon end-of-sentence flag), SpeechToText, TextToSpeech. |
+| Phone to API: translation | Streaming (WebSocket / gRPC over HTTP/2) with Protobuf over TLS 1.3 | Real-time stream of preprocessed EMG and IMU chunks, calibration normalization values, optional context hints (coarse place category, topic, phrase keywords), sentence completion flag | Preprocessed on mobile only by `libs/preprocessing`. Signal chunks are streamed continuously during signing to reduce end-to-end latency. Ephemeral mode (F2b) sessions remain strictly in RAM. |
+| API to worker | gRPC client/bidirectional streaming | Streamed protobuf signal chunks | Methods: StreamTranslate (streaming chunks $\rightarrow$ translated Arabic text upon end-of-sentence flag), SpeechToText, TextToSpeech (server neural TTS). |
 | Phone to object storage | HTTPS download, signed manifest | Model files, dictionary videos | The app checks the manifest version and checksum before activating a model. |
 
-**Request flow.** The phone continuously cleans and extracts features from the EMG and IMU stream via `libs/preprocessing` and streams these preprocessed chunks in real time to the server over a persistent connection. The model's encoder ingests frames incrementally as the user signs. When the user finishes the sentence (signified by a fist-clench gesture or natural signing pause), an end-of-sentence flag triggers the decoder, which emits the final Egyptian Arabic text immediately to the preview screen. If the streaming connection drops or server latency exceeds the fallback threshold, the phone falls back seamlessly to the local on-device streaming model. In F2b temporary mode, the translation session bypasses disk persistence and cloud sync entirely.
+**Request flow.** The phone continuously cleans and extracts features from the EMG and IMU stream via `libs/preprocessing` and streams these preprocessed chunks in real time to the server over a persistent connection. The model's incremental encoder ingests frames on the fly as the user signs. When the user finishes the sentence (signified by an armband gesture or natural signing pause), an end-of-sentence flag triggers the decoder, which emits the final Egyptian Arabic text immediately to the preview screen and returns the synthesized neural TTS audio stream. Depending on the user's active preview mode (F3: manual confirmation, 2–3s auto-speak delay, or instant speak), the phone presents the text and plays the audio upon confirmation or immediately. If the streaming connection drops or server latency exceeds the fallback threshold (~3 seconds), the phone falls back seamlessly to the local on-device streaming model and Android on-device TTS. In F2b temporary mode, the translation session bypasses disk persistence and cloud sync entirely.
 
 **Preprocessing on mobile only via shared library.** Preprocessing runs strictly on the mobile device only, executed by the shared native Rust library (`libs/preprocessing`) integrated into Android via JNI / UniFFI bindings. The server performs zero preprocessing on translation requests. Parity is guaranteed because the AI team defines the signal processing pipeline and supplies golden test vectors (raw sensor input and expected preprocessed output). Automated CI checks on both Android and the AI training repo validate against these golden vectors, guaranteeing both on-device and server models receive identical features without duplicate codebase drift.
 
@@ -62,13 +62,13 @@ The phone is the source of truth for everything personal; the cloud holds accoun
 
 | Data | Phone | Cloud | Rule |
 | --- | --- | --- | --- |
-| Conversation history | Yes, Room (AES-256 SQLCipher), PIN or biometric lock | Only as an opt-in, end-to-end encrypted blob (AES-256-GCM) | The server cannot read it. |
+| Conversation history | Yes, Room (AES-256 SQLCipher), PIN or biometric lock. Filters storage by preference (translated text only vs. full dialogue) and supports single/bulk TXT and PDF export | Only as an opt-in, end-to-end encrypted blob (AES-256-GCM) | The server cannot read it. |
 | Ephemeral / Temporary mode (F2b) | In-memory (RAM) only; memory zeroed on exit | Never | Bypasses Room SQLite database and cloud sync completely; leaves zero disk traces. |
 | Favorite phrases | Yes | Yes, synced per record | Low sensitivity. |
 | Settings (confirm mode, contacts, message) | Yes | Yes, synced | Emergency contacts are sensitive, so they sync only with the authenticated account. |
 | Calibration profile | Yes | Yes, as a starting hint | Band placement changes, so a restored profile needs a quick channel check. |
 | Precise location | Used for the emergency SMS only | Never | Not part of any API. |
-| Coarse place category and place labels | Yes, user-chosen | Category only, with a translation request | No automatic lookup; the user picks or confirms it. |
+| Coarse place category, topic, phrase hints, and place labels | Yes, user-chosen | Context hints only, with a translation request | No automatic GPS lookup; user picks, adjusts, or clears them. |
 | Raw EMG and IMU signals | Buffered during a sentence | Only with explicit consent, for training | Off by default. |
 | Accounts and devices | OAuth2 token cache | PostgreSQL | OAuth2 JWT auth over TLS 1.3; subject to complete right-to-erasure cascade deletion. |
 | On-device models, dictionary videos | Downloaded copies | Object storage with a signed manifest | Versioned, checksummed. |
@@ -78,6 +78,7 @@ The phone is the source of truth for everything personal; the cloud holds accoun
 Sync is local-first: Room on the phone is the source of truth, and the app works the same with or without a connection.
 
 - **Favorites and settings.** Each record has an ID, a modified time and a deleted flag. The phone queues changes while offline and pushes them when connected. On conflict the latest edit wins, and deletions propagate as tombstones.
+- **Storage preferences & local export.** Room applies user storage filters at the ingestion boundary ("Translated text only" vs. "Full conversation dialogue"), so hearing partner replies are never saved if the user prefers text-only. Single or bulk transcripts can be generated directly on-device as formatted `.txt` or printable `.pdf` without network calls.
 - **History backup (opt-in).** The phone encrypts new conversation entries with AES-256-GCM using a key derived from the user's PIN or passphrase, then uploads them as append-only encrypted chunks. The server stores ciphertext only. A forgotten passphrase means the backup cannot be recovered, and the app must say so before the user enables it.
 - **Temporary gesture mode (F2b).** Operates completely in volatile memory (RAM). Translations and dialogue during an ephemeral session bypass Room SQLite persistence and cloud sync entirely. When the session terminates, all buffered data is actively zeroed out in memory.
 - **Right-to-erasure account deletion.** A dedicated REST endpoint initiates an immediate cascading purge across PostgreSQL and object storage, removing user accounts, credentials, device tokens, synced settings, and all encrypted backup blobs, accompanied by a clean local database reset.
@@ -126,7 +127,7 @@ sout-ai/                   (separate repo)
 
 ## Decision log
 
-Twenty-two decisions are made, one is deferred to a benchmark, and one waits on hardware.
+Twenty-four decisions are made, two are deferred (on-device runtime and armband hardware), and one is scheduled post-MVP.
 
 | # | Decision | Chosen | Alternatives rejected | Main reason |
 | --- | --- | --- | --- | --- |
@@ -140,7 +141,7 @@ Twenty-two decisions are made, one is deferred to a benchmark, and one waits on 
 | 8 | Authentication & Security | OAuth2 with JWT, TLS 1.3, AES-256 encryption | Self-built non-standard auth, basic auth | Industry standard, robust token lifecycle, matches requirements |
 | 9 | Cloud data | Accounts, settings, calibration hint, consented training data, optional backup | Minimal-only, full cloud history | Restore on a new phone without reading conversations |
 | 10 | History backup | Opt-in, end-to-end encrypted (AES-256-GCM) | Server-readable, favorites only | Matches the privacy requirement; server stores ciphertext only |
-| 11 | Client API | Streaming Protobuf (WebSocket/gRPC) for translation; REST (OpenAPI) for accounts/sync | Unary REST for translation, JSON everywhere | Minimizes latency during live signing while keeping CRUD and account endpoints simple and debuggable |
+| 11 | Client API | Streaming Protobuf (WebSocket/gRPC) for translation with context hints; REST (OpenAPI) for accounts/sync | Unary REST for translation, JSON everywhere | Minimizes latency during live signing while keeping CRUD and account endpoints simple and debuggable |
 | 12 | Sync | Local-first, per-record, last-write-wins | Manual snapshot, CRDT | Single-user edits do not need more |
 | 13 | Repositories | Product monorepo + separate AI repo | Single monorepo, polyrepo | Atomic contract changes without bloating the repo |
 | 14 | Build tool | Gradle + just + buf (+ uv) | Bazel&#32; | Native Android and Spring builds; low setup cost |
@@ -149,11 +150,13 @@ Twenty-two decisions are made, one is deferred to a benchmark, and one waits on 
 | 17 | Text-to-speech | On-device Android TTS + server neural TTS online | On-device only, own model | Offline for F7, better voice online |
 | 18 | Speech-to-text (F5) | Server model on the worker + Android SpeechRecognizer offline | Third-party API only | Matches requirements; audio stays in our infrastructure |
 | 19 | Model delivery | Object storage + signed manifest | Bundled in APK, Play asset packs | Model updates without app releases |
-| 20 | Place category | User-chosen, saved place labels, no automatic lookup | Places API, offline map | Coordinates never leave the phone |
+| 20 | Place category & context hints | User-chosen, saved place labels, no automatic lookup | Places API, offline map | Coordinates never leave the phone |
 | 21 | On-device runtime | Deferred until benchmarking | LiteRT, ONNX Runtime Mobile, ExecuTorch | BiLSTM and CTC conversion must be tested on a low-end phone |
 | 22 | Armband hardware | Deferred | ESP32, nRF52, vendor device | Decides BLE throughput for the EMG and IMU streams, and the firmware toolchain |
 | 23 | Temporary mode (F2b) | In-memory only ephemeral session state with memory zeroing | Persisting with temporary flags | Strict privacy guarantee; leaves zero trace in local storage or cloud |
 | 24 | Right to erasure | Cascade hard delete endpoint (PostgreSQL + S3/R2 blobs) | Soft-delete only, manual DB cleanups | Fulfills user privacy rights and GDPR compliance |
+| 25 | Text-to-sign reply (F10) | Deferred to Post-MVP | Avatar / video clips in v1 | MVP focuses on core bidirectional translation, STT, and TTS; sign animation requires large linguistic dataset and 3D engine |
+| 26 | History export & filtering (F6) | On-device TXT/PDF generation and local storage filters | Cloud-rendered PDF, server-side filtering | Works fully offline; zero personal transcript data leaves device during export |
 
 ## Open questions, risks and next steps
 
