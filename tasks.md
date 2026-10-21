@@ -25,7 +25,6 @@
   - [ ] Single and bulk transcript export to `.txt` and printable `.pdf`.
   - [ ] Biometric / PIN lock for local history archive.
   - [ ] Client-side E2EE backup encryption (AES-GCM derived from user passphrase/PIN).
-  - [ ] Selective link sharing UI and one-tap revocation action.
 - [ ] **Notification Center & Alerts (F8b)**
   - [ ] Screen 20 with category tabs (`Reminders`, `Warnings`, `Updates`) and unread badges.
   - [ ] Deep-link action cards and reusable confirmation modal framework.
@@ -34,7 +33,7 @@
   - [ ] GPS isolation ensuring coordinates stay on-device for emergency SMS only.
 - [ ] **Device Capability Profiler & Fallback (F8)**
   - [ ] First-launch benchmark classifying device as Capable vs Weak.
-  - [ ] 3-second server translation timeout fallback.
+  - [ ] Real-time streaming server latency monitor and fallback to on-device streaming model.
 - [ ] **Haptic Feedback Engine**
   - [ ] Tactile vibration patterns for partner reply (F5), emergency countdown (F7), and alerts.
 
@@ -57,17 +56,16 @@ Later:
   - [ ] Implement account management endpoints and PostgreSQL persistence.
   - [ ] Build sync endpoints for favorites, settings, and end-to-end encrypted history backup blobs.
   - [ ] Build model manifest endpoint serving signed version manifests, checksums, and download URLs.
-  - [ ] Implement the translation REST endpoint accepting preprocessed binary Protobuf signals.
-  - [ ] Implement selective sharing API (tokenized signed read-only links, public view endpoint, instant revocation).
+  - [ ] Implement the real-time translation streaming endpoint (WebSocket / gRPC streaming) accepting preprocessed binary Protobuf signal chunks.
   - [ ] Implement security baseline (refresh token revocation/blacklisting, password reset, email verification, endpoint rate limiting).
   - [ ] Implement right-to-erasure account deletion and complete user data purge endpoint.
 - [ ] **gRPC Worker Gateway Integration**
-  - [ ] Implement gRPC client calling worker RPC methods (`Translate`, `SpeechToText`, `TextToSpeech`).
-  - [ ] Create stub Python gRPC worker returning canned Arabic text responses.
-  - [ ] Wire end-to-end translation flow in Docker Compose.
+  - [ ] Implement gRPC streaming client calling worker RPC methods (`StreamTranslate`, `SpeechToText`, `TextToSpeech`).
+  - [ ] Create stub Python gRPC worker supporting streaming signal chunks and returning canned Arabic text responses upon sentence completion.
+  - [ ] Wire end-to-end streaming translation flow in Docker Compose.
 - [ ] **API & Service Contracts**
   - [ ] Maintain OpenAPI specifications for REST endpoints.
-  - [ ] Maintain Protobuf schemas for translation requests and worker RPCs.
+  - [ ] Maintain Protobuf schemas for streaming translation requests and worker RPCs.
 
 ---
 
@@ -99,7 +97,7 @@ Later:
 ##  AI / Research 
 
 - [ ] **Model Architecture & On-Device Export**
-  - [ ] Export real-size BiLSTM + CTC model with representative dummy/random weights to LiteRT and ONNX Runtime Mobile formats for mobile benchmarking.
+  - [ ] Design and export streaming BiLSTM + CTC model supporting incremental chunk ingestion, with representative dummy weights to LiteRT and ONNX Runtime Mobile formats for mobile benchmarking.
   - [ ] Profile model parameter count, FLOPs, and quantizability (INT8 vs FP16).
 - [ ] **Preprocessing Pipeline (Rust Shared Library)**
   - [ ] Design signal filtering, notch filter, normalization, and IMU feature fusion pipeline.

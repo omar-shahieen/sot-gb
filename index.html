@@ -771,31 +771,22 @@
               ${row('&#8595;', 'Downloaded dictionary', '124 signs · 86 MB', '<span class="value">86 MB</span>' + icons.chevron)}
             </section>
 
-            <!-- 4. PRIVACY & SHARING -->
-            <p class="section-label">PRIVACY & SHARING</p>
+            <!-- 4. PRIVACY & SECURITY -->
+            <p class="section-label">PRIVACY & SECURITY</p>
             <section class="privacy-banner">
               <span>&#128737;</span>
               <div>
                 <strong>Information Storage Transparency</strong>
-                <small>Only translated Egyptian Arabic text and coarse place categories are stored when history is enabled. No video, raw sensors, or precise GPS coordinates are ever retained.</small>
+                <small>Only translated Egyptian Arabic text and coarse place categories are stored when history is enabled. No video, raw sensors, or precise GPS coordinates are ever retained. Link sharing is disabled by design for maximum privacy.</small>
               </div>
             </section>
 
-            <div class="sharing-card">
-              <div class="sharing-card-header">
-                <strong>Selective Conversation Sharing</strong>
-                <small>Explicitly choose which saved conversations are accessible via private links:</small>
-              </div>
-              <div id="settings-sharing-list" class="sharing-list"></div>
-              <button type="button" class="revoke-all-btn" id="btn-revoke-all-shared">&#128683; Revoke access to all shared conversations</button>
-            </div>
-
             <div class="security-card">
               <div class="security-card-header">
-                <span class="sec-badge">&#128272; Security Architecture</span>
+                <span class="sec-badge">&#128272; Security & Real-Time Streaming</span>
               </div>
-              <p>The intended production backend utilizes TLS 1.3/HTTPS encryption in transit, AES-256 encryption at rest, and server-side OAuth2/JWT authorization to protect conversation data.<br><br>
-              <em>Prototype Notice:</em> This prototype runs client-side in your browser. Real cloud encryption, user authentication, and backend sync require production server deployment.</p>
+              <p>The intended production backend utilizes real-time streaming over TLS 1.3/HTTPS (WebSocket/gRPC) to minimize inference latency, AES-256 encryption at rest, and server-side OAuth2/JWT authorization.<br><br>
+              <em>Prototype Notice:</em> This prototype runs client-side in your browser. Real cloud encryption, user authentication, and backend streaming inference require production server deployment.</p>
             </div>
 
             <!-- 5. AI IMPROVEMENT CONSENT -->
@@ -1044,8 +1035,9 @@
               <div><small>Signal quality</small><strong>94%</strong><span>High SNR</span></div>
               <div><small>Packet loss</small><strong>0.2%</strong><span>Stable stream</span></div>
             </section>
-            <p class="section-label">MODEL INFERENCE METRICS</p>
+            <p class="section-label">MODEL INFERENCE & PIPELINE</p>
             <section class="metric-list" style="margin-bottom:10px;">
+              <div><span><strong>Inference Pipeline</strong><small>Continuous streaming chunks to minimize latency</small></span><b style="color:#0B7A83">Real-Time Stream</b></div>
               <div><span><strong>Sensor Fusion Architecture</strong><small>Temporal CNN (sEMG) + Kinematics BiLSTM (IMU)</small></span><b style="color:#0B7A83">sEMG + IMU</b></div>
             </section>
             <section class="metric-list"><div><span><strong>Latest confidence</strong><small>Online translation</small></span><b>86%</b></div><div><span><strong>User-confirmed accuracy</strong><small>This demo session, 18 of 20 results</small></span><b>90%</b></div><div><span><strong>Online model evaluation</strong><small>Requires a validated Egyptian Sign Language test set</small></span><b class="pending">Pending</b></div><div><span><strong>Offline model evaluation</strong><small>Limited supported phrases only</small></span><b class="pending">Pending</b></div></section>
@@ -1765,7 +1757,6 @@
             { id: 'tmp-1', role: 'user', arabic: 'مساء الخير، لو سمحت عايز أسأل سؤال خاص عن الحساب', translation: 'Good evening, I want to ask a private question about the account', meta: 'You signed · temporary session' },
             { id: 'tmp-2', role: 'peer', arabic: 'اتفضل يا فندم، أنا سامعك وبجاوبك', translation: 'Go ahead, I am listening and will reply', meta: 'Heard · temporary session' }
           ],
-          sharedConversationIds: ['conv-1'],
           notifications: [
             { id: 'notif-1', type: 'reminder', title: 'Cloud Sync Review', message: 'Cloud sync is currently in local-only mode. Saved conversations remain solely on this device unless cloud sync is enabled.', time: 'Today', actionLabel: 'Review Sync Settings', actionScreen: 15, isDismissed: false },
             { id: 'notif-2', type: 'reminder', title: 'History Storage Mode', message: 'Conversation storage is set to "Translated text only" to protect partner privacy. Raw sEMG/IMU sensors are never saved.', time: 'Today', actionLabel: 'Review History', actionScreen: 15, isDismissed: false },
@@ -2301,47 +2292,7 @@
           if (storageCalc) storageCalc.textContent = convCount + ' conversations · ' + approxKb + ' KB';
           if (storageVal) storageVal.textContent = String(convCount);
 
-          // 4. Selective Sharing List
-          const sharingList = board.querySelector('#settings-sharing-list');
-          if (sharingList) {
-            if (convCount === 0) {
-              sharingList.innerHTML = '<div style="font-size:11px;color:#5B6B78;padding:6px;">No saved conversations available to share.</div>';
-            } else {
-              sharingList.innerHTML = soutState.conversations.map(c => {
-                const isShared = soutState.sharedConversationIds.includes(c.id);
-                return `
-                  <div class="sharing-row">
-                    <div>
-                      <strong>${c.title}</strong>
-                      <small>${c.date} · ${c.messages.length} messages</small>
-                    </div>
-                    <button type="button" class="share-toggle-btn ${isShared ? 'shared' : ''}" data-share-conv-id="${c.id}">
-                      ${isShared ? '✓ Shared' : '+ Share'}
-                    </button>
-                  </div>
-                `;
-              }).join('');
-
-              sharingList.querySelectorAll('.share-toggle-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                  const convId = btn.dataset.shareConvId;
-                  const idx = soutState.sharedConversationIds.indexOf(convId);
-                  const conv = soutState.conversations.find(c => c.id === convId);
-                  if (idx === -1) {
-                    soutState.sharedConversationIds.push(convId);
-                    announcePrototype('Private sharing enabled for "' + (conv ? conv.title : 'Chat') + '". (Simulated link generated).', 'success');
-                  } else {
-                    soutState.sharedConversationIds.splice(idx, 1);
-                    announcePrototype('Sharing revoked for "' + (conv ? conv.title : 'Chat') + '".', 'info');
-                  }
-                  saveSoutState();
-                  updateScreen15SettingsUI();
-                });
-              });
-            }
-          }
-
-          // 5. AI consent toggle
+          // 4. AI consent toggle
           const toggleAi = board.querySelector('#setting-toggle-ai-consent');
           if (toggleAi) {
             toggleAi.classList.toggle('on', soutState.aiImprovementConsent);
@@ -3489,28 +3440,6 @@
           .unified-guidance{margin:14px 2px 0;text-align:center}.unified-guidance strong{display:block;font-size:18px}.unified-guidance p{margin:5px auto 0;max-width:310px;color:#5D7078;font-size:12px;line-height:1.45}
           .unified-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:13px}.unified-metrics div{padding:11px 8px;border:1px solid #DCE6E8;border-radius:15px;background:#FFFFFF;text-align:center}.unified-metrics small,.unified-metrics strong{display:block}.unified-metrics small{color:#72838A;font-size:9px}.unified-metrics strong{margin-top:4px;font-size:14px}.unified-metrics strong.good{color:#18784A}
           .unified-primary,.unified-secondary,.unified-rate-choice{width:100%;min-height:54px;border-radius:17px;font-size:15px;font-weight:800;cursor:pointer}.unified-primary{margin-top:14px;border:0;background:#0B7A83;color:#FFFFFF;box-shadow:0 8px 20px rgba(11,122,131,.2)}.unified-secondary{border:1.5px solid #B8CDD1;background:#FFFFFF;color:#0B7A83}
-          .unified-gesture-controls{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
-          .unified-gesture-btn{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:74px;padding:9px 6px 7px;border-radius:16px;border:1.5px solid #D5E1E3;background:#FFFFFF;color:#10212F;cursor:pointer;transition:all .18s cubic-bezier(.2,0,0,1);box-shadow:0 2px 7px rgba(16,33,47,.05);text-align:center}
-          .unified-gesture-btn:hover{transform:translateY(-1.5px);box-shadow:0 6px 14px rgba(16,33,47,.1)}
-          .unified-gesture-btn:active{transform:scale(.96)}
-          .btn-glyph-wrap{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-style:normal;font-weight:700;transition:all .18s ease}
-          .btn-glyph-wrap i{font-style:normal;line-height:1}
-          .btn-meta-wrap{display:flex;flex-direction:column;align-items:center}
-          .btn-heading{display:block;font-size:12px;font-weight:750;line-height:1.2;color:#10212F}
-          .btn-subtext{display:block;margin-top:2px;font-size:8px;color:#607B83;font-weight:600;letter-spacing:.02em}
-          .btn-band-tag{display:inline-block;margin-top:2px;padding:2px 5px;border-radius:999px;font-size:7px;font-weight:750;text-transform:uppercase;letter-spacing:.04em;background:#F0F4F7;color:#526673}
-          .btn-stop .btn-glyph-wrap{background:#FEECE9;color:#C8381F}
-          .btn-stop:hover{border-color:#F5ABA0;background:#FFF8F7}
-          .btn-stop:hover .btn-band-tag{background:#FCE9E5;color:#C8381F}
-          .btn-resume .btn-glyph-wrap{background:#E6F7ED;color:#18784A}
-          .btn-resume:hover{border-color:#97DEB6;background:#F4FCF7}
-          .btn-resume:hover .btn-band-tag{background:#E0F5E9;color:#18784A}
-          body.sout-unified-signing[data-is-paused="true"] .btn-resume{border-color:#18784A;background:#EAF8F0;box-shadow:0 0 0 3px rgba(24,120,74,.22);animation:resumeGlow 1.3s infinite ease-in-out}
-          @keyframes resumeGlow{0%,100%{box-shadow:0 0 0 2px rgba(24,120,74,.2)}50%{box-shadow:0 0 0 5px rgba(24,120,74,.4)}}
-          .btn-give .btn-glyph-wrap{background:#E8F7F8;color:#0B7A83}
-          .btn-give:hover{border-color:#96D4D8;background:#F2FBFB}
-          .btn-give:hover .btn-band-tag{background:#DEF2F4;color:#0B7A83}
-          .btn-give.firing .btn-glyph-wrap{background:#0B7A83;color:#FFFFFF;transform:scale(1.15)}
           .unified-wave.gesture-pulse span{background:linear-gradient(180deg,#FFE58F,#FFA940);animation-duration:.5s!important}
           body.sout-unified-signing[data-is-paused="true"] .unified-wave span{animation-play-state:paused!important;opacity:.45}
           [hidden]{display:none!important}.unified-processing{padding:58px 8px 20px;text-align:center}.unified-orbit{position:relative;width:126px;height:126px;margin:0 auto 24px;border:2px solid #B7E1E4;border-radius:50%;animation:unified-spin 1.4s linear infinite}.unified-orbit:before,.unified-orbit:after{content:"";position:absolute;border-radius:50%}.unified-orbit:before{inset:14px;border:2px dashed #38ABB3}.unified-orbit:after{width:24px;height:24px;left:50%;top:-12px;transform:translateX(-50%);background:#0B7A83;box-shadow:0 5px 16px rgba(11,122,131,.3)}.unified-processing h2{margin:0;font-size:24px}.unified-processing p{margin:8px auto 0;max-width:280px;color:#60747C;font-size:13px;line-height:1.5}.unified-progress{height:7px;margin:25px 22px 0;border-radius:999px;background:#DCE7E9;overflow:hidden}.unified-progress i{display:block;width:70%;height:100%;border-radius:inherit;background:#0B7A83;animation:unified-progress 1.1s ease-in-out infinite}
@@ -3538,8 +3467,9 @@
             <main class="unified-content">
               <button type="button" class="unified-context" data-sign-action="context"><span>&#9673; Context <em class="unified-context-source">Smart detected</em></span><strong><b class="unified-context-value">Pharmacy</b> &#8250;</strong></button>
               <section class="unified-mode-selector" aria-label="Speech confirmation mode"><div class="unified-mode-heading"><strong>After translation</strong><small>Change at any time</small></div><div class="unified-mode-options" role="group"><button type="button" class="selected" data-sign-mode="manual" aria-pressed="true"><span>Preview</span><small>Tap Speak now</small></button><button type="button" data-sign-mode="auto" aria-pressed="false"><span>Wait 3s</span><small>Preview, then speak</small></button><button type="button" data-sign-mode="instant" aria-pressed="false"><span>Instant</span><small>Speak immediately</small></button></div></section>
-                            <section data-signing-panel="capture">
-                <div class="unified-stage">
+              <button type="button" class="unified-band-control" data-sign-action="band-gesture"><span class="unified-band-icon">&#8981;</span><span class="unified-band-copy"><strong>Armband gesture control</strong><small class="unified-band-state">Ready · make the gesture to stop</small></span><em>Simulate gesture</em></button>
+              <section data-signing-panel="capture">
+                <div class="unified-stage" data-sign-action="band-gesture" style="cursor:pointer;" title="Tap to simulate armband gesture">
                   <div class="unified-stage-head"><div class="unified-live-status"><i></i><span><strong>Live capture</strong><small>Armband streaming</small></span></div><time class="unified-signing-timer">00:00</time></div>
                   <div class="unified-wave" aria-label="Live armband signal">${waves}</div>
                   <div class="unified-stage-caption"><span>8 sEMG channels + 6-axis IMU streaming</span><strong>Sentence in progress</strong></div>
@@ -3548,34 +3478,8 @@
                   <span style="display:flex;align-items:center;gap:5px;"><b>🧭 IMU 6-DoF:</b> Streaming (100 Hz)</span>
                   <span style="display:flex;align-items:center;gap:8px;"><span><b>Pitch:</b> 14°</span><span><b>Roll:</b> -6°</span><span><b>Accel:</b> 1.01g</span></span>
                 </div>
-                <div class="unified-guidance"><strong>Keep signing naturally</strong><p>Sout fuses muscle activations (sEMG) with arm kinematics (IMU) before translating. Pause briefly when you finish.</p></div>
+                <div class="unified-guidance"><strong>Keep signing naturally</strong><p>Sout streams fused muscle (sEMG) and kinematic (IMU) features in real time to minimize latency. Translation is emitted immediately when you finish.</p></div>
                 <div class="unified-metrics"><div><small>Band</small><strong class="good">Connected</strong></div><div><small>sEMG</small><strong class="good">8 Channels</strong></div><div><small>IMU</small><strong class="good">6-Axis Active</strong></div><div><small>Signal</small><strong class="good unified-signal-value">94%</strong></div><div><small>Battery</small><strong>82%</strong></div></div>
-                <div class="unified-gesture-controls" role="group" aria-label="Gesture recording and armband controls">
-                  <button type="button" class="unified-gesture-btn btn-stop" data-sign-action="stop" data-source="band" aria-label="Stop gesture recording and translate">
-                    <span class="btn-glyph-wrap stop-glyph"><i class="glyph-stop">■</i></span>
-                    <span class="btn-meta-wrap">
-                      <strong class="btn-heading">Stop</strong>
-                      <small class="btn-subtext">Armband / Phone</small>
-                    </span>
-                    <span class="btn-band-tag">Armband clench</span>
-                  </button>
-                  <button type="button" class="unified-gesture-btn btn-resume" data-sign-action="resume" data-source="band" aria-label="Resume gesture recording">
-                    <span class="btn-glyph-wrap resume-glyph"><i class="glyph-play">▶</i></span>
-                    <span class="btn-meta-wrap">
-                      <strong class="btn-heading">Resume</strong>
-                      <small class="btn-subtext">Armband / Phone</small>
-                    </span>
-                    <span class="btn-band-tag">Armband tap</span>
-                  </button>
-                  <button type="button" class="unified-gesture-btn btn-give" data-sign-action="give-gesture" data-source="band" aria-label="Give gesture from armband">
-                    <span class="btn-glyph-wrap give-glyph"><i class="glyph-gesture">⚡</i></span>
-                    <span class="btn-meta-wrap">
-                      <strong class="btn-heading">Give gesture</strong>
-                      <small class="btn-subtext">Armband input</small>
-                    </span>
-                    <span class="btn-band-tag">Armband sign</span>
-                  </button>
-                </div>
               </section>
               <section class="unified-processing" data-signing-panel="processing" hidden>
                 <div class="unified-orbit" aria-hidden="true"></div><h2>Understanding your sentence</h2><p>Sout is combining the full movement sequence with your Pharmacy context.</p><div class="unified-progress"><i></i></div>
@@ -4086,29 +3990,7 @@
           }
 
           // 6. Revoke All Shared Conversations
-          const s15BtnRevoke = s15Board.querySelector('#btn-revoke-all-shared');
-          if (s15BtnRevoke) {
-            s15BtnRevoke.addEventListener('click', () => {
-              if (soutState.sharedConversationIds.length === 0) {
-                announcePrototype('No conversations currently shared.', 'info');
-                return;
-              }
-              showModalDialog(document, {
-                title: 'Revoke All Shared Access?',
-                message: 'Are you sure you want to revoke access to all shared conversations? All external private links will be invalidated immediately.',
-                confirmText: 'Revoke All',
-                isDestructive: true,
-                onConfirm: () => {
-                  soutState.sharedConversationIds = [];
-                  saveSoutState();
-                  updateScreen15SettingsUI();
-                  announcePrototype('Access to all shared conversations has been revoked.', 'info');
-                }
-              });
-            });
-          }
-
-          // 7. Export All (TXT)
+          // 6. Export All (TXT)
           const s15BtnExportTxt = s15Board.querySelector('#btn-settings-export-txt');
           if (s15BtnExportTxt) {
             s15BtnExportTxt.addEventListener('click', () => {
@@ -4139,7 +4021,6 @@
                 isDestructive: true,
                 onConfirm: () => {
                   soutState.conversations = [];
-                  soutState.sharedConversationIds = [];
                   saveSoutState();
                   updateScreen15SettingsUI();
                   announcePrototype('All conversation history permanently deleted.', 'destructive');
@@ -4165,7 +4046,6 @@
                 onConfirm: () => {
                   soutState.conversations = [];
                   soutState.temporaryMessages = [];
-                  soutState.sharedConversationIds = [];
                   soutState.temporaryMode = false;
                   soutState.cloudSync = false;
                   soutState.aiImprovementConsent = false;

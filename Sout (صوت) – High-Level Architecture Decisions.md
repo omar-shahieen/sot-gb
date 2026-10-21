@@ -8,7 +8,7 @@ Sout is an Android app paired with an 8-channel EMG armband that turns Egyptian 
 
 - **Offline-first phone.** F2 (sensor link), F2b (temporary mode), F3 (preview), F4 (calibration), F6 (history, favorites), F7 (emergency) and F8 (offline mode) must work with no server, so the phone is a full runtime, not a thin client.
 - **Two models, one input.** A large server model and a small on-device model must receive identically preprocessed signals (EMG and IMU together), or their results diverge.
-- **Whole-sentence translation.** The encoder reads the full sentence, so speech starts after the user finishes signing and one request carries one sentence.
+- **Streaming inference for low latency.** Signal data is preprocessed and streamed to the models in real time as the user signs rather than buffered and sent in a single bulk request after signing ends. The encoder processes features incrementally on the fly, allowing the translated Egyptian Arabic sentence to be emitted almost immediately when the signing gesture completes, drastically reducing conversational latency.
 - **Privacy by design and Right-to-Erasure.** Signals are encrypted in transit via TLS 1.3 and stored only with explicit consent. Local databases and E2EE backups use AES-256 encryption. History and precise location stay on the phone; only a coarse place category is ever used for inference. Users have full right-to-erasure to completely purge their accounts and cloud data. F2b provides an ephemeral temporary mode that operates strictly in-memory without persistence.
 - **Parallel teams.** Mobile, AI and Backend (plus the armband) work in parallel, so every boundary needs an explicit, versioned contract.
 
@@ -42,18 +42,18 @@ The stack is native on the phone, Java on the API, and Python only where the mod
 
 ## Communication and contracts
 
-Three links carry data, and each has one versioned contract: BLE to the phone, REST from the phone, gRPC to the worker.
+Three links carry data, and each has one versioned contract: BLE to the phone, streaming/REST from the phone, gRPC to the worker.
 
 | Link | Protocol | Payload | Notes |
 | --- | --- | --- | --- |
 | Armband to phone | BLE GATT, custom EMG service | Time-stamped 8-channel EMG samples and IMU samples, battery, per-channel contact quality | Hardware undecided, so the contract fixes sample rates, channel order and scaling once, shared by Mobile and AI. EMG and IMU share one clock so they can be aligned. |
 | Phone to API: accounts, sync, downloads, erasure | REST with OpenAPI over TLS 1.3 | JSON | OAuth2 JWT: short-lived access token, rotating refresh token. AES-256 for encrypted payloads. Right-to-erasure endpoint completely purges user account and cloud data. |
 | Phone to API: notifications (F8b) | FCM & REST over TLS 1.3 | JSON | Notification Center categories (Reminders, Warnings, Updates), badge counts, and deep-link action cards. |
-| Phone to API: translation | REST endpoint with a binary protobuf body over TLS 1.3 | One whole sentence of preprocessed EMG and IMU signal, calibration values, optional coarse place category | Preprocessed on mobile only by `libs/preprocessing`. Never precise coordinates. Ephemeral mode (F2b) sessions remain strictly in RAM. |
-| API to worker | gRPC, unary calls | Same protobuf message as the translation request | Methods: Translate, SpeechToText, TextToSpeech. Response: Arabic text and optional confidence score. |
+| Phone to API: translation | Streaming (WebSocket / gRPC over HTTP/2) with Protobuf over TLS 1.3 | Real-time stream of preprocessed EMG and IMU chunks, calibration values, optional coarse place category, sentence completion flag | Preprocessed on mobile only by `libs/preprocessing`. Signal chunks are streamed continuously during signing to reduce end-to-end latency. Ephemeral mode (F2b) sessions remain strictly in RAM. |
+| API to worker | gRPC client/bidirectional streaming | Streamed protobuf signal chunks | Methods: StreamTranslate (streaming chunks $\rightarrow$ translated Arabic text upon end-of-sentence flag), SpeechToText, TextToSpeech. |
 | Phone to object storage | HTTPS download, signed manifest | Model files, dictionary videos | The app checks the manifest version and checksum before activating a model. |
 
-**Request flow.** The phone preprocesses and segments the sentence, then sends it once. If the server answers within a timeout (about 3 seconds, to be tuned by measurement), the text goes to the preview screen. If not, the phone runs the same buffer through the on-device model. In F2b temporary mode, the translation session bypasses disk persistence and cloud sync entirely.
+**Request flow.** The phone continuously cleans and extracts features from the EMG and IMU stream via `libs/preprocessing` and streams these preprocessed chunks in real time to the server over a persistent connection. The model's encoder ingests frames incrementally as the user signs. When the user finishes the sentence (signified by a fist-clench gesture or natural signing pause), an end-of-sentence flag triggers the decoder, which emits the final Egyptian Arabic text immediately to the preview screen. If the streaming connection drops or server latency exceeds the fallback threshold, the phone falls back seamlessly to the local on-device streaming model. In F2b temporary mode, the translation session bypasses disk persistence and cloud sync entirely.
 
 **Preprocessing on mobile only via shared library.** Preprocessing runs strictly on the mobile device only, executed by the shared native Rust library (`libs/preprocessing`) integrated into Android via JNI / UniFFI bindings. The server performs zero preprocessing on translation requests. Parity is guaranteed because the AI team defines the signal processing pipeline and supplies golden test vectors (raw sensor input and expected preprocessed output). Automated CI checks on both Android and the AI training repo validate against these golden vectors, guaranteeing both on-device and server models receive identical features without duplicate codebase drift.
 
@@ -135,15 +135,15 @@ Twenty-three decisions are made, one is deferred to a benchmark, and one waits o
 | --- | --- | --- | --- | --- |
 | 1 | Mobile stack | Native Kotlin + Compose | Flutter, React Native | BLE, DSP, on-device ML and silent SMS are native work; iOS cannot send SMS silently |
 | 2 | Preprocessing location | Phone only, via shared Rust library (`libs/preprocessing`) | Server-side preprocessing, dual native codebases | Parity guaranteed by shared library and golden test vectors; eliminates server compute load |
-| 3 | Translation payload | Whole sentence, one request; API leaves room for streaming | Streaming now | Encoder needs the full sentence; simple fallback with the same buffer |
+| 3 | Translation payload | Real-time streaming chunks over persistent connection (WebSocket/gRPC) | Whole-sentence single batch request | Streaming allows the model encoder to process features incrementally as the user signs, reducing end-to-end latency so translation emits immediately when signing completes |
 | 4 | Hosting | Containerized cloud GPU VM | University server, serverless | GPU access and a realistic deployment |
 | 5 | Backend language | Java, Spring Boot | Go, Node | Team choice |
-| 6 | API to worker | gRPC unary | HTTP/JSON, queue | Typed contract, binary signal payloads |
+| 6 | API to worker | gRPC streaming | HTTP/JSON, unary calls, queue | Real-time chunk streaming with typed Protobuf contract directly to model encoder |
 | 7 | Model worker | Separate Python service | In-process in the API | Models are PyTorch or ONNX and need the GPU |
 | 8 | Authentication & Security | OAuth2 with JWT, TLS 1.3, AES-256 encryption | Self-built non-standard auth, basic auth | Industry standard, robust token lifecycle, matches requirements |
 | 9 | Cloud data | Accounts, settings, calibration hint, consented training data, optional backup | Minimal-only, full cloud history | Restore on a new phone without reading conversations |
 | 10 | History backup | Opt-in, end-to-end encrypted (AES-256-GCM) | Server-readable, favorites only | Matches the privacy requirement; server stores ciphertext only |
-| 11 | Client API | REST (OpenAPI) + protobuf body for translation | JSON everywhere, gRPC everywhere | Debuggable common endpoints, compact signal payload |
+| 11 | Client API | Streaming Protobuf (WebSocket/gRPC) for translation; REST (OpenAPI) for accounts/sync | Unary REST for translation, JSON everywhere | Minimizes latency during live signing while keeping CRUD and account endpoints simple and debuggable |
 | 12 | Sync | Local-first, per-record, last-write-wins | Manual snapshot, CRDT | Single-user edits do not need more |
 | 13 | Repositories | Product monorepo + separate AI repo | Single monorepo, polyrepo | Atomic contract changes without bloating the repo |
 | 14 | Build tool | Gradle + just + buf (+ uv) | Bazel&#32; | Native Android and Spring builds; low setup cost |

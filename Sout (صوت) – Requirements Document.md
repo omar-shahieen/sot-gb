@@ -4,17 +4,16 @@ Oct 17, 2026 · @omar
 
 ## 1. Overview
 
-Sout is a phone app paired with a forearm EMG armband that turns Egyptian Sign Language into spoken Egyptian Arabic, so a Deaf or speech-impaired person can hold a conversation without a human interpreter. The user signs a full sentence, the system translates the whole sentence (not sign by sign, because Egyptian Sign Language has its own grammar and word order), and the phone speaks the result aloud.
+Sout is a phone app paired with a forearm EMG armband that turns Egyptian Sign Language into spoken Egyptian Arabic, so a Deaf or speech-impaired person can hold a conversation without a human interpreter. 
 
-This version of the product uses a phone and an armband only; there is no smartwatch. Translation runs on a server in the normal (online) mode, and a small on-device model gives a limited offline mode with lower accuracy. The two together are called the Hybrid approach in this document.
+This version of the product uses a phone , an EMG armband and IMU sensor. 
 
 ## 2. Hybrid architecture
 
-Sout runs two translation models: a large one on the server for the best accuracy, and a small one on the phone that keeps working without a connection. The phone always handles the Bluetooth link, signal preprocessing, speech output and the screens.
+Translation runs on a server in the normal (online) mode, and a small on-device model gives a limited offline mode with lower accuracy.
 
-&#91;embedded content: hybrid architecture · phone, server, two models\]
 
-The armband streams to the phone. With a connection, the phone sends the processed signal to the server and receives Arabic text; without one, the small model on the phone produces the text. Both paths end in the same preview and speech step.
+The armband streams to the phone. With a connection, the phone streams preprocessed signal chunks to the server in real time to minimize latency, and receives Arabic text as soon as signing completes; without one, the small model on the phone processes the stream locally to produce the text. Both paths end in the same preview and speech step.
 
 | Situation | What runs | Features available |
 | --- | --- | --- |
@@ -26,15 +25,14 @@ On first launch the app tests the phone and decides whether it can run the small
 
 ## 3. Core features (F1–F4)
 
-These four features make up the minimum usable product: capture the signal, translate it, let the user check the result, and adapt to the person wearing the band.
 
 ### F1. Sign-to-speech translation
 
-**What it is.** The user wears the armband, signs a full sentence, and the app speaks the translation in Egyptian Arabic. The signal is cleaned (EMG smoothing, alignment, splitting into sentences) and passed through a CNN with four branches that are fused into one feature vector. A BiLSTM encoder reads the sequence, CTC helps the model learn sign glosses, and an attention decoder writes the Arabic sentence. The text then goes to text-to-speech.
+**What it is.** The user signs a sentence wearing the armband, and the app speaks the translation in Egyptian Arabic. To eliminate conversational delays, Sout uses chunked streaming: the phone continuously preprocesses sensor data and streams small feature chunks (every 100–200 ms) to the model while the user is signing. The model updates its encoder state in real time, allowing it to output the completed Egyptian Arabic sentence and start speech synthesis immediately after the user finishes the gesture.
 
-With the user’s permission, Sout also uses location as optional context for inference. The phone converts the current place into a coarse category such as pharmacy, clinic, bank, transport or other. The active category is always visible and can be corrected, removed or disabled before signing. The category may help the model choose between otherwise ambiguous meanings, but it must not override a translation strongly supported by the EMG signal. Precise coordinates stay on the phone and are not sent with translation requests; only the selected category and an optional user-created place label are used.
+To boost accuracy, the user can provide optional context before signing. They can select or confirm a coarse location (e.g. pharmacy, bank), a conversation topic (e.g. medical, shopping), or specific expected phrases and keywords. These hints guide the model toward the right vocabulary, and any active context can be adjusted or cleared with one tap.
 
-In the Hybrid approach there are two models behind this one feature. Online, a large model on the server translates with an open vocabulary and the highest accuracy. Offline, a small compressed model on the phone translates a limited set of phrases  with lower accuracy. Because the encoder reads the whole sentence, speech starts after the user finishes signing.
+
 
 **Scenario.** Mona is Deaf and needs a headache medicine. At the pharmacy she signs her question. The phone sends the signal to the server, and a second later it says the sentence aloud in Egyptian Arabic. The pharmacist answers by voice and Mona reads the reply (see F5). Later, in a tunnel with no signal, the app switches to the offline model and still handles her most common phrases.
 
@@ -43,7 +41,7 @@ In the Hybrid approach there are two models behind this one feature. Online, a l
 - Translate whole sentences and output Egyptian Arabic text and speech.
 - Use the server model when a connection exists; fall back to the on-device model when it does not.
 - Show which mode is active (online or offline) at all times.
-- With permission, include a visible and editable coarse place category in online and offline inference; allow translation without location context.
+- Allow optional user context (location, topic, and phrase hints) to improve model accuracy, with one-tap editing and clearing; allow translation without context.
 
 ### F2. Sensor connection, controls and wake gesture
 
@@ -134,13 +132,12 @@ Online, a server speech-to-text model gives the best accuracy on Egyptian Arabic
 - **Storage content preferences:** Users choose between storing "Translated text only" (recommended privacy default) or "Full conversation dialogue" (both Deaf user translations and hearing partner replies).
 - **Strict sensor privacy guarantee:** Raw video, camera feeds, and raw high-frequency sEMG/IMU sensor signals are never stored locally or remotely; only decoded text and glosses are retained.
 - **Deleted message tombstones:** In accordance with modern messaging privacy patterns, when a message or translation is deleted, it is replaced with a tombstone indicator (`⊘ This message was deleted / تم حذف هذه الرسالة`) with timestamp and dashed border styling, with an option for permanent purge.
-- **Selective sharing & link revocation:** Users can generate read-only shareable links for individual conversation threads, view active links, and revoke all links instantly with one tap.
 - **Transcript export:** Conversations can be exported individually or in bulk as formatted plain text (`.txt`) transcripts or styled print-ready documents (`.pdf`).
 - **Interactive chat interface:** Provides an active messaging screen with a quick text input bar, preset quick chips, simulated speech partner responses in Egyptian Arabic, and an armband `⚡ Sign` quick shortcut.
 
 Favorite phrases are sentences the user says often, such as “Please write it down, I am Deaf” or “I want to book an appointment”. They are grouped (doctor, bank, transport, work) and spoken with one tap, with no signing and no server. Favorites and history work fully offline, acting as a safety net when translation is unavailable.
 
-**Scenario.** Karim opens his conversation history after a clinic visit. He reviews the advice given by his doctor, exports a `.pdf` transcript for his records, and deletes an accidental translation, which now displays as deleted. Later, he generates a secure share link for his family and revokes it once they have read the summary.
+**Scenario.** Karim opens his conversation history after a clinic visit. He reviews the advice given by his doctor, exports a `.pdf` transcript for his records, and deletes an accidental translation, which now displays as deleted.
 
 **Key requirements**
 
@@ -149,7 +146,6 @@ Favorite phrases are sentences the user says often, such as “Please write it d
 - Absolute guarantee: never retain raw sensor or camera data.
 - Display deleted messages as deleted with tombstone indicators and permanent purge option.
 - Provide single and bulk transcript export to `.txt` and printable `.pdf`.
-- Provide selective link sharing with one-tap revocation.
 - Let users create, group, and speak favorite phrases with one tap.
 - Allow an optional place label and coarse context category on each conversation.
 
@@ -188,7 +184,7 @@ On first launch the app tests the phone (memory, speed on a sample input) and ch
 - **Warnings:** Hardware and security alerts, including poor electrode contact quality, low armband battery, Bluetooth disconnection, and offline capability downgrades.
 - **System Updates:** Notifications regarding downloaded offline vocabulary updates, model improvements, or app feature additions.
 
-Users can filter notifications by category tab (`All`, `Reminders`, `Warnings`, `Updates`), view unread notification counters, dismiss individual notifications, or mark all as read. Each notification card includes direct action links (e.g., `Review Sync Settings →` linking to Privacy Settings, `Check Calibration →` linking to Calibration). Confirmation modals protect users before any destructive actions (clearing history, deleting accounts, revoking shares).
+Users can filter notifications by category tab (`All`, `Reminders`, `Warnings`, `Updates`), view unread notification counters, dismiss individual notifications, or mark all as read. Each notification card includes direct action links (e.g., `Review Sync Settings →` linking to Privacy Settings, `Check Calibration →` linking to Calibration). Confirmation modals protect users before any destructive actions (clearing history, deleting accounts).
 
 **Scenario.** Karim connects his armband and receives a warning notification indicating low battery (15%) and electrode channel 4 misalignment. Tapping the notification takes him directly to the Sensor Calibration screen. Later, after updating his privacy settings, a reminder alerts him to review his cloud sync preferences.
 
@@ -234,17 +230,17 @@ Video clips for a limited vocabulary are realistic for the first version. A full
 
 ## 6. Work division: Mobile, AI, Backend
 
-Mobile owns everything the user touches and everything that must work offline. AI owns the translation and control models and their accuracy. Backend runs the large models, authentication, and secure sharing endpoints.
+Mobile owns everything the user touches and everything that must work offline. AI owns the translation and control models and their accuracy. Backend runs the large models, authentication, sync, and inference streaming.
 
 | Feature | Mobile | AI | Backend |
 | --- | --- | --- | --- |
-| F1 Sign-to-speech translation | Receive the sensor stream, preprocess the signal, send it to the API, run the small on-device model, text-to-speech, online/offline switching | Train the large model; compress it into the small model; export both; measure accuracy for each | Inference API: receive signal, run the large model, return Arabic text; HTTPS; latency logging |
+| F1 Sign-to-speech translation | Receive the sensor stream, preprocess the signal, stream chunks in real time to the API, run the small on-device streaming model, text-to-speech, online/offline switching | Train the streaming model architecture (incremental encoder + decoder); compress it into the small model; export both; measure latency and accuracy for each | Streaming Inference API: receive chunk stream, run incremental encoder, return Arabic text upon sentence end; TLS 1.3 / WebSocket / gRPC; latency logging |
 | F2 Sensor connection and gesture controls | Bluetooth pairing, streaming, time-stamps, auto-reconnect, status screen, 3-button control cluster (Stop, Resume, Give Gesture), synchronized armband gesture state | Control gesture detection (fist clench for stop, double-tap for resume, sign motion); test for false triggers | None |
 | F2b Temporary Gesture Mode | Ephemeral session state, in-memory volatile buffer, exclusion from local DB and cloud sync, confirmation modal | None | Strict zero-retention on ephemeral session requests |
 | F3 Preview and confirm | Preview screen, confirm and cancel gestures and buttons, the three modes, settings | Optional confidence score for each sentence | Return the confidence score with the response, if provided |
 | F4 Calibration | Placement guide, channel check, per-user normalization, quality result | Choose the normalization method; compare accuracy before and after on new users | Optional: store per-user settings with consent; run fine-tuning later |
 | F5 Speech-to-text | Microphone capture, large-text display, vibration, local recognizer fallback | Pick and test Egyptian Arabic speech-to-text models, online and offline | Speech-to-text endpoint (hosted model or proxy to a service) |
-| F6 History, storage and chat | Local database (SQLite/IndexedDB), storage preference filters (text-only vs. full dialogue), tombstone rendering (`⊘ This message was deleted`), single/bulk TXT & PDF export engines, interactive chat UI with partner simulation, PIN/biometric lock | None | Selective sharing API (tokenized read-only links, instant revocation endpoint), optional encrypted backup |
+| F6 History, storage and chat | Local database (SQLite/IndexedDB), storage preference filters (text-only vs. full dialogue), tombstone rendering (`⊘ This message was deleted`), single/bulk TXT & PDF export engines, interactive chat UI with partner simulation, PIN/biometric lock | None | Optional encrypted cloud backup (E2EE AES-256-GCM) and account settings sync |
 | F7 Emergency gesture | Gesture and button trigger, countdown, speech, full-screen message, SMS, GPS | Choose a distinctive gesture; measure the false-trigger rate | None |
 | F8 Offline mode | Detect connection and device capability, load the small model, switch modes, show the mode banner | Deliver the small model and its supported phrase list; set the quality threshold for “device is capable” | Host versioned model files for download and update |
 | F8b Notifications and alerts | Dedicated Screen 20, unread badge counters, category filtering, deep-link navigation triggers, persistent alert manager, modal dialog system | None | Push notification service for server alerts and model updates (optional) |
@@ -275,7 +271,6 @@ Mobile owns everything the user touches and everything that must work offline. A
 - One inference service for translation, with speech-to-text added when F5 is built.
 - Model hosting and versioned downloads for the app.
 - Production security: TLS 1.3 / HTTPS for in-transit encryption, AES-256 for at-rest storage, and OAuth2/JWT token authorization.
-- Tokenized selective conversation sharing service with instant revocation capabilities.
 - Strict sensor privacy enforcement: zero persistent storage of raw high-frequency signals or camera feeds without explicit, segregated opt-in consent.
 - Basic monitoring of delay and errors.
 
@@ -285,7 +280,7 @@ Mobile owns everything the user touches and everything that must work offline. A
 - **Preprocessing:** the same logic must run on the phone and on the server, or the two models will see different inputs.
 - **API contract:** request carries the signal, the user’s calibration values and an optional coarse place category; response carries the Arabic text and, if available, a confidence score. Precise coordinates are not part of the translation API.
 - **Model files:** AI delivers a versioned on-device model; Backend hosts it; Mobile downloads and checks the version.
-- **Sharing & Sync API:** Mobile requests temporary, cryptographically signed read-only links for specific conversation threads; Backend routes public view requests and handles revocation requests.
+- **Sync & Backup API:** Mobile uploads opt-in end-to-end encrypted backup blobs and syncs user settings/favorites; Backend stores ciphertext blobs without access to user keys.
 
 ## 7. Non-functional requirements, roadmap, risks and open questions
 
@@ -309,7 +304,7 @@ The biggest unknowns are accuracy on new users and the delay of the online path,
 | Risk | Effect | Mitigation |
 | --- | --- | --- |
 | Accuracy drops for new users or when the band shifts | Wrong translations | Calibration (F4); training data from many people and several wearing sessions; test on unseen users |
-| Online delay is too long for conversation | Slow, awkward talk | Send the whole sentence once; use a nearby server; measure early |
+| Online delay is too long for conversation | Slow, awkward talk | Stream preprocessed signal chunks continuously during signing; compute encoder states incrementally; emit translation immediately upon sentence end |
 | Small offline model is weak or slow on some phones | Offline mode unusable | Limited vocabulary; device capability test; fall back to model-free mode |
 | Network or server fails during a demo | Failed presentation | Offline model as backup and a recorded demo |
 | Signals and speech leave the phone | Privacy concern | Encrypted transport, consent, and an updated deck that says translation runs online |
@@ -324,5 +319,5 @@ The biggest unknowns are accuracy on new users and the delay of the online path,
 - Will F5 and F10 be built in this project or presented as future work?
 - Where is the server hosted (university, cloud credits, or a simple platform)?
 - Should the emergency feature ever call emergency services, or only message saved contacts?
-- Is the signal sent as one whole sentence (simpler) or streamed (faster but heavier)?
+- **Streaming vs batching (Decided):** Signal data is streamed to the models in real time during signing to eliminate end-of-sentence latency.
 - What is the lowest phone we support?

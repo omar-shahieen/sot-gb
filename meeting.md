@@ -4,8 +4,8 @@
 
 - **Mobile:** native Kotlin + Compose. The phone is a full offline runtime, with Room encrypted at rest (AES-256 SQLCipher).
 - **Preprocessing:** runs on the phone only, implemented as a shared Rust library (`libs/preprocessing`) with golden test vectors checked in CI.
-- **Translation:** one whole sentence per request (REST with a protobuf body over TLS 1.3). If the server doesn't answer in about 3 seconds, the phone falls back to the on-device model.
-- **Backend:** Java Spring Boot API with OAuth2 (JWT tokens), TLS 1.3, and AES-256 encryption, calling a Python gRPC model worker (Translate, SpeechToText, TextToSpeech). Data lives in PostgreSQL and S3/R2 object storage. Supports full right-to-erasure cascade purge.
+- **Translation:** real-time streaming of preprocessed signal frames to the models (WebSocket / gRPC streaming over TLS 1.3) to minimize latency. Encoder states update incrementally as the user signs, emitting Arabic text immediately upon gesture completion. If the connection drops or latency threshold is exceeded, the phone falls back to the on-device streaming model.
+- **Backend:** Java Spring Boot API with OAuth2 (JWT tokens), TLS 1.3, and AES-256 encryption, calling a Python gRPC model worker (streaming Translate, SpeechToText, TextToSpeech). Data lives in PostgreSQL and S3/R2 object storage. Supports full right-to-erasure cascade purge.
 - **Sync:** local-first, per-record, last-write-wins. History backup is opt-in and end-to-end encrypted (AES-256-GCM).
 - **Privacy & Modes:** precise location never leaves the phone (emergency SMS only). F2b temporary mode runs strictly in-memory (RAM) with memory zeroing on completion. Notifications and alerts (F8b) are managed via an in-app center and FCM push. Raw signals stored only with explicit consent.
 - **Repos and tooling:** product monorepo plus a separate AI repo; Gradle + just + buf + uv; GitHub Actions with path filters.
@@ -26,7 +26,7 @@ Sout is an Android app plus an 8-channel EMG/IMU armband that translates Egyptia
 ## 3. What to do next
 
 - **Mobile:** build the 8 screens with mock data, define the `SensorSource` interface and a fake sensor, and set up Room with encryption. Then add the emergency flow, the recorder mode, F2b ephemeral mode, and the device profiler.
-- **Backend and infra:** set up the monorepo, buf, CI and Docker Compose. Build the Spring API with OAuth2 (JWT), right-to-erasure endpoint, then wire a stub Python worker that returns canned Arabic text, so the end-to-end path works early.
+- **Backend and infra:** set up the monorepo, buf, CI and Docker Compose. Build the Spring API with OAuth2 (JWT), right-to-erasure endpoint, then wire a stub Python worker that handles streaming signal chunks and returns canned Arabic text, so the end-to-end streaming path works early.
 - **AI:** export a dummy-weight BiLSTM+CTC model for the runtime benchmark, build the Rust preprocessing crate (`libs/preprocessing`) with golden vectors, and write the data collection protocol. Contact interpreters and Deaf associations.
 - **Hardware:** finalize the BLE GATT contract with Mobile and AI (sample rates, channel order, scaling, shared clock).
 
